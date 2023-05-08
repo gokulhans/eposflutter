@@ -1,7 +1,12 @@
+import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_machine/resources/asset_manager.dart';
+import 'package:pos_machine/widgets/category_list_item_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
+import '../providers/cart.dart';
+import '../providers/product.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
@@ -16,15 +21,29 @@ class CategoryListItem extends StatefulWidget {
 
 class _CategoryListItemState extends State<CategoryListItem> {
   final TextEditingController _searchTextController = TextEditingController();
+  final gridController = DragSelectGridViewController();
   @override
   void dispose() {
     _searchTextController.dispose();
+    gridController.removeListener(rebuild);
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    gridController.addListener(rebuild);
+  }
+
+  void rebuild() {
+    Provider.of<Cart>(context, listen: false)
+        .setCartItem(gridController.value.amount);
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     debugPrint(size.width.toString());
     return SingleChildScrollView(
       child: Padding(
@@ -274,7 +293,8 @@ class _CategoryListItemState extends State<CategoryListItem> {
             const SizedBox(
               height: 10,
             ),
-            GridView.builder(
+            DragSelectGridView(
+                gridController: gridController,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -300,63 +320,98 @@ class _CategoryListItemState extends State<CategoryListItem> {
                     crossAxisSpacing: 1.0,
                     mainAxisSpacing: 1.0),
                 itemCount: 12,
-                itemBuilder: (context, index) {
-                  return SizedBox(
-                    height: 100,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.all(8),
-                          alignment: Alignment.center,
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(22),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: ColorManager.boxShadowColor,
-                                  blurRadius: 6,
-                                  offset: Offset(1, 1),
-                                ),
-                              ],
-                              color: Colors.white),
-                          child: Image.asset(ImageAssets.mightyZinkerBoxImage),
-                        ),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: 'MIGHTY ZINGER\n ',
-                            style: buildCustomStyle(FontWeightManager.medium,
-                                FontSize.s11, 0.13, Colors.black),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '150 g\n',
-                                style: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.12,
-                                    Colors.black.withOpacity(0.5)),
-                              ),
-                              TextSpan(
-                                text: '\$3.50',
-                                style: buildCustomStyle(
-                                    FontWeightManager.semiBold,
-                                    FontSize.s12,
-                                    0.12,
-                                    Colors.black),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                itemBuilder: (context, index, isSelected) {
+                  return CategoryListItemWidget(
+                      isSelected: isSelected,
+                      imageUrlPath: _items[index].imageUrl,
+                      price: _items[index].price,
+                      title: _items[index].title,
+                      weight: _items[index].weight);
                 }),
           ],
         ),
       ),
     );
   }
+
+  final List<Product> _items = [
+    Product(
+        id: 'p1',
+        title: 'MIGHTY ZINGER',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.mightyZinkerImage),
+    Product(
+        id: 'p2',
+        title: 'MIGHTY ZINGER BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.mightyZinkerBoxImage),
+    Product(
+        id: 'p3',
+        title: 'ZINGER BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerBoxImage),
+    Product(
+        id: 'p4',
+        title: 'ZINGER SHRIMP BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerShrimpBoxImage),
+    Product(
+        id: 'p5',
+        title: 'MIGHTY ZINGER',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.mightyZinkerImage),
+    Product(
+        id: 'p6',
+        title: 'MIGHTY ZINGER BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.mightyZinkerBoxImage),
+    Product(
+        id: 'p7',
+        title: 'ZINGER BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerBoxImage),
+    Product(
+        id: 'p8',
+        title: 'ZINGER SHRIMP BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerShrimpBoxImage),
+    Product(
+        id: 'p4',
+        title: 'ZINGER SHRIMP BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerShrimpBoxImage),
+    Product(
+        id: 'p5',
+        title: 'MIGHTY ZINGER',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.mightyZinkerImage),
+    Product(
+        id: 'p6',
+        title: 'MIGHTY ZINGER BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.mightyZinkerBoxImage),
+    Product(
+        id: 'p7',
+        title: 'ZINGER BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerBoxImage),
+    Product(
+        id: 'p8',
+        title: 'ZINGER SHRIMP BOX',
+        weight: '150',
+        price: 3.50,
+        imageUrl: ImageAssets.zinkerShrimpBoxImage),
+  ];
 }

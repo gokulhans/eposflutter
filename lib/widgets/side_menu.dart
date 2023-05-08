@@ -3,8 +3,10 @@ import 'package:pos_machine/components/build_round_button.dart';
 
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/responsive.dart';
+import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
+import '../providers/cart.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
@@ -66,7 +68,7 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             iconPath: ImageAssets.cartIcon,
             title: 'Cart',
-            items: 5,
+            items: Provider.of<Cart>(context, listen: true).getCartItems,
             onTap: () {},
           ),
           DrawerListTile(

@@ -46,3 +46,24 @@ InputDecoration decoration = InputDecoration(
           BorderSide(width: 0.4, color: ColorManager.grey.withOpacity(0.7)),
       borderRadius: BorderRadius.circular(6)),
 );
+InputDecoration decorationBorder = InputDecoration(
+  //border: InputBorder.none,
+  enabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0.4, color: Colors.black),
+      borderRadius: BorderRadius.circular(6)),
+  disabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0.4, color: Colors.black),
+      borderRadius: BorderRadius.circular(6)),
+  focusedErrorBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0.3, color: Colors.red),
+      borderRadius: BorderRadius.circular(6)),
+  errorBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0.3, color: Colors.red),
+      borderRadius: BorderRadius.circular(6)),
+  focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0.4, color: Colors.black),
+      borderRadius: BorderRadius.circular(6)),
+  border: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0.4, color: Colors.black),
+      borderRadius: BorderRadius.circular(6)),
+);

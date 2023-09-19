@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:pos_machine/responsive.dart';
 import 'package:pos_machine/widgets/side_menu_mobile.dart';
 
+import '../controllers/sidebar_controller.dart';
 import '../resources/color_manager.dart';
 import '../widgets/category_list.dart';
 
@@ -13,6 +15,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SideBarController sideBarController = Get.find();
+
     // Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
@@ -37,13 +41,15 @@ class MainScreen extends StatelessWidget {
           child: ResponsiveWidget(
             mobile: const CategoryList(),
             desktop: Row(
-              children: const [
-                Expanded(
+              children: [
+                const Expanded(
                   child: SideMenu(),
                 ),
                 Expanded(
-                  flex: 5,
-                  child: CategoryList(),
+                  flex: 4,
+                  // child: CategoryList(),
+                  child: Obx(() =>
+                      sideBarController.screens[sideBarController.index.value]),
                 ),
                 // Expanded(
                 //   flex: size.width > 1340 ? 8 : 10,
@@ -77,7 +83,9 @@ class MainScreen extends StatelessWidget {
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? 5000
                           : 6000,
-                  child: const CategoryList(),
+                  // child: const CategoryList(),
+                  child: Obx(() =>
+                      sideBarController.screens[sideBarController.index.value]),
                 ),
               ],
             ),

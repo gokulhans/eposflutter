@@ -25,8 +25,8 @@ class CategoryList extends StatelessWidget {
             ],
             color: Colors.white),
         child: ResponsiveWidget.isMobile(context)
-            ? Column(
-                children: const [
+            ? const Column(
+                children: [
                   Expanded(
                     flex: 7500,
                     child: CategoryListItem(),
@@ -37,8 +37,8 @@ class CategoryList extends StatelessWidget {
                   ),
                 ],
               )
-            : Row(
-                children: const [
+            : const Row(
+                children: [
                   Expanded(
                     flex: 6000,
                     child: CategoryListItem(),

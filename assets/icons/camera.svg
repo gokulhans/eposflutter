@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <filter id="Ellipse_796" x="0" y="0" width="50" height="50" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_12137" data-name="Group 12137" transform="translate(-219 -144)">
+    <g transform="matrix(1, 0, 0, 1, 219, 144)" filter="url(#Ellipse_796)">
+      <circle id="Ellipse_796-2" data-name="Ellipse 796" cx="16" cy="16" r="16" transform="translate(9 8)" fill="#fff"/>
+    </g>
+    <path id="Icon_awesome-camera" data-name="Icon awesome-camera" d="M10.932,4.641V10.79a1.025,1.025,0,0,1-1.025,1.025H1.025A1.025,1.025,0,0,1,0,10.79V4.641A1.025,1.025,0,0,1,1.025,3.616H2.9l.263-.7a1.023,1.023,0,0,1,.959-.664H6.8a1.023,1.023,0,0,1,.959.664l.265.7H9.907A1.025,1.025,0,0,1,10.932,4.641Zm-2.9,3.075a2.562,2.562,0,1,0-2.562,2.562A2.564,2.564,0,0,0,8.028,7.716Zm-.683,0A1.879,1.879,0,1,1,5.466,5.837,1.882,1.882,0,0,1,7.345,7.716Z" transform="translate(238.586 161.019)" fill="#ec2129"/>
+  </g>
+</svg>

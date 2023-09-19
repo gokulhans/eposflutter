@@ -69,6 +69,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
                     child: SizedBox(
                   height: 50,
                   child: TextField(
+                    cursorWidth: 1,
                     controller: _searchTextController,
                     cursorColor: ColorManager.kPrimaryColor,
                     decoration: decoration.copyWith(
@@ -80,6 +81,8 @@ class _CategoryListItemState extends State<CategoryListItem> {
                         ImageAssets.barcodeIcon,
                         fit: BoxFit.none,
                       ),
+                      labelStyle: buildCustomStyle(FontWeightManager.regular,
+                          FontSize.s10, 0.10, ColorManager.textColor),
                       hintText: 'Search category or product',
                       hintStyle: buildCustomStyle(FontWeightManager.regular,
                           FontSize.s10, 0.13, ColorManager.textColor1),

@@ -180,7 +180,7 @@ class LoyalityCardScreen extends StatelessWidget {
                                         top: 0,
                                         bottom: 20),
                                     //  height: size.height * .07,
-                                    width: size.width / 3.05,
+                                    width: size.width / 3.17, //3.05
                                     padding: const EdgeInsets.only(
                                         right: 20, left: 20, top: 5, bottom: 5),
                                     child: DropdownButtonHideUnderline(

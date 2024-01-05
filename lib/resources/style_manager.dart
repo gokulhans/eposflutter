@@ -21,6 +21,30 @@ TextStyle buildHeaderStyle = const TextStyle(
   letterSpacing: 0.30,
   color: ColorManager.textColor,
 );
+TextStyle buildTitleStyle = const TextStyle(
+  overflow: TextOverflow.ellipsis,
+  fontWeight: FontWeightManager.semiBold,
+  fontFamily: FontConstants.fontFamily,
+  fontSize: FontSize.s20,
+  letterSpacing: 0.30,
+  color: Colors.black,
+);
+TextStyle buildTextFieldStyle = const TextStyle(
+  fontWeight: FontWeightManager.regular,
+  overflow: TextOverflow.ellipsis,
+  fontFamily: FontConstants.fontFamily,
+  fontSize: FontSize.s10,
+  letterSpacing: 0.16,
+  color: ColorManager.grey,
+);
+TextStyle buildTextTileStyle = const TextStyle(
+  overflow: TextOverflow.ellipsis,
+  fontWeight: FontWeightManager.regular,
+  fontFamily: FontConstants.fontFamily,
+  fontSize: FontSize.s10,
+  letterSpacing: 0.16,
+  color: ColorManager.textColor,
+);
 InputDecoration decoration = InputDecoration(
   //border: InputBorder.none,
   enabledBorder: OutlineInputBorder(

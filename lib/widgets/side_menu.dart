@@ -7,10 +7,15 @@ import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
 import '../controllers/sidebar_controller.dart';
+import '../providers/auth_model.dart';
+import '../providers/authentication_providers.dart';
 import '../providers/cart.dart';
+import '../providers/sales_provider.dart';
+import '../providers/shared_preferences.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
+import '../screens/login/login.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({Key? key}) : super(key: key);
@@ -18,6 +23,7 @@ class SideMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SideBarController sideBarController = Get.put(SideBarController());
+    final authModel = Provider.of<AuthModel>(context);
     // Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -118,8 +124,17 @@ class SideMenu extends StatelessWidget {
               onTap: () {
                 debugPrint(" 'Sales',${sideBarController.index.value}");
                 sideBarController.index.value = 2;
+                final salesProvider =
+                    Provider.of<SalesProvider>(context, listen: false);
+
+                //-------------------------
+                salesProvider.fetchOrders(
+                  storeId: 1,
+                  orderNumberSelect: false,
+                );
               },
-              selected: sideBarController.index.value == 2,
+              selected: sideBarController.index.value == 2 ||
+                  sideBarController.index.value == 11,
             ),
           ),
           Obx(
@@ -210,7 +225,77 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             iconPath: ImageAssets.logoutIcon,
             title: 'Logout',
-            onTap: () {
+            onTap: () async {
+              String token = authModel.token ?? '';
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  });
+              await AuthenticationProvider()
+                  .logout(token, context)
+                  .then((value) async {
+                if (value["status"] == "success") {
+                  authModel.logout();
+                  SharedPreferenceProvider().removeToken();
+                  debugPrint(" authmodel logout token ${authModel.token}");
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                        showCloseIcon: true,
+                        dismissDirection: DismissDirection.up,
+                        closeIconColor: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        elevation: 0,
+                        margin: EdgeInsets.only(
+                            top: 50,
+                            left: MediaQuery.of(context).size.width / 1.9,
+                            right: 10),
+                        backgroundColor:
+                            ColorManager.kPrimaryColor.withOpacity(0.6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        content: Text(
+                          '${value["message"]}',
+                          style: buildCustomStyle(FontWeightManager.medium,
+                              FontSize.s12, 0.12, Colors.white),
+                        )));
+                  Navigator.pop(context);
+                  await Future.delayed(const Duration(seconds: 0)).then(
+                      (value) => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignInScreen())));
+                } else {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                        showCloseIcon: true,
+                        dismissDirection: DismissDirection.up,
+                        closeIconColor: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        elevation: 0,
+                        margin: EdgeInsets.only(
+                            top: 50,
+                            left: MediaQuery.of(context).size.width / 1.9,
+                            right: 10),
+                        backgroundColor:
+                            ColorManager.kPrimaryColor.withOpacity(0.6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        content: Text(
+                          '${value["message"]}',
+                          style: buildCustomStyle(FontWeightManager.medium,
+                              FontSize.s12, 0.12, Colors.white),
+                        )));
+                }
+              });
               debugPrint(" 'Logout',${sideBarController.index.value}");
             },
             selected: false,

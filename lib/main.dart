@@ -1,12 +1,22 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_machine/providers/auth_model.dart';
 
-import 'package:pos_machine/components/main_screen.dart';
+import 'package:pos_machine/providers/cart_provider.dart';
+import 'package:pos_machine/providers/category_providers.dart';
 import 'package:pos_machine/providers/cart.dart';
+
+import 'package:pos_machine/providers/grid_provider.dart';
+import 'package:pos_machine/providers/sales_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'controllers/sidebar_controller.dart';
+import 'providers/carousel_provider.dart';
+import 'screens/login/login.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +32,9 @@ void main() {
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
   // ]);
+  if (Platform.isMacOS) {
+    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  }
   runApp(const MyApp());
 }
 
@@ -33,13 +46,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => GridSelectionProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => Cart()),
+        ChangeNotifierProvider(create: (_) => CarouselProvider()),
+        ChangeNotifierProvider(create: (_) => SalesProvider()),
+        ChangeNotifierProvider(create: (_) => AuthModel()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter POS Machine',
         theme: ThemeData(),
-        home: const MainScreen(),
+        home: const SignInScreen(),
       ),
     );
   }

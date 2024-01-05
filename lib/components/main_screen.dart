@@ -19,6 +19,7 @@ class MainScreen extends StatelessWidget {
 
     // Size size = MediaQuery.of(context).size;
     return Scaffold(
+        // resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         drawer:
             ResponsiveWidget.isMobile(context) ? const SideMenuMobile() : null,

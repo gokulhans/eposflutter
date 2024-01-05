@@ -57,4 +57,6 @@ class ColorManager {
   static const Color kGradientIndigo = Color(0XFF9347C7);
   static const Color kGradientGreen = Color(0XFFC4D111);
   static const Color kGradientGreenLight = Color(0XFFD5CB3A);
+
+  static const Color colorPlaceholder = Color.fromARGB(179, 213, 209, 209);
 }

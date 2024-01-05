@@ -11,10 +11,12 @@ import 'package:pos_machine/screens/sales/sales.dart';
 import 'package:pos_machine/screens/support/support.dart';
 import 'package:pos_machine/screens/transaction/transaction.dart';
 
+import '../screens/sales/widgets/sales_order_details.dart';
 import '../widgets/category_list.dart';
 
 class SideBarController extends GetxController {
   RxInt index = 0.obs;
+
   var screens = const [
     CategoryList(),
     DashboardScreen(),
@@ -26,6 +28,7 @@ class SideBarController extends GetxController {
     NotificationScreen(),
     SupportScreen(),
     AddCustomersScreen(),
-    OpenProfileScreen()
+    OpenProfileScreen(),
+    SalesOrderDetailsScreen()
   ];
 }

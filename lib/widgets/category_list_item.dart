@@ -14,8 +14,10 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
 import '../components/build_round_button.dart';
+import '../models/add_to_cart.dart';
 import '../models/get_product.dart';
 
+import '../providers/auth_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/product.dart';
 import '../resources/color_manager.dart';
@@ -41,7 +43,10 @@ class CategoryListItem extends StatelessWidget {
         Provider.of<GridSelectionProvider>(context, listen: false);
     List<GetProduct> p = Provider.of<GridSelectionProvider>(context)
         .selectedProductsUpOnCategory;
-
+//  String? accessToken =
+//           Provider.of<AuthModel>(context, listen: false).token;
+    int? customerId = Provider.of<AuthModel>(context, listen: false).userId;
+    debugPrint("CategoryListItem  customerId  : $customerId");
     // Provider.of<CartProvider>(context, listen: false)
     //     .fetchCartData(customerId: 1);
     // Load products when the widget is built
@@ -124,9 +129,9 @@ class CategoryListItem extends StatelessWidget {
                     return ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        itemCount: 5,
+                        itemCount: 1, //5,
                         itemBuilder: (context, index) {
-                          return const BuildCategoryContainer();
+                          return const BuildCategoryContainerDummy();
                         });
                     //const Center(child: CircularProgressIndicator());
                   } else {
@@ -326,7 +331,7 @@ class CategoryListItem extends StatelessWidget {
                                   price: "${product.price!.price}",
                                   title: product.productName ?? '',
                                   productId: product.productId ?? 1,
-                                  customerId: 1,
+                                  customerId: customerId ?? 1,
                                   weight: selectionProvider
                                           .productList![index].unit ??
                                       '',
@@ -354,7 +359,7 @@ class CategoryListItem extends StatelessWidget {
                                       selectionProvider
                                               .productList![index].unit ??
                                           '',
-                                      1,
+                                      customerId ?? 1,
                                       selectionProvider.productList![index]
                                               .category![0].name ??
                                           "",
@@ -389,7 +394,7 @@ class CategoryListItem extends StatelessWidget {
                                   weight: selectionProvider
                                           .productList![index].unit ??
                                       '',
-                                  customerId: 1,
+                                  customerId: customerId ?? 1,
                                   productId: selectionProvider
                                           .productList![index].productId ??
                                       1,
@@ -512,12 +517,21 @@ showDialogFunctionForProductDetails(
                     CustomRoundButton(
                       title: "Add To Cart",
                       fct: () {
+                        String? accessToken =
+                            Provider.of<AuthModel>(context, listen: false)
+                                .token;
+                        debugPrint("accessToken From AuthModel $accessToken");
                         Provider.of<CartProvider>(context, listen: false)
                             .addToCartAPI(
                                 customerId: customerId,
                                 productId: productId,
-                                quantity: 1)
-                            .then((value) => ScaffoldMessenger.of(context)
+                                quantity: 1,
+                                accessToken: accessToken ?? "")
+                            .then((value) {
+                          AddToCartModel addToCartModel =
+                              AddToCartModel.fromJson(value);
+                          if (value["status"] == "success") {
+                            ScaffoldMessenger.of(context)
                               ..removeCurrentSnackBar()
                               ..showSnackBar(SnackBar(
                                   showCloseIcon: true,
@@ -536,13 +550,44 @@ showDialogFunctionForProductDetails(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)),
                                   content: Text(
-                                    'Added To Cart',
+                                    addToCartModel.message ??
+                                        "Added To Cart", //  'Order Placed Successfully',
                                     style: buildCustomStyle(
                                         FontWeightManager.medium,
                                         FontSize.s12,
                                         0.12,
                                         Colors.white),
-                                  ))));
+                                  )));
+                          } else {
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(SnackBar(
+                                  showCloseIcon: true,
+                                  dismissDirection: DismissDirection.up,
+                                  closeIconColor: Colors.white,
+                                  duration: const Duration(seconds: 2),
+                                  behavior: SnackBarBehavior.floating,
+                                  elevation: 0,
+                                  margin: EdgeInsets.only(
+                                      top: 50,
+                                      left: MediaQuery.of(context).size.width /
+                                          1.9,
+                                      right: 10),
+                                  backgroundColor: ColorManager.kPrimaryColor
+                                      .withOpacity(0.6),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  content: Text(
+                                    addToCartModel.message ??
+                                        "Error Occured !Try Again !", //  'Added To Cart',
+                                    style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s12,
+                                        0.12,
+                                        Colors.white),
+                                  )));
+                          }
+                        });
                       },
                       fontSize: FontSize.s10,
                       height: 25,
@@ -697,12 +742,22 @@ showDialogFunctionForProductDetailsAnimated(
                           CustomRoundButton(
                             title: "Add To Cart",
                             fct: () {
+                              String? accessToken =
+                                  Provider.of<AuthModel>(context, listen: false)
+                                      .token;
+                              debugPrint(
+                                  "accessToken From AuthModel $accessToken");
                               Provider.of<CartProvider>(context, listen: false)
                                   .addToCartAPI(
                                       customerId: customerId,
                                       productId: productId,
-                                      quantity: 1)
-                                  .then((value) => ScaffoldMessenger.of(context)
+                                      quantity: 1,
+                                      accessToken: accessToken ?? "")
+                                  .then((value) {
+                                AddToCartModel addToCartModel =
+                                    AddToCartModel.fromJson(value);
+                                if (value["status"] == "success") {
+                                  ScaffoldMessenger.of(context)
                                     ..removeCurrentSnackBar()
                                     ..showSnackBar(SnackBar(
                                         showCloseIcon: true,
@@ -725,13 +780,48 @@ showDialogFunctionForProductDetailsAnimated(
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         content: Text(
-                                          'Added To Cart',
+                                          addToCartModel.message ??
+                                              "Added To Cart !", //  'Order Placed Successfully',
                                           style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s12,
                                               0.12,
                                               Colors.white),
-                                        ))));
+                                        )));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                    ..removeCurrentSnackBar()
+                                    ..showSnackBar(SnackBar(
+                                        showCloseIcon: true,
+                                        dismissDirection: DismissDirection.up,
+                                        closeIconColor: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        behavior: SnackBarBehavior.floating,
+                                        elevation: 0,
+                                        margin: EdgeInsets.only(
+                                            top: 50,
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                1.9,
+                                            right: 10),
+                                        backgroundColor: ColorManager
+                                            .kPrimaryColor
+                                            .withOpacity(0.6),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        content: Text(
+                                          addToCartModel.message ??
+                                              "Error Occured !Try Again !", //  'Added To Cart',
+                                          style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s12,
+                                              0.12,
+                                              Colors.white),
+                                        )));
+                                }
+                              });
                             },
                             fontSize: FontSize.s10,
                             height: 25,

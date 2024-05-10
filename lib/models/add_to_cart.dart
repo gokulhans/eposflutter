@@ -11,15 +11,18 @@ String addToCartModelToJson(AddToCartModel data) => json.encode(data.toJson());
 
 class AddToCartModel {
   final String? status;
+  final String? message;
   final AddToCart? cart;
 
   AddToCartModel({
     this.status,
     this.cart,
+    this.message,
   });
 
   factory AddToCartModel.fromJson(Map<String, dynamic> json) => AddToCartModel(
         status: json["status"],
+        message: json["message"],
         cart: json["cart"] == null ? null : AddToCart.fromJson(json["cart"]),
       );
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pinput/pinput.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
 
 import 'package:pos_machine/providers/authentication_providers.dart';
 
@@ -275,42 +276,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                             .then((value) async {
                                           // Navigator.pop(context);
                                           if (value["status"] == "success") {
-                                            ScaffoldMessenger.of(context)
-                                              ..removeCurrentSnackBar()
-                                              ..showSnackBar(SnackBar(
-                                                  showCloseIcon: true,
-                                                  dismissDirection:
-                                                      DismissDirection.up,
-                                                  closeIconColor: Colors.white,
-                                                  duration: const Duration(
-                                                      seconds: 2),
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  elevation: 0,
-                                                  margin: EdgeInsets.only(
-                                                      top: 50,
-                                                      left:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.9,
-                                                      right: 10),
-                                                  backgroundColor: ColorManager
-                                                      .kPrimaryColor
-                                                      .withOpacity(0.6),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  content: Text(
-                                                    '${value["message"]}',
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s12,
-                                                        0.12,
-                                                        Colors.white),
-                                                  )));
+                                            showScaffold(
+                                              context: context,
+                                              message: '${value["message"]}',
+                                            );
+
                                             Navigator.pop(context);
                                             await Future.delayed(
                                                     const Duration(seconds: 1))
@@ -330,106 +300,20 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                             debugPrint(
                                                 "errors.password !=null");
                                             Navigator.pop(context);
-                                            ScaffoldMessenger.of(context)
-                                              ..removeCurrentSnackBar()
-                                              ..showSnackBar(SnackBar(
-                                                  showCloseIcon: true,
-                                                  dismissDirection:
-                                                      DismissDirection.up,
-                                                  closeIconColor: Colors.white,
-                                                  duration: const Duration(
-                                                      seconds: 2),
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  elevation: 0,
-                                                  margin: const EdgeInsets.only(
-                                                      top: 50,
-                                                      left: 50,
-                                                      right: 10),
-                                                  backgroundColor: ColorManager
-                                                      .kPrimaryColor
-                                                      .withOpacity(0.6),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  content: Text(
-                                                    errorResponse.values
-                                                        .map((e) {
-                                                      return e.join('');
-                                                    }).join('\n'),
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s12,
-                                                        0.12,
-                                                        Colors.white),
-                                                  )));
+                                            showScaffold(
+                                              context: context,
+                                              message:
+                                                  errorResponse.values.map((e) {
+                                                return e.join('');
+                                              }).join('\n'),
+                                            );
                                           }
                                         });
                                       } else {
-                                        ScaffoldMessenger.of(context)
-                                          ..removeCurrentSnackBar()
-                                          ..showSnackBar(SnackBar(
-                                              duration:
-                                                  const Duration(seconds: 10),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              elevation: 0,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 10),
-                                              backgroundColor: ColorManager
-                                                  .kPrimaryColor
-                                                  .withOpacity(0.6),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              content: Stack(
-                                                clipBehavior: Clip.none,
-                                                children: [
-                                                  const Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                            '\nPlease Fill Details!\n'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Positioned(
-                                                    top: -10,
-                                                    right: -5,
-                                                    child: GestureDetector(
-                                                      onTap: () =>
-                                                          ScaffoldMessenger.of(
-                                                              context)
-                                                            ..hideCurrentSnackBar(),
-                                                      child: Container(
-                                                        height: 25,
-                                                        width: 25,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                                color: ColorManager
-                                                                    .kPrimaryColor,
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                        child: const Icon(
-                                                          Icons.close,
-                                                          size: 15,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )));
+                                        showScaffoldError(
+                                          context: context,
+                                          message: 'Please Fill Details!',
+                                        );
                                       }
                                     },
                                   ),

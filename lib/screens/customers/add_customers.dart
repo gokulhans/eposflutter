@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:pos_machine/components/build_text_fields.dart';
 import 'package:pos_machine/providers/customer_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -74,7 +76,7 @@ class AddCustomersScreen extends StatelessWidget {
                               title: "FirstName",
                               textStyle: buildCustomStyle(
                                 FontWeightManager.regular,
-                                FontSize.s18,
+                                FontSize.s14,
                                 0.27,
                                 Colors.black.withOpacity(0.6),
                               ),
@@ -99,7 +101,7 @@ class AddCustomersScreen extends StatelessWidget {
                                     controller: firstNameTextController,
                                     style: buildCustomStyle(
                                       FontWeightManager.medium,
-                                      FontSize.s13,
+                                      FontSize.s12,
                                       0.27,
                                       ColorManager.textColor.withOpacity(.5),
                                     ),
@@ -122,7 +124,7 @@ class AddCustomersScreen extends StatelessWidget {
                                     controller: lastNameTextController,
                                     style: buildCustomStyle(
                                       FontWeightManager.medium,
-                                      FontSize.s13,
+                                      FontSize.s12,
                                       0.27,
                                       ColorManager.textColor.withOpacity(.5),
                                     ),
@@ -134,7 +136,7 @@ class AddCustomersScreen extends StatelessWidget {
                               title: "Email Address",
                               textStyle: buildCustomStyle(
                                 FontWeightManager.regular,
-                                FontSize.s18,
+                                FontSize.s14,
                                 0.27,
                                 Colors.black.withOpacity(0.6),
                               ),
@@ -160,7 +162,7 @@ class AddCustomersScreen extends StatelessWidget {
                                 controller: emailTextController,
                                 style: buildCustomStyle(
                                   FontWeightManager.medium,
-                                  FontSize.s13,
+                                  FontSize.s12,
                                   0.27,
                                   ColorManager.textColor.withOpacity(.5),
                                 ),
@@ -170,7 +172,7 @@ class AddCustomersScreen extends StatelessWidget {
                               title: "Phone Number",
                               textStyle: buildCustomStyle(
                                 FontWeightManager.regular,
-                                FontSize.s18,
+                                FontSize.s14,
                                 0.27,
                                 Colors.black.withOpacity(0.6),
                               ),
@@ -193,7 +195,7 @@ class AddCustomersScreen extends StatelessWidget {
                                 controller: phoneNumberController,
                                 style: buildCustomStyle(
                                   FontWeightManager.medium,
-                                  FontSize.s13,
+                                  FontSize.s12,
                                   0.27,
                                   ColorManager.textColor.withOpacity(.5),
                                 ),
@@ -203,7 +205,7 @@ class AddCustomersScreen extends StatelessWidget {
                               title: "Address",
                               textStyle: buildCustomStyle(
                                 FontWeightManager.regular,
-                                FontSize.s18,
+                                FontSize.s12,
                                 0.27,
                                 Colors.black.withOpacity(0.6),
                               ),
@@ -226,7 +228,7 @@ class AddCustomersScreen extends StatelessWidget {
                                 controller: addressTextController,
                                 style: buildCustomStyle(
                                   FontWeightManager.medium,
-                                  FontSize.s13,
+                                  FontSize.s12,
                                   0.27,
                                   ColorManager.textColor.withOpacity(.5),
                                 ),
@@ -234,164 +236,54 @@ class AddCustomersScreen extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    BuildTextTile(
-                                      title: "Country",
-                                      textStyle: buildCustomStyle(
-                                        FontWeightManager.regular,
-                                        FontSize.s18,
-                                        0.27,
-                                        Colors.black.withOpacity(0.6),
-                                      ),
-                                    ),
-                                    BuildBoxShadowContainer(
-                                      circleRadius: 7,
-                                      alignment: Alignment.centerLeft,
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      padding: const EdgeInsets.only(left: 15),
-                                      height: size.height * .07,
-                                      width: size.width / 3.05,
-                                      child: TextFormField(
-                                        //  initialValue: initialValue,
-                                        keyboardType: TextInputType.text,
-                                        cursorColor: ColorManager.kPrimaryColor,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: countryTextController,
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s13,
-                                          0.27,
-                                          ColorManager.textColor
-                                              .withOpacity(.5),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    BuildTextTile(
-                                      title: "State",
-                                      textStyle: buildCustomStyle(
-                                        FontWeightManager.regular,
-                                        FontSize.s18,
-                                        0.27,
-                                        Colors.black.withOpacity(0.6),
-                                      ),
-                                    ),
-                                    BuildBoxShadowContainer(
-                                      circleRadius: 7,
-                                      alignment: Alignment.centerLeft,
-                                      margin: const EdgeInsets.only(left: 20),
-                                      padding: const EdgeInsets.only(left: 15),
-                                      height: size.height * .07,
-                                      width: size.width / 3.05,
-                                      child: TextFormField(
-                                        //  initialValue: initialValue,
-                                        keyboardType: TextInputType.text,
-                                        cursorColor: ColorManager.kPrimaryColor,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: stateTextController,
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s13,
-                                          0.27,
-                                          ColorManager.textColor
-                                              .withOpacity(.5),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                buildColumnWidgetForTextFields(
+                                    controller: countryTextController,
+                                    height: size.height * .07,
+                                    width: size.width / 3.05,
+                                    size: size,
+                                    isLeft: false,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    readOnly: false,
+                                    title: "Country",
+                                    onchanged: (value) {},
+                                    hintText: ""),
+                                buildColumnWidgetForTextFields(
+                                    controller: stateTextController,
+                                    height: size.height * .07,
+                                    width: size.width / 3.05,
+                                    size: size,
+                                    isLeft: true,
+                                    readOnly: false,
+                                    title: "State",
+                                    onchanged: (value) {},
+                                    hintText: ""),
                               ],
                             ),
                             Row(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    BuildTextTile(
-                                      title: "City",
-                                      textStyle: buildCustomStyle(
-                                        FontWeightManager.regular,
-                                        FontSize.s18,
-                                        0.27,
-                                        Colors.black.withOpacity(0.6),
-                                      ),
-                                    ),
-                                    BuildBoxShadowContainer(
-                                      circleRadius: 7,
-                                      alignment: Alignment.centerLeft,
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      padding: const EdgeInsets.only(left: 15),
-                                      height: size.height * .07,
-                                      width: size.width / 3.05,
-                                      child: TextFormField(
-                                        //  initialValue: initialValue,
-                                        keyboardType: TextInputType.text,
-                                        cursorColor: ColorManager.kPrimaryColor,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: cityTextController,
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s13,
-                                          0.27,
-                                          ColorManager.textColor
-                                              .withOpacity(.5),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    BuildTextTile(
-                                      title: "Pincode",
-                                      textStyle: buildCustomStyle(
-                                        FontWeightManager.regular,
-                                        FontSize.s18,
-                                        0.27,
-                                        Colors.black.withOpacity(0.6),
-                                      ),
-                                    ),
-                                    BuildBoxShadowContainer(
-                                      circleRadius: 7,
-                                      alignment: Alignment.centerLeft,
-                                      margin: const EdgeInsets.only(left: 20),
-                                      padding: const EdgeInsets.only(left: 15),
-                                      height: size.height * .07,
-                                      width: size.width / 3.05,
-                                      child: TextFormField(
-                                        //  initialValue: initialValue,
-                                        keyboardType: TextInputType.text,
-                                        cursorColor: ColorManager.kPrimaryColor,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        controller: pincodeTextController,
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s13,
-                                          0.27,
-                                          ColorManager.textColor
-                                              .withOpacity(.5),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                buildColumnWidgetForTextFields(
+                                    controller: cityTextController,
+                                    height: size.height * .07,
+                                    width: size.width / 3.05,
+                                    size: size,
+                                    isLeft: false,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    readOnly: false,
+                                    title: "City",
+                                    onchanged: (value) {},
+                                    hintText: ""),
+                                buildColumnWidgetForTextFields(
+                                    controller: pincodeTextController,
+                                    height: size.height * .07,
+                                    width: size.width / 3.05,
+                                    size: size,
+                                    isLeft: true,
+                                    readOnly: false,
+                                    title: "Pincode",
+                                    onchanged: (value) {},
+                                    hintText: ""),
                               ],
                             ),
                             const SizedBox(height: 15),
@@ -412,36 +304,11 @@ class AddCustomersScreen extends StatelessWidget {
                                       pincodeTextController.text.isEmpty ||
                                       stateTextController.text.isEmpty ||
                                       cityTextController.text.isEmpty) {
-                                    ScaffoldMessenger.of(context)
-                                      ..removeCurrentSnackBar()
-                                      ..showSnackBar(SnackBar(
-                                          showCloseIcon: true,
-                                          dismissDirection: DismissDirection.up,
-                                          closeIconColor: Colors.white,
-                                          duration: const Duration(seconds: 2),
-                                          behavior: SnackBarBehavior.floating,
-                                          elevation: 0,
-                                          margin: EdgeInsets.only(
-                                              top: 50,
-                                              left: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.9,
-                                              right: 10),
-                                          backgroundColor: ColorManager
-                                              .kPrimaryColor
-                                              .withOpacity(0.6),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          content: Text(
-                                            'Please Fill the Required Fields',
-                                            style: buildCustomStyle(
-                                                FontWeightManager.medium,
-                                                FontSize.s12,
-                                                0.12,
-                                                Colors.white),
-                                          )));
+                                    showScaffold(
+                                      context: context,
+                                      message:
+                                          'Please Fill the Required Fields',
+                                    );
                                   } else {
                                     showDialog(
                                         context: context,
@@ -475,40 +342,11 @@ class AddCustomersScreen extends StatelessWidget {
                                             context)
                                         .then((value) {
                                       if (value["status"] == "success") {
-                                        ScaffoldMessenger.of(context)
-                                          ..removeCurrentSnackBar()
-                                          ..showSnackBar(SnackBar(
-                                              showCloseIcon: true,
-                                              dismissDirection:
-                                                  DismissDirection.up,
-                                              closeIconColor: Colors.white,
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              elevation: 0,
-                                              margin: EdgeInsets.only(
-                                                  top: 50,
-                                                  left: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      1.9,
-                                                  right: 10),
-                                              backgroundColor: ColorManager
-                                                  .kPrimaryColor
-                                                  .withOpacity(0.6),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              content: Text(
-                                                '${value["message"]}',
-                                                style: buildCustomStyle(
-                                                    FontWeightManager.medium,
-                                                    FontSize.s12,
-                                                    0.12,
-                                                    Colors.white),
-                                              )));
+                                        showScaffold(
+                                          context: context,
+                                          message: '${value["message"]}',
+                                        );
+
                                         Navigator.pop(context);
                                         emailTextController.clear();
                                         pincodeTextController.clear();
@@ -528,38 +366,14 @@ class AddCustomersScreen extends StatelessWidget {
                                         }).join('\n'));
 
                                         debugPrint("errors.password !=null");
+                                        showScaffold(
+                                          context: context,
+                                          message:
+                                              errorResponse.values.map((e) {
+                                            return e.join('');
+                                          }).join('\n'),
+                                        );
                                         Navigator.pop(context);
-                                        ScaffoldMessenger.of(context)
-                                          ..removeCurrentSnackBar()
-                                          ..showSnackBar(SnackBar(
-                                              showCloseIcon: true,
-                                              dismissDirection:
-                                                  DismissDirection.up,
-                                              closeIconColor: Colors.white,
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              elevation: 0,
-                                              margin: const EdgeInsets.only(
-                                                  top: 50, left: 50, right: 10),
-                                              backgroundColor: ColorManager
-                                                  .kPrimaryColor
-                                                  .withOpacity(0.6),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              content: Text(
-                                                errorResponse.values.map((e) {
-                                                  return e.join('');
-                                                }).join('\n'),
-                                                style: buildCustomStyle(
-                                                    FontWeightManager.medium,
-                                                    FontSize.s12,
-                                                    0.12,
-                                                    Colors.white),
-                                              )));
                                       }
                                     });
                                   }

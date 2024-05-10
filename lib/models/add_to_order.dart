@@ -12,16 +12,19 @@ String addToOrderModelToJson(AddToOrderModel data) =>
 
 class AddToOrderModel {
   final String? status;
+  final String? message;
   final Order? order;
 
   AddToOrderModel({
     this.status,
     this.order,
+    this.message,
   });
 
   factory AddToOrderModel.fromJson(Map<String, dynamic> json) =>
       AddToOrderModel(
         status: json["status"],
+        message: json["message"],
         order: json["order"] == null ? null : Order.fromJson(json["order"]),
       );
 

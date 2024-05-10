@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../components/build_round_button.dart';
 import '../../controllers/sidebar_controller.dart';
 import '../../models/list_sales_order.dart';
+import '../../providers/auth_model.dart';
 import '../../resources/color_manager.dart';
 
 import '../../resources/font_manager.dart';
@@ -21,7 +22,10 @@ class SalesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SideBarController sideBarController = Get.put(SideBarController());
     final searchTextController = TextEditingController();
-    final dateController = TextEditingController(text: "6,April,2022");
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('d,MMMM,y').format(now);
+    final dateController =
+        TextEditingController(text: formattedDate); //"6,April,2023");
     final dateFormatController = TextEditingController();
     Size size = MediaQuery.of(context).size;
     return SafeArea(
@@ -172,7 +176,9 @@ class SalesScreen extends StatelessWidget {
                             final salesProvider = Provider.of<SalesProvider>(
                                 context,
                                 listen: false);
-
+                            String? accessToken =
+                                Provider.of<AuthModel>(context, listen: false)
+                                    .token;
                             //-------------------------
                             // dateFormatController.text.isEmpty &&
                             //         searchTextController.text.isEmpty
@@ -181,6 +187,7 @@ class SalesScreen extends StatelessWidget {
                             //     :
                             searchTextController.text.isEmpty
                                 ? salesProvider.fetchOrders(
+                                    accessToken: accessToken ?? '',
                                     storeId: 1,
                                     date: dateFormatController.text,
                                     orderNumberSelect: false,
@@ -188,11 +195,13 @@ class SalesScreen extends StatelessWidget {
                                 : dateFormatController.text.isNotEmpty ||
                                         searchTextController.text.isNotEmpty
                                     ? salesProvider.fetchOrders(
+                                        accessToken: accessToken ?? "",
                                         storeId: 1,
                                         orderNumber: searchTextController.text,
                                         orderNumberSelect: true,
                                       )
                                     : salesProvider.fetchOrders(
+                                        accessToken: accessToken ?? '',
                                         storeId: 1,
                                         orderNumber: searchTextController.text,
                                         orderNumberSelect: true,
@@ -519,7 +528,7 @@ class SalesScreen extends StatelessWidget {
                           ],
                         );
                       },
-                    ))
+                    )),
               ],
             ),
           )),

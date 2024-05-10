@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/add_to_cart.dart';
 import '../models/add_to_order.dart';
 import '../models/list_cart.dart';
@@ -31,16 +33,26 @@ class CartProvider with ChangeNotifier {
   }
 
   int get getCartIDForOrder => cartId;
-  Future<void> fetchCartDataFromApi({required int customerId}) async {
+  Future<void> fetchCartDataFromApi(
+      {required int customerId, required String accessToken}) async {
     // Fetch cart data from your API and add it to the stream
-    List<ListCartModelData> cartData = await fetchCartData(customerId: 1);
+    List<ListCartModelData> cartData =
+        await fetchCartData(customerId: customerId, token: accessToken);
     _cartStreamController.add(cartData.isEmpty ? [] : cartData);
   }
 
   CartProvider() {
-    fetchCartDataFromApi(customerId: 1);
+    getData();
     // Initialize your stream or add any initial data here if needed.
   }
+  getData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? customerId = prefs.getInt('customerId');
+    String? token = prefs.getString('access_token');
+
+    fetchCartDataFromApi(customerId: customerId ?? 1, accessToken: token ?? "");
+  }
+
   // Dispose the stream controller when done
   @override
   void dispose() {
@@ -51,16 +63,19 @@ class CartProvider with ChangeNotifier {
   //          *********************** FETCH  LIST CART API ***************************************************
 
   Future<List<ListCartModelData>> fetchCartData(
-      {required int customerId}) async {
+      {required int customerId, required String token}) async {
     debugPrint("LIST ALL CART ITEMS ");
+    debugPrint("customerId $customerId");
     final Map<String, dynamic> apiBodyData = {
       'customer_id': customerId,
     };
     final url = Uri.parse(APPUrl.listCartUrl);
     try {
-      final response = await http.post(url,
-          body: json.encode(apiBodyData),
-          headers: {'Content-Type': 'application/json'});
+      final response =
+          await http.post(url, body: json.encode(apiBodyData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
       debugPrint('inside ${response.statusCode}');
       if (response.statusCode == 200) {
         debugPrint('inside');
@@ -79,12 +94,16 @@ class CartProvider with ChangeNotifier {
                 totalTax: 0,
                 netTotal: 0,
               )
-            : listCartModel.data!.map((e) => e.priceSummary).single;
+            : listCartModel.data!.map((e) => e.priceSummary).first;
 
         if (listCartModel.data!.isNotEmpty) {
           debugPrint("  listCartModel.data!.isNotEmpty");
           debugPrint("${listCartModel.data![0].id ?? 0}");
           setCartIDForOrder(listCartModel.data![0].id ?? 0);
+          notifyListeners();
+          debugPrint(
+              "  listCartModel.data!.isNotEmpty cartId $cartId $getCartIDForOrder");
+          debugPrint("${listCartModel.data![0].id ?? 0}");
         }
         updateSummary(priceSummary);
 
@@ -104,23 +123,29 @@ class CartProvider with ChangeNotifier {
 
   //          *********************** ADD TO CART API ***************************************************
 
-  Future<bool> addToCartAPI({
+  Future<dynamic> addToCartAPI({
     required int customerId,
     required int productId,
     required int quantity,
+    required String accessToken,
   }) async {
     debugPrint("********************ADD TO CART API******************** ");
     final Map<String, dynamic> apiBodyData = {
       'customer_id': customerId,
       'quantity': quantity,
-      'app_type': "web",
+      'app_type': "api",
       'product_id': productId,
+      "type": 1
     };
+    debugPrint("productId $productId");
+    debugPrint("customerId $customerId");
     final url = Uri.parse(APPUrl.addToCartUrl);
     try {
-      final response = await http.post(url,
-          body: json.encode(apiBodyData),
-          headers: {'Content-Type': 'application/json'});
+      final response =
+          await http.post(url, body: json.encode(apiBodyData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
       debugPrint('inside ${response.statusCode}');
       if (response.statusCode == 200) {
         debugPrint('inside');
@@ -128,7 +153,8 @@ class CartProvider with ChangeNotifier {
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
         AddToCartModel addToCartModel = AddToCartModel.fromJson(jsonData);
-        await fetchCartDataFromApi(customerId: 1);
+        await fetchCartDataFromApi(
+            customerId: customerId, accessToken: accessToken);
         debugPrint(addToCartModel.status);
         // List<ListCartModelData> cartData = await fetchCartData(customerId: 1);
         //   _cartStreamController.add(cartData);
@@ -144,7 +170,7 @@ class CartProvider with ChangeNotifier {
           setCartIDForOrder(addToCartModel.cart!.cartItem![0].cartItemId ?? 0);
         }
 
-        return addToCartModel.status == 'sucesss' ? true : false;
+        return jsonData; //addToCartModel.status == 'sucesss' ? true : false;
       } else {
         return false;
       }
@@ -153,7 +179,7 @@ class CartProvider with ChangeNotifier {
 
   //          *********************** ADD TO CART API ***************************************************
 
-  Future<bool> addToOrderAPI({
+  Future<dynamic> addToOrderAPI({
     required int cartIds,
   }) async {
     debugPrint("********************ADD TO CART API******************** ");
@@ -180,8 +206,8 @@ class CartProvider with ChangeNotifier {
         AddToOrderModel addToOrderModel = AddToOrderModel.fromJson(jsonData);
 
         debugPrint(addToOrderModel.status);
-
-        return addToOrderModel.status == 'success' ? true : false;
+        getData();
+        return jsonData; //addToOrderModel.status == 'success' ? true : false;
       } else {
         return false;
       }

@@ -77,9 +77,10 @@ class OrderDetailsModelData {
             ? null
             : OrderDetailsModelDataCustomerDetails.fromJson(
                 json["customer_details"]),
-        priceSummary: json["price_summary"] == null
+        priceSummary: json["order_price_summary"] == null
             ? null
-            : OrderDetailsModelDataPriceSummary.fromJson(json["price_summary"]),
+            : OrderDetailsModelDataPriceSummary.fromJson(
+                json["order_price_summary"]),
         paymentStatus: json["payment_status"],
         deliveryStatus: json["delivery_status"],
         paymentDetails: json["payment_details"] == null
@@ -102,7 +103,7 @@ class OrderDetailsModelData {
         "order_number": orderNumber,
         "order_status": orderStatus,
         "customer_details": customerDetails?.toJson(),
-        "price_summary": priceSummary?.toJson(),
+        "order_price_summary": priceSummary?.toJson(),
         "payment_status": paymentStatus,
         "delivery_status": deliveryStatus,
         "payment_details": paymentDetails?.toJson(),

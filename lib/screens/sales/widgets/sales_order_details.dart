@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_machine/models/order_details.dart';
@@ -9,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../components/build_container_box.dart';
 
 import '../../../controllers/sidebar_controller.dart';
+import '../../../providers/auth_model.dart';
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
 import '../../../resources/style_manager.dart';
@@ -50,9 +53,10 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
       String ordersId =
           Provider.of<SalesProvider>(context, listen: false).getOrderId;
       debugPrint(ordersId);
-
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
       await SalesProvider()
-          .listOrderDetails(context, ordersId)
+          .listOrderDetails(context, ordersId, accessToken ?? "")
           .then((resposne) {
         if (resposne["status"] == "success") {
           setState(() {
@@ -99,9 +103,11 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
           child: Padding(
             padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
             child: isInitLoading
-                ? SizedBox(
-                    height: size.height,
-                    child: const CircularProgressIndicator.adaptive())
+                ? Platform.isIOS
+                    ? SizedBox(
+                        height: size.height,
+                        child: const CircularProgressIndicator.adaptive())
+                    : const Center(child: CircularProgressIndicator.adaptive())
                 : orderDetailsModelData == null
                     ? ListView(
                         children: [

@@ -22,12 +22,13 @@ class Cart with ChangeNotifier {
       {required int productId,
       required int quantity,
       required int customerId}) async {
-    debugPrint("LIST ALL PRODUCTS ");
+    debugPrint("ADD TO CART  API ");
+    debugPrint("customerId $customerId ");
     final Map<String, dynamic> apiBodyData = {
       'product_id': productId,
-      'app_type': "web",
+      'app_type': "api",
       'quantity': quantity,
-      'customer_id': customerId,
+      // 'customer_id': customerId,
     };
     final url = Uri.parse(APPUrl.addToCartUrl);
     try {
@@ -35,6 +36,8 @@ class Cart with ChangeNotifier {
           body: json.encode(apiBodyData),
           headers: {'Content-Type': 'application/json'});
       debugPrint('inside ${response.statusCode}');
+      debugPrint(json.decode(response.body).toString());
+      debugPrint("response${response.toString()}");
       if (response.statusCode == 200) {
         debugPrint('inside');
 

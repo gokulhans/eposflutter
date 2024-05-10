@@ -1,0 +1,584 @@
+import 'package:flutter/material.dart';
+import 'package:pos_machine/components/build_container_box.dart';
+import 'package:pos_machine/components/build_title.dart';
+import 'package:web_date_picker/web_date_picker.dart';
+
+import '../resources/color_manager.dart';
+import '../resources/font_manager.dart';
+import '../resources/style_manager.dart';
+
+class BuildTextField extends StatelessWidget {
+  final Size size;
+  final TextEditingController controller;
+  final String? hintText;
+  const BuildTextField(
+      {super.key, required this.size, required this.controller, this.hintText});
+
+  @override
+  Widget build(BuildContext context) {
+    return BuildBoxShadowContainer(
+      circleRadius: 7,
+      alignment: Alignment.centerLeft,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+      padding: const EdgeInsets.only(left: 15),
+      height: size.height * .07,
+      width: size.width / 3,
+      child: TextFormField(
+        readOnly: true,
+        keyboardType: TextInputType.text,
+        cursorColor: ColorManager.kPrimaryColor,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hintText ?? '',
+          hintStyle: buildCustomStyle(
+            FontWeightManager.medium,
+            FontSize.s12,
+            0.27,
+            ColorManager.textColor.withOpacity(.5),
+          ),
+        ),
+        controller: controller,
+        style: buildCustomStyle(
+          FontWeightManager.medium,
+          FontSize.s12,
+          0.27,
+          ColorManager.textColor.withOpacity(.5),
+        ),
+      ),
+    );
+  }
+}
+
+class BuildTextFieldColumn extends StatelessWidget {
+  final Size size;
+  final TextEditingController controller;
+  final String? hintText;
+  final bool? isStarRed;
+  final bool? isDouble;
+  final bool isLeft;
+  final bool? isTextField;
+  final bool? read;
+  final String title;
+  final int? maxlines;
+  final TextInputType? textInputType;
+  final String? isDoubleTitle;
+  final String? isDoubleHintText;
+  final TextEditingController? isDoubleontroller;
+  const BuildTextFieldColumn(
+      {super.key,
+      required this.size,
+      this.maxlines,
+      this.read,
+      this.textInputType,
+      required this.controller,
+      this.hintText,
+      required this.title,
+      this.isStarRed,
+      this.isTextField,
+      required this.isLeft,
+      this.isDouble,
+      this.isDoubleTitle,
+      this.isDoubleHintText,
+      this.isDoubleontroller});
+
+  @override
+  Widget build(BuildContext context) {
+    return isDouble == null
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BuildTextTile(
+                isStarRed: isStarRed ?? false,
+                isTextField: isTextField ?? false,
+                title: title,
+                textStyle: buildCustomStyle(
+                  FontWeightManager.regular,
+                  FontSize.s14,
+                  0.27,
+                  Colors.black.withOpacity(0.6),
+                ),
+              ),
+              BuildBoxShadowContainer(
+                circleRadius: 7,
+                alignment: Alignment.centerLeft,
+                margin: isLeft
+                    ? const EdgeInsets.only(left: 20)
+                    : const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                padding: isLeft
+                    ? const EdgeInsets.only(left: 15)
+                    : const EdgeInsets.only(left: 15),
+                height: maxlines == null ? size.height * .07 : size.height * .1,
+                width: size.width / 3,
+                child: TextFormField(
+                  maxLines: maxlines ?? 1,
+                  readOnly: read ?? true,
+                  keyboardType: textInputType ?? TextInputType.text,
+                  cursorColor: ColorManager.kPrimaryColor,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: hintText ?? '',
+                    hintStyle: buildCustomStyle(
+                      FontWeightManager.medium,
+                      FontSize.s12,
+                      0.27,
+                      ColorManager.textColor.withOpacity(.5),
+                    ),
+                  ),
+                  controller: controller,
+                  style: buildCustomStyle(
+                    FontWeightManager.medium,
+                    FontSize.s12,
+                    0.27,
+                    ColorManager.textColor.withOpacity(.5),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BuildTextTile(
+                isStarRed: isStarRed ?? false,
+                isTextField: isTextField ?? false,
+                title: title,
+                textStyle: buildCustomStyle(
+                  FontWeightManager.regular,
+                  FontSize.s14,
+                  0.27,
+                  Colors.black.withOpacity(0.6),
+                ),
+              ),
+              Column(
+                children: [
+                  BuildBoxShadowContainer(
+                    circleRadius: 7,
+                    alignment: Alignment.centerLeft,
+                    margin: isLeft
+                        ? const EdgeInsets.only(left: 20)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 0),
+                    padding: isLeft
+                        ? const EdgeInsets.only(left: 15)
+                        : const EdgeInsets.only(left: 15),
+                    height: size.height * .07,
+                    width: size.width / 3,
+                    child: TextFormField(
+                      readOnly: read ?? true,
+                      maxLines: maxlines ?? 1,
+                      keyboardType: textInputType ?? TextInputType.text,
+                      cursorColor: ColorManager.kPrimaryColor,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: hintText ?? '',
+                        hintStyle: buildCustomStyle(
+                          FontWeightManager.medium,
+                          FontSize.s12,
+                          0.27,
+                          ColorManager.textColor.withOpacity(.5),
+                        ),
+                      ),
+                      controller: controller,
+                      style: buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.27,
+                        ColorManager.textColor.withOpacity(.5),
+                      ),
+                    ),
+                  ),
+                  BuildBoxShadowContainer(
+                    circleRadius: 7,
+                    alignment: Alignment.centerLeft,
+                    margin: isLeft
+                        ? const EdgeInsets.only(left: 20, top: 10)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 0),
+                    padding: isLeft
+                        ? const EdgeInsets.only(left: 15)
+                        : const EdgeInsets.only(left: 15),
+                    height: size.height * .07,
+                    width: size.width / 3,
+                    child: TextFormField(
+                      readOnly: true,
+                      maxLines: maxlines ?? 1,
+                      keyboardType: TextInputType.text,
+                      cursorColor: ColorManager.kPrimaryColor,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: isDoubleHintText ?? '',
+                        hintStyle: buildCustomStyle(
+                          FontWeightManager.medium,
+                          FontSize.s12,
+                          0.27,
+                          ColorManager.textColor.withOpacity(.5),
+                        ),
+                      ),
+                      controller: isDoubleontroller,
+                      style: buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.27,
+                        ColorManager.textColor.withOpacity(.5),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+  }
+}
+
+class BuildTextFieldColumn3 extends StatelessWidget {
+  final Size size;
+  final TextEditingController controller;
+  final String? hintText;
+  final bool? isStarRed;
+  final bool? isDouble;
+  final bool? isDatePicker;
+  final bool isLeft;
+  final bool? isRead;
+  final bool? isTextField;
+  final String title;
+  final TextInputType? textInputType;
+  final String? isDoubleTitle;
+  final String? isDoubleHintText;
+  final TextEditingController? isDoubleontroller;
+  const BuildTextFieldColumn3(
+      {super.key,
+      required this.size,
+      this.isRead,
+      this.textInputType,
+      required this.controller,
+      this.hintText,
+      this.isDatePicker,
+      required this.title,
+      this.isStarRed,
+      this.isTextField,
+      required this.isLeft,
+      this.isDouble,
+      this.isDoubleTitle,
+      this.isDoubleHintText,
+      this.isDoubleontroller});
+
+  @override
+  Widget build(BuildContext context) {
+    return isDouble == null
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BuildTextTile(
+                isStarRed: isStarRed ?? false,
+                isTextField: isTextField ?? false,
+                title: title,
+                textStyle: buildCustomStyle(
+                  FontWeightManager.regular,
+                  FontSize.s14,
+                  0.27,
+                  Colors.black.withOpacity(0.6),
+                ),
+              ),
+              isDatePicker == null
+                  ? BuildBoxShadowContainer(
+                      circleRadius: 7,
+                      alignment: Alignment.centerLeft,
+                      margin: isLeft
+                          ? const EdgeInsets.only(left: 20)
+                          : const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0),
+                      padding: isLeft
+                          ? const EdgeInsets.only(left: 15)
+                          : const EdgeInsets.only(left: 15),
+                      height: size.height * .07,
+                      width: size.width / 4.5,
+                      child: TextFormField(
+                        readOnly: isRead ?? false,
+                        keyboardType: textInputType ?? TextInputType.text,
+                        cursorColor: ColorManager.kPrimaryColor,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: hintText ?? '',
+                          hintStyle: buildCustomStyle(
+                            FontWeightManager.medium,
+                            FontSize.s12,
+                            0.27,
+                            ColorManager.textColor.withOpacity(.5),
+                          ),
+                        ),
+                        controller: controller,
+                        style: buildCustomStyle(
+                          FontWeightManager.medium,
+                          FontSize.s12,
+                          0.27,
+                          ColorManager.textColor.withOpacity(.5),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      margin: isLeft
+                          ? const EdgeInsets.only(left: 8)
+                          : const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: WebDatePicker(
+                          dateformat: "dd/MM/yyyy",
+                          height: size.height * .06,
+                          width: size.width / 4.3,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                          onChange: (value) {
+                            controller.text = value.toString();
+                          },
+                        ),
+                      ),
+                    ),
+            ],
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BuildTextTile(
+                isStarRed: isStarRed ?? false,
+                isTextField: isTextField ?? false,
+                title: title,
+                textStyle: buildCustomStyle(
+                  FontWeightManager.regular,
+                  FontSize.s14,
+                  0.27,
+                  Colors.black.withOpacity(0.6),
+                ),
+              ),
+              Column(
+                children: [
+                  BuildBoxShadowContainer(
+                    circleRadius: 7,
+                    alignment: Alignment.centerLeft,
+                    margin: isLeft
+                        ? const EdgeInsets.only(left: 20)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 0),
+                    padding: isLeft
+                        ? const EdgeInsets.only(left: 15)
+                        : const EdgeInsets.only(left: 15),
+                    height: size.height * .07,
+                    width: size.width / 4.5,
+                    child: TextFormField(
+                      readOnly: true,
+                      keyboardType: TextInputType.text,
+                      cursorColor: ColorManager.kPrimaryColor,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: hintText ?? '',
+                        hintStyle: buildCustomStyle(
+                          FontWeightManager.medium,
+                          FontSize.s12,
+                          0.27,
+                          ColorManager.textColor.withOpacity(.5),
+                        ),
+                      ),
+                      controller: controller,
+                      style: buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.27,
+                        ColorManager.textColor.withOpacity(.5),
+                      ),
+                    ),
+                  ),
+                  BuildBoxShadowContainer(
+                    circleRadius: 7,
+                    alignment: Alignment.centerLeft,
+                    margin: isLeft
+                        ? const EdgeInsets.only(left: 20, top: 10)
+                        : const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 0),
+                    padding: isLeft
+                        ? const EdgeInsets.only(left: 15)
+                        : const EdgeInsets.only(left: 15),
+                    height: size.height * .07,
+                    width: size.width / 4.5,
+                    child: TextFormField(
+                      readOnly: true,
+                      keyboardType: TextInputType.text,
+                      cursorColor: ColorManager.kPrimaryColor,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: isDoubleHintText ?? '',
+                        hintStyle: buildCustomStyle(
+                          FontWeightManager.medium,
+                          FontSize.s12,
+                          0.27,
+                          ColorManager.textColor.withOpacity(.5),
+                        ),
+                      ),
+                      controller: isDoubleontroller,
+                      style: buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.27,
+                        ColorManager.textColor.withOpacity(.5),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+  }
+}
+
+class BuildDropDownStatic extends StatelessWidget {
+  final Size size;
+  final bool? isSmall;
+  final bool? isStarRed;
+  final bool? isStar;
+  final bool? isLeft;
+  final bool? isWidth;
+  final List<String> items;
+  final String? selectedItem;
+  final String hintText;
+  final String title;
+  final void Function(String?)? onChanged;
+
+  const BuildDropDownStatic(
+      {super.key,
+      required this.size,
+      this.isSmall,
+      this.isStar,
+      this.isLeft,
+      this.isWidth,
+      required this.items,
+      required this.selectedItem,
+      required this.hintText,
+      this.isStarRed,
+      required this.onChanged,
+      required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BuildTextTile(
+          title: title,
+          isStarRed: isStarRed ?? false,
+          isTextField: isStar ?? false,
+          textStyle: buildCustomStyle(
+            FontWeightManager.regular,
+            FontSize.s14,
+            0.27,
+            Colors.black.withOpacity(0.6),
+          ),
+        ),
+        BuildBoxShadowContainer(
+          circleRadius: 7,
+          alignment: Alignment.centerLeft,
+          margin: isLeft != null
+              ? const EdgeInsets.only(left: 20)
+              : const EdgeInsets.symmetric(horizontal: 05, vertical: 0),
+          padding: const EdgeInsets.only(left: 15),
+          height: size.height * .07,
+          width: isWidth == null ? size.width / 3 : size.width / 4.5,
+          child: DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              border: InputBorder.none, // Remove the underline
+            ),
+            value: selectedItem,
+            hint: Text(
+              hintText,
+              style: buildCustomStyle(
+                FontWeightManager.medium,
+                FontSize.s12,
+                0.27,
+                ColorManager.textColor.withOpacity(.5),
+              ),
+            ),
+            icon: const Icon(Icons.arrow_drop_down),
+            iconSize: 24,
+            elevation: 16,
+            onChanged: onChanged,
+            items: items
+                .map((String unit) {
+                  return DropdownMenuItem<String>(
+                    value: unit,
+                    child: Text(
+                      unit,
+                      style: buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.27,
+                        ColorManager.textColor.withOpacity(.5),
+                      ),
+                    ),
+                  );
+                })
+                .toSet()
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Widget buildColumnWidgetForTextFields(
+        {required TextEditingController controller,
+        required Size size,
+        double? width,
+        double? height,
+        EdgeInsetsGeometry? margin,
+        required bool isLeft,
+        required bool readOnly,
+        required String title,
+        required void Function(String?) onchanged,
+        required String hintText}) =>
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BuildTextTile(
+          title: title,
+          textStyle: buildCustomStyle(
+            FontWeightManager.regular,
+            FontSize.s14,
+            0.27,
+            Colors.black.withOpacity(0.6),
+          ),
+        ),
+        BuildBoxShadowContainer(
+          circleRadius: 7,
+          alignment: Alignment.centerLeft,
+          margin: !isLeft
+              ? margin ?? const EdgeInsets.symmetric(horizontal: 5, vertical: 0)
+              : const EdgeInsets.only(left: 20),
+          padding: const EdgeInsets.only(left: 15),
+          height: height ?? size.height * .07,
+          width: width ?? size.width / 3, //3.05,
+          child: TextFormField(
+            onChanged: onchanged,
+            readOnly: readOnly,
+            keyboardType: TextInputType.text,
+            cursorColor: ColorManager.kPrimaryColor,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: hintText,
+              hintStyle: buildCustomStyle(
+                FontWeightManager.medium,
+                FontSize.s13,
+                0.27,
+                ColorManager.textColor.withOpacity(.5),
+              ),
+            ),
+            controller: controller,
+            style: buildCustomStyle(
+              FontWeightManager.medium,
+              FontSize.s13,
+              0.27,
+              ColorManager.textColor.withOpacity(.5),
+            ),
+          ),
+        ),
+      ],
+    );

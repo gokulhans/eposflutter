@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/build_round_button.dart';
+import '../models/add_to_cart.dart';
 import '../models/get_product.dart';
+import '../providers/auth_model.dart';
 import '../providers/cart_provider.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
@@ -57,7 +59,7 @@ class CategoryListItemWidget extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.all(8),
             alignment: Alignment.center,
-            height: 100,
+            height: 90,
             width: 100,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
@@ -80,34 +82,56 @@ class CategoryListItemWidget extends StatelessWidget {
             // ),
             // Image.asset(imageUrlPath),
           ),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: '$title\n ',
+          SizedBox(
+            height: 15,
+            child: Text(
+              '$title\n ',
               style: buildCustomStyle(
                   FontWeightManager.medium, FontSize.s11, 0.13, Colors.black),
-              children: <TextSpan>[
-                TextSpan(
-                  text: '$currency $price/ $weight ',
-                  style: buildCustomStyle(FontWeightManager.medium,
-                      FontSize.s10, 0.12, Colors.black.withOpacity(0.5)),
-                ),
-                // TextSpan(
-                //   text: 'Rs $price',
-                //   style: buildCustomStyle(FontWeightManager.semiBold,
-                //       FontSize.s12, 0.12, Colors.black),
-                // ),
-              ],
             ),
           ),
+          Text(
+            '$currency $price/ $weight ',
+            style: buildCustomStyle(FontWeightManager.medium, FontSize.s10,
+                0.12, Colors.black.withOpacity(0.5)),
+          ),
+          // RichText(
+          //   textAlign: TextAlign.center,
+          //   text: TextSpan(
+          //     text: '$title\n ',
+          //     style: buildCustomStyle(
+          //         FontWeightManager.medium, FontSize.s11, 0.13, Colors.black),
+          //     children: <TextSpan>[
+          //       TextSpan(
+          //         text: '$currency $price/ $weight ',
+          //         style: buildCustomStyle(FontWeightManager.medium,
+          //             FontSize.s10, 0.12, Colors.black.withOpacity(0.5)),
+          //       ),
+          //       // TextSpan(
+          //       //   text: 'Rs $price',
+          //       //   style: buildCustomStyle(FontWeightManager.semiBold,
+          //       //       FontSize.s12, 0.12, Colors.black),
+          //       // ),
+          //     ],
+          //   ),
+          // ),
           const SizedBox(height: 4),
           CustomRoundButton(
             title: "Add To Cart",
             fct: () {
+              String? accessToken =
+                  Provider.of<AuthModel>(context, listen: false).token;
+              debugPrint("accessToken From AuthModel $accessToken");
               Provider.of<CartProvider>(context, listen: false)
                   .addToCartAPI(
-                      customerId: customerId, productId: productId, quantity: 1)
-                  .then((value) => ScaffoldMessenger.of(context)
+                      customerId: customerId,
+                      productId: productId,
+                      quantity: 1,
+                      accessToken: accessToken ?? "")
+                  .then((value) {
+                AddToCartModel addToCartModel = AddToCartModel.fromJson(value);
+                if (value["status"] == "success") {
+                  ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(
                         showCloseIcon: true,
@@ -125,10 +149,37 @@ class CategoryListItemWidget extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         content: Text(
-                          'Add To Cart',
+                          addToCartModel.message ??
+                              'Added To Cart', //  'Order Placed Successfully',
                           style: buildCustomStyle(FontWeightManager.medium,
                               FontSize.s12, 0.12, Colors.white),
-                        ))));
+                        )));
+                } else {
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                        showCloseIcon: true,
+                        dismissDirection: DismissDirection.up,
+                        closeIconColor: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        elevation: 0,
+                        margin: EdgeInsets.only(
+                            top: 50,
+                            left: MediaQuery.of(context).size.width / 1.9,
+                            right: 10),
+                        backgroundColor:
+                            ColorManager.kPrimaryColor.withOpacity(0.6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        content: Text(
+                          addToCartModel.message ??
+                              "Error Occured ! Try Again", //  'Added To Cart',
+                          style: buildCustomStyle(FontWeightManager.medium,
+                              FontSize.s12, 0.12, Colors.white),
+                        )));
+                }
+              });
             },
             fontSize: FontSize.s10,
             height: 25,
@@ -179,7 +230,7 @@ class SelectedCategoryListItemWidget extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.all(8),
                 alignment: Alignment.center,
-                height: 100,
+                height: 90,
                 width: 100,
                 decoration: BoxDecoration(
                     border:
@@ -217,34 +268,56 @@ class SelectedCategoryListItemWidget extends StatelessWidget {
               ),
             ],
           ),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: '$title\n ',
+          SizedBox(
+            height: 15,
+            child: Text(
+              '$title\n ',
               style: buildCustomStyle(
                   FontWeightManager.medium, FontSize.s11, 0.13, Colors.black),
-              children: <TextSpan>[
-                TextSpan(
-                  text: '$currency $price/ $weight ',
-                  style: buildCustomStyle(FontWeightManager.medium,
-                      FontSize.s10, 0.12, Colors.black.withOpacity(0.5)),
-                ),
-                // TextSpan(
-                //   text: 'Rs $price',
-                //   style: buildCustomStyle(FontWeightManager.semiBold,
-                //       FontSize.s12, 0.12, Colors.black),
-                // ),
-              ],
             ),
           ),
+          Text(
+            '$currency $price/ $weight ',
+            style: buildCustomStyle(FontWeightManager.medium, FontSize.s10,
+                0.12, Colors.black.withOpacity(0.5)),
+          ),
+          // RichText(
+          //   textAlign: TextAlign.center,
+          //   text: TextSpan(
+          //     text: '$title\n ',
+          //     style: buildCustomStyle(
+          //         FontWeightManager.medium, FontSize.s11, 0.13, Colors.black),
+          //     children: <TextSpan>[
+          //       TextSpan(
+          //         text: '$currency $price/ $weight ',
+          //         style: buildCustomStyle(FontWeightManager.medium,
+          //             FontSize.s10, 0.12, Colors.black.withOpacity(0.5)),
+          //       ),
+          //       // TextSpan(
+          //       //   text: 'Rs $price',
+          //       //   style: buildCustomStyle(FontWeightManager.semiBold,
+          //       //       FontSize.s12, 0.12, Colors.black),
+          //       // ),
+          //     ],
+          //   ),
+          // ),
           const SizedBox(height: 4),
           CustomRoundButton(
             title: "Add To Cart",
             fct: () {
+              String? accessToken =
+                  Provider.of<AuthModel>(context, listen: false).token;
+              debugPrint("accessToken From AuthModel $accessToken");
               Provider.of<CartProvider>(context, listen: false)
                   .addToCartAPI(
-                      customerId: customerId, productId: productId, quantity: 1)
-                  .then((value) => ScaffoldMessenger.of(context)
+                      customerId: customerId,
+                      productId: productId,
+                      quantity: 1,
+                      accessToken: accessToken ?? "")
+                  .then((value) {
+                AddToCartModel addToCartModel = AddToCartModel.fromJson(value);
+                if (value["status"] == "success") {
+                  ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(
                         showCloseIcon: true,
@@ -262,10 +335,37 @@ class SelectedCategoryListItemWidget extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         content: Text(
-                          'Added To Cart',
+                          addToCartModel.message ??
+                              'Added To Cart', //  'Order Placed Successfully',
                           style: buildCustomStyle(FontWeightManager.medium,
                               FontSize.s12, 0.12, Colors.white),
-                        ))));
+                        )));
+                } else {
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                        showCloseIcon: true,
+                        dismissDirection: DismissDirection.up,
+                        closeIconColor: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        elevation: 0,
+                        margin: EdgeInsets.only(
+                            top: 50,
+                            left: MediaQuery.of(context).size.width / 1.9,
+                            right: 10),
+                        backgroundColor:
+                            ColorManager.kPrimaryColor.withOpacity(0.6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        content: Text(
+                          addToCartModel.message ??
+                              "Error Occured ! Try Again", //  'Added To Cart',
+                          style: buildCustomStyle(FontWeightManager.medium,
+                              FontSize.s12, 0.12, Colors.white),
+                        )));
+                }
+              });
             },
             fontSize: FontSize.s10,
             height: 25,

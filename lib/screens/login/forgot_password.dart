@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/models/forgot_model_error.dart';
 
 import 'package:pos_machine/providers/authentication_providers.dart';
@@ -140,38 +141,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     // Navigator.pop(context);
                                     if (value["status"] == "success") {
                                       debugPrint(value.toString());
-                                      ScaffoldMessenger.of(context)
-                                        ..removeCurrentSnackBar()
-                                        ..showSnackBar(SnackBar(
-                                            showCloseIcon: true,
-                                            dismissDirection:
-                                                DismissDirection.up,
-                                            closeIconColor: Colors.white,
-                                            duration:
-                                                const Duration(seconds: 2),
-                                            behavior: SnackBarBehavior.floating,
-                                            elevation: 0,
-                                            margin: EdgeInsets.only(
-                                                top: 50,
-                                                left: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    1.9,
-                                                right: 10),
-                                            backgroundColor: ColorManager
-                                                .kPrimaryColor
-                                                .withOpacity(0.6),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            content: Text(
-                                              '${value["message"]}',
-                                              style: buildCustomStyle(
-                                                  FontWeightManager.medium,
-                                                  FontSize.s12,
-                                                  0.12,
-                                                  Colors.white),
-                                            )));
+
+                                      showScaffold(
+                                        context: context,
+                                        message: '${value["message"]}',
+                                      );
                                       Navigator.pop(context);
                                       await Future.delayed(
                                               const Duration(seconds: 0))
@@ -187,71 +161,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       Errors? errors = forgotModelError.errors;
                                       debugPrint(errors!.email!.single);
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                        ..removeCurrentSnackBar()
-                                        ..showSnackBar(SnackBar(
-                                            showCloseIcon: true,
-                                            dismissDirection:
-                                                DismissDirection.up,
-                                            closeIconColor: Colors.white,
-                                            duration:
-                                                const Duration(seconds: 2),
-                                            behavior: SnackBarBehavior.floating,
-                                            elevation: 0,
-                                            margin: EdgeInsets.only(
-                                                top: 50,
-                                                left: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    1.9,
-                                                right: 10),
-                                            backgroundColor: ColorManager
-                                                .kPrimaryColor
-                                                .withOpacity(0.6),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            content: Text(
-                                              errors.email!.single,
-                                              style: buildCustomStyle(
-                                                  FontWeightManager.medium,
-                                                  FontSize.s12,
-                                                  0.12,
-                                                  Colors.white),
-                                            )));
+
+                                      showScaffold(
+                                        context: context,
+                                        message: errors.email!.single,
+                                      );
                                     }
                                   });
                                 } else {
-                                  ScaffoldMessenger.of(context)
-                                    ..removeCurrentSnackBar()
-                                    ..showSnackBar(SnackBar(
-                                        showCloseIcon: true,
-                                        dismissDirection: DismissDirection.up,
-                                        closeIconColor: Colors.white,
-                                        duration: const Duration(seconds: 2),
-                                        behavior: SnackBarBehavior.floating,
-                                        elevation: 0,
-                                        margin: EdgeInsets.only(
-                                            top: 50,
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                1.9,
-                                            right: 10),
-                                        backgroundColor: ColorManager
-                                            .kPrimaryColor
-                                            .withOpacity(0.6),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        content: Text(
-                                          'Please Fill the Required Field',
-                                          style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.12,
-                                              Colors.white),
-                                        )));
+                                  showScaffold(
+                                    context: context,
+                                    message: 'Please Fill the Required Field',
+                                  );
                                 }
                               },
                             ),

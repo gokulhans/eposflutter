@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+
 import 'package:pos_machine/providers/auth_model.dart';
 
 import 'package:pos_machine/providers/cart_provider.dart';
@@ -11,11 +12,14 @@ import 'package:pos_machine/providers/category_providers.dart';
 import 'package:pos_machine/providers/cart.dart';
 
 import 'package:pos_machine/providers/grid_provider.dart';
+import 'package:pos_machine/providers/invoice_provider.dart';
 import 'package:pos_machine/providers/sales_provider.dart';
+
 import 'package:provider/provider.dart';
 
 import 'controllers/sidebar_controller.dart';
 import 'providers/carousel_provider.dart';
+import 'providers/purchase_provider.dart';
 import 'screens/login/login.dart';
 
 void main() {
@@ -35,6 +39,7 @@ void main() {
   if (Platform.isMacOS) {
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   }
+  Get.put(CategoryProvider());
   runApp(const MyApp());
 }
 
@@ -53,12 +58,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CarouselProvider()),
         ChangeNotifierProvider(create: (_) => SalesProvider()),
         ChangeNotifierProvider(create: (_) => AuthModel()),
+        ChangeNotifierProvider(create: (_) => PurchaseProvider()),
+        ChangeNotifierProvider(create: (_) => InvoiceProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter POS Machine',
         theme: ThemeData(),
-        home: const SignInScreen(),
+        home: const SignInScreen(), //const SignInScreen(),YourBag(),
       ),
     );
   }

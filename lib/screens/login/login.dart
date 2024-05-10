@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/main_screen.dart';
 import 'package:pos_machine/models/executive.dart';
 import 'package:pos_machine/providers/authentication_providers.dart';
+import 'package:pos_machine/providers/sales_provider.dart';
 import 'package:pos_machine/providers/shared_preferences.dart';
 import 'package:pos_machine/screens/login/forgot_password.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,8 @@ import '../../components/build_round_button.dart';
 import '../../components/build_title.dart';
 import '../../providers/auth_model.dart';
 
+import '../../providers/invoice_provider.dart';
+import '../../providers/purchase_provider.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
@@ -290,6 +294,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                     key: const Key("Button_Sign_in"),
                                     title: 'Continue',
                                     fct: () async {
+                                      // await Future.delayed(
+                                      //         const Duration(seconds: 1))
+                                      //     .then((value) => Navigator.push(
+                                      //         context,
+                                      //         MaterialPageRoute(
+                                      //             builder: (context) =>
+                                      //                 const MainScreen())));
                                       if (_emailController.text.isNotEmpty ||
                                           _passwordTextController
                                               .text.isNotEmpty) {
@@ -313,53 +324,64 @@ class _SignInScreenState extends State<SignInScreen> {
                                           if (value["status"] == "success") {
                                             ExecutiveModel executiveModel =
                                                 ExecutiveModel.fromJson(value);
+                                            ExecutiveModelData?
+                                                executiveModelData =
+                                                executiveModel.data;
 
                                             authModel.login(
-                                                executiveModel.accessToken ??
-                                                    "");
+                                                executiveModelData
+                                                        ?.accessToken ??
+                                                    "",
+                                                executiveModelData?.userId ??
+                                                    0);
                                             SharedPreferenceProvider()
-                                                .saveAccessToken(executiveModel
-                                                        .accessToken ??
-                                                    "");
+                                                .saveAccessTokenandCustomerId(
+                                              executiveModelData?.accessToken ??
+                                                  "",
+                                              executiveModelData?.userId ?? 0,
+                                            );
+                                            SalesProvider salesProvider =
+                                                Provider.of<SalesProvider>(
+                                                    context,
+                                                    listen: false);
+                                            salesProvider.setUserId(
+                                              executiveModelData?.userId ?? 0,
+                                            );
                                             debugPrint(
                                                 " authmodel token ${authModel.token}");
-                                            ScaffoldMessenger.of(context)
-                                              ..removeCurrentSnackBar()
-                                              ..showSnackBar(SnackBar(
-                                                  showCloseIcon: true,
-                                                  dismissDirection:
-                                                      DismissDirection.up,
-                                                  closeIconColor: Colors.white,
-                                                  duration: const Duration(
-                                                      seconds: 2),
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  elevation: 0,
-                                                  margin: EdgeInsets.only(
-                                                      top: 50,
-                                                      left:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.9,
-                                                      right: 10),
-                                                  backgroundColor: ColorManager
-                                                      .kPrimaryColor
-                                                      .withOpacity(0.6),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  content: Text(
-                                                    '${value["message"]}',
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s12,
-                                                        0.12,
-                                                        Colors.white),
-                                                  )));
+                                            debugPrint(
+                                                " authmodel token ${authModel.token}");
+                                            InvoiceProvider invoiceProvider =
+                                                Provider.of<InvoiceProvider>(
+                                                    context,
+                                                    listen: false);
+                                            PurchaseProvider purchaseProvider =
+                                                Provider.of<PurchaseProvider>(
+                                                    context,
+                                                    listen: false);
+                                            invoiceProvider
+                                                .listAllInvoiceAccountTypes(
+                                                    authModel.token ?? '');
+                                            invoiceProvider.listAllPaymentList(
+                                                authModel.token ?? '');
+                                            invoiceProvider
+                                                .listVoucherAccountType(
+                                                    authModel.token ?? '');
+                                            invoiceProvider.listUsersList(
+                                                authModel.token ?? '');
+                                            purchaseProvider.listAllStores(
+                                                authModel.token ?? '', null);
+                                            purchaseProvider.listAllSuppliers(
+                                                authModel.token ?? '', null);
+                                            purchaseProvider.listAllUnits(
+                                                authModel.token ?? '');
+
+                                            showScaffold(
+                                              context: context,
+                                              message: '${value["message"]}',
+                                            );
                                             Navigator.pop(context);
+
                                             await Future.delayed(
                                                     const Duration(seconds: 1))
                                                 .then((value) => Navigator.push(
@@ -369,107 +391,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                                             const MainScreen())));
                                           } else {
                                             Navigator.pop(context);
-                                            ScaffoldMessenger.of(context)
-                                              ..removeCurrentSnackBar()
-                                              ..showSnackBar(SnackBar(
-                                                  showCloseIcon: true,
-                                                  dismissDirection:
-                                                      DismissDirection.up,
-                                                  closeIconColor: Colors.white,
-                                                  duration: const Duration(
-                                                      seconds: 2),
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  elevation: 0,
-                                                  margin: EdgeInsets.only(
-                                                      top: 50,
-                                                      left:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.9,
-                                                      right: 10),
-                                                  backgroundColor: ColorManager
-                                                      .kPrimaryColor
-                                                      .withOpacity(0.6),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  content: Text(
-                                                    '${value["message"]}',
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s12,
-                                                        0.12,
-                                                        Colors.white),
-                                                  )));
+                                            showScaffold(
+                                              context: context,
+                                              message: '${value["message"]}',
+                                            );
                                           }
                                         });
                                       } else {
-                                        ScaffoldMessenger.of(context)
-                                          ..removeCurrentSnackBar()
-                                          ..showSnackBar(SnackBar(
-                                              duration:
-                                                  const Duration(seconds: 10),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              elevation: 0,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 10),
-                                              backgroundColor: ColorManager
-                                                  .kPrimaryColor
-                                                  .withOpacity(0.6),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              content: Stack(
-                                                clipBehavior: Clip.none,
-                                                children: [
-                                                  const Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                            '\nPlease Fill Details!\n'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Positioned(
-                                                    top: -10,
-                                                    right: -5,
-                                                    child: GestureDetector(
-                                                      onTap: () =>
-                                                          ScaffoldMessenger.of(
-                                                              context)
-                                                            ..hideCurrentSnackBar(),
-                                                      child: Container(
-                                                        height: 25,
-                                                        width: 25,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                                color: ColorManager
-                                                                    .kPrimaryColor,
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                        child: const Icon(
-                                                          Icons.close,
-                                                          size: 15,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )));
+                                        showScaffoldError(
+                                            context: context,
+                                            message: 'Please Fill Details!');
                                       }
                                     },
                                   ),

@@ -11,7 +11,9 @@ import 'package:websafe_svg/websafe_svg.dart';
 
 import '../components/build_payment_row.dart';
 
+import '../models/add_to_order.dart';
 import '../models/list_cart.dart';
+import '../providers/auth_model.dart';
 import '../providers/cart_provider.dart';
 import '../resources/color_manager.dart';
 
@@ -33,8 +35,11 @@ class _OrderListState extends State<OrderList> {
   @override
   void initState() {
     super.initState();
-    Provider.of<CartProvider>(context, listen: false)
-        .fetchCartDataFromApi(customerId: 1);
+    String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
+    debugPrint("accessToken From AuthModel $accessToken");
+    int? customerId = Provider.of<AuthModel>(context, listen: false).userId;
+    Provider.of<CartProvider>(context, listen: false).fetchCartDataFromApi(
+        customerId: customerId ?? 2, accessToken: accessToken ?? '');
   }
 
   // @override
@@ -175,7 +180,7 @@ class _OrderListState extends State<OrderList> {
                             List<ListCartModelDataCartItem>? cartItem =
                                 cartItems!.isEmpty
                                     ? []
-                                    : cartItems.map((e) => e.cartItems).single;
+                                    : cartItems.map((e) => e.cartItems).first;
 
                             return ListView.builder(
                                 // physics: NeverScrollableScrollPhysics(),
@@ -402,10 +407,20 @@ class _OrderListState extends State<OrderList> {
                                                 height: 25,
                                                 child: IconButton(
                                                     onPressed: () {
+                                                      String? accessToken =
+                                                          Provider.of<AuthModel>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .token;
+                                                      debugPrint(
+                                                          "accessToken From AuthModel $accessToken");
                                                       Provider.of<CartProvider>(
                                                               context,
                                                               listen: false)
                                                           .addToCartAPI(
+                                                              accessToken:
+                                                                  accessToken ??
+                                                                      "",
                                                               customerId: 1,
                                                               productId: cartItem[
                                                                           index]
@@ -757,16 +772,20 @@ class _OrderListState extends State<OrderList> {
                         flex: 3,
                         child: GestureDetector(
                           onTap: () async {
-                            int cartId = cartProvider.getCartIDForOrder;
+                            final provider = Provider.of<CartProvider>(context,
+                                listen: false);
+                            int cartId = provider.getCartIDForOrder;
                             debugPrint("$cartId");
                             try {
                               await Provider.of<CartProvider>(context,
                                       listen: false)
                                   .addToOrderAPI(cartIds: cartId)
                                   .then((response) {
+                                AddToOrderModel addToOrderModel =
+                                    AddToOrderModel.fromJson(response);
                                 debugPrint(
                                     "$response  Provider.of<CartProvider>(context,listen: false).addToOrderAPI(); ");
-                                if (response) {
+                                if (response["status"] == "success") {
                                   ScaffoldMessenger.of(context)
                                     ..removeCurrentSnackBar()
                                     ..showSnackBar(SnackBar(
@@ -790,7 +809,7 @@ class _OrderListState extends State<OrderList> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         content: Text(
-                                          'Order Placed Successfully',
+                                          "${addToOrderModel.message}", //  'Order Placed Successfully',
                                           style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s12,
@@ -821,7 +840,7 @@ class _OrderListState extends State<OrderList> {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         content: Text(
-                                          'Error Occured! Try Again ',
+                                          "${addToOrderModel.message}", //   'Error Occured! Try Again ',
                                           style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s12,

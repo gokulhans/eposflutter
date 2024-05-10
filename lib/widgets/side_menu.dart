@@ -10,12 +10,14 @@ import '../controllers/sidebar_controller.dart';
 import '../providers/auth_model.dart';
 import '../providers/authentication_providers.dart';
 import '../providers/cart.dart';
+
 import '../providers/sales_provider.dart';
 import '../providers/shared_preferences.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
 import '../screens/login/login.dart';
+import 'drawer_list_tile_expandable.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({Key? key}) : super(key: key);
@@ -25,6 +27,7 @@ class SideMenu extends StatelessWidget {
     SideBarController sideBarController = Get.put(SideBarController());
     final authModel = Provider.of<AuthModel>(context);
     // Size size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -126,9 +129,11 @@ class SideMenu extends StatelessWidget {
                 sideBarController.index.value = 2;
                 final salesProvider =
                     Provider.of<SalesProvider>(context, listen: false);
-
+                String? accessToken =
+                    Provider.of<AuthModel>(context, listen: false).token;
                 //-------------------------
                 salesProvider.fetchOrders(
+                  accessToken: accessToken ?? '',
                   storeId: 1,
                   orderNumberSelect: false,
                 );
@@ -136,6 +141,71 @@ class SideMenu extends StatelessWidget {
               selected: sideBarController.index.value == 2 ||
                   sideBarController.index.value == 11,
             ),
+          ),
+          Obx(
+            () => DrawerListTileExpandableColumn(
+                onTapTitle1: () {
+                  sideBarController.index.value = 12;
+                },
+                onTapTitle2: () {
+                  sideBarController.index.value = 13;
+                },
+                listTitle1: "Category",
+                listTitle2: "Category Properties",
+                iconPath: ImageAssets.creditCardIcon,
+                title: 'Category',
+                onTap: () {
+                  sideBarController.index.value = 12;
+                  debugPrint(" 'Category',${sideBarController.index.value}");
+                },
+                selected: sideBarController.index.value == 12 ||
+                    sideBarController.index.value == 13 ||
+                    sideBarController.index.value == 27 ||
+                    sideBarController.index.value == 16),
+          ),
+          Obx(
+            () => DrawerListTileExpandableColumn(
+                onTapTitle1: () {
+                  sideBarController.index.value = 14;
+                },
+                onTapTitle2: () {
+                  sideBarController.index.value = 15;
+                },
+                listTitle1: "Product",
+                listTitle2: "Stock",
+                iconPath: ImageAssets.allCategoryIcon,
+                title: 'Product',
+                onTap: () async {
+                  sideBarController.index.value = 14;
+                  debugPrint(" 'Category',${sideBarController.index.value}");
+                },
+                selected: sideBarController.index.value == 14 ||
+                    sideBarController.index.value == 15 ||
+                    sideBarController.index.value == 18 ||
+                    sideBarController.index.value == 28 ||
+                    sideBarController.index.value == 17 ||
+                    sideBarController.index.value == 33),
+          ),
+          Obx(
+            () => DrawerListTileExpandableColumn(
+                onTapTitle1: () {
+                  sideBarController.index.value = 19;
+                },
+                onTapTitle2: () {
+                  sideBarController.index.value = 26;
+                },
+                listTitle1: "Purchase",
+                listTitle2: "Purchase Voucher",
+                iconPath: ImageAssets.cardIcon,
+                title: 'Purchase',
+                onTap: () async {
+                  sideBarController.index.value = 19;
+                  debugPrint(" 'Purchase',${sideBarController.index.value}");
+                },
+                selected: sideBarController.index.value == 19 ||
+                    sideBarController.index.value == 29 ||
+                    sideBarController.index.value == 20 ||
+                    sideBarController.index.value == 26),
           ),
           Obx(
             () => DrawerListTile(
@@ -148,6 +218,35 @@ class SideMenu extends StatelessWidget {
               },
               selected: sideBarController.index.value == 3,
             ),
+          ),
+          Obx(
+            () => DrawerListTileExpandableColumn(
+                onTapTitle1: () {
+                  sideBarController.index.value = 21;
+                },
+                onTapTitle2: () {
+                  sideBarController.index.value = 22;
+                },
+                onTapTitle3: () {
+                  sideBarController.index.value = 23;
+                },
+                listTitle1: "Invoice",
+                listTitle2: "Voucher",
+                listTitle3: "Transaction List",
+                iconPath: ImageAssets.transactionIcon,
+                title: 'Accounts',
+                onTap: () {
+                  sideBarController.index.value = 21;
+                  debugPrint(" 'Category',${sideBarController.index.value}");
+                },
+                selected: sideBarController.index.value == 21 ||
+                    sideBarController.index.value == 22 ||
+                    sideBarController.index.value == 30 ||
+                    sideBarController.index.value == 31 ||
+                    sideBarController.index.value == 32 ||
+                    sideBarController.index.value == 23 ||
+                    sideBarController.index.value == 24 ||
+                    sideBarController.index.value == 25),
           ),
           Obx(
             () => DrawerListTile(
@@ -222,6 +321,7 @@ class SideMenu extends StatelessWidget {
               selected: sideBarController.index.value == 8,
             ),
           ),
+
           DrawerListTile(
             iconPath: ImageAssets.logoutIcon,
             title: 'Logout',
@@ -240,7 +340,8 @@ class SideMenu extends StatelessWidget {
                   .then((value) async {
                 if (value["status"] == "success") {
                   authModel.logout();
-                  SharedPreferenceProvider().removeToken();
+                  SharedPreferenceProvider().removeTokenAndCustomerId();
+
                   debugPrint(" authmodel logout token ${authModel.token}");
                   ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()

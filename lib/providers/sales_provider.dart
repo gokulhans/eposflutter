@@ -17,6 +17,12 @@ class SalesProvider with ChangeNotifier {
     return _orderId;
   }
 
+  int userId = 0;
+  setUserId(int value) {
+    userId = value;
+    notifyListeners();
+  }
+
   setOrderId(String value) {
     _orderId = value;
     debugPrint(_orderId);
@@ -25,31 +31,51 @@ class SalesProvider with ChangeNotifier {
 
   Future<void> fetchOrders(
       {int? customerId,
+      required String accessToken,
       required int storeId,
       String? date,
       required bool orderNumberSelect,
       String? orderNumber}) async {
-    debugPrint("fetchOrders");
+    debugPrint("fetchOrders customerId $customerId");
     DateTime now = DateTime.now();
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-
+    debugPrint("fetchOrders customerId $userId $date");
     final response = orderNumberSelect
-        ? await http.get(Uri.parse(
-            "${APPUrl.getListOrder}?order_number=$orderNumber&store_id=$storeId"))
+        ? await http.get(
+            Uri.parse(
+                "${APPUrl.getListOrder}?order_number=$orderNumber&store_id=$storeId"),
+            headers: {
+                'Authorization': 'Bearer $accessToken',
+                'content-type': 'application/json'
+              })
         : date != null
-            ? await http.get(Uri.parse(
-                "${APPUrl.getListOrder}?order_date=$date &store_id=$storeId"))
-            : customerId == null
-                ? await http.get(Uri.parse(
-                    "${APPUrl.getListOrder}?&order_date=${date ?? formattedDate}&store_id=$storeId"))
-                : await http.get(Uri.parse(
-                    "${APPUrl.getListOrder}?customer_id=$customerId&order_date=${date ?? formattedDate}&store_id=$storeId"));
+            ? await http.get(
+                Uri.parse(
+                    "${APPUrl.getListOrder}?order_date=$date &store_id=$storeId"),
+                headers: {
+                    'Authorization': 'Bearer $accessToken',
+                    'content-type': 'application/json'
+                  })
+            // : userId == 0
+            //     ? await http.get(Uri.parse(
+            //         "${APPUrl.getListOrder}?&order_date=${date ?? formattedDate}&store_id=$storeId"))
+            //     :
+            : await http.get(
+                Uri.parse(
+                    "${APPUrl.getListOrder}?customer_id=$userId&order_date=${date ?? formattedDate}&store_id=$storeId"),
+                headers: {
+                    'Authorization': 'Bearer $accessToken',
+                    'content-type': 'application/json'
+                  });
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
+      debugPrint("response.statusCode == 200");
+
+      //final jsonData = json.decode(response.body);
+
       ListSalesOrderModel listSalesOrderModel =
-          ListSalesOrderModel.fromJson(jsonData);
+          ListSalesOrderModel.fromJson(json.decode(response.body));
       _orders = listSalesOrderModel.data ?? [];
 
       notifyListeners();
@@ -60,13 +86,14 @@ class SalesProvider with ChangeNotifier {
   }
 
   //          *********************** LIST ORDER DETAILS API ***************************************************
-  Future<dynamic> listOrderDetails(BuildContext context, String id) async {
+  Future<dynamic> listOrderDetails(
+      BuildContext context, String id, String accessToken) async {
     debugPrint(" API listOrderDetails $_orderId   passed one$id");
     final url = Uri.parse("${APPUrl.getListOrderDetails}?order_id=$id");
 
     try {
       final response = await http.get(url, headers: {
-        //'Authorization': 'Bearer $accesstoken',
+        'Authorization': 'Bearer $accessToken',
         'content-type': 'application/json'
       });
       if (response.statusCode == 200) {

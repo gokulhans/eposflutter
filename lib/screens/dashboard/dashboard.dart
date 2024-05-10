@@ -51,6 +51,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           });
         } else {}
       });
+      // DashboardProvider().listCartItnes(context).then((value) {
+      //   debugPrint("listCartItems Listing");
+      //   debugPrint(value["status"]);
+      // });
     } catch (error) {
       debugPrint(error.toString());
     } finally {

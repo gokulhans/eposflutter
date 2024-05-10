@@ -14,16 +14,19 @@ String listOrderModelToJson(ListSalesOrderModel data) =>
 
 class ListSalesOrderModel {
   final String? status;
+  final String? message;
   final List<ListOrderModelData>? data;
 
   ListSalesOrderModel({
     this.status,
     this.data,
+    this.message,
   });
 
   factory ListSalesOrderModel.fromJson(Map<String, dynamic> json) =>
       ListSalesOrderModel(
         status: json["status"],
+        message: json["message"],
         data: json["data"] == null
             ? []
             : List<ListOrderModelData>.from(
@@ -41,7 +44,7 @@ class ListSalesOrderModel {
 class ListOrderModelData {
   final int? ordersId;
   final int? storeId;
-  final String? orderDate;
+  final DateTime? orderDate;
   final int? cartId;
   final String? orderNumber;
   final String? orderStatus;
@@ -73,7 +76,10 @@ class ListOrderModelData {
       ListOrderModelData(
         ordersId: json["orders_id"],
         storeId: json["store_id"],
-        orderDate: json["order_date"],
+        orderDate: json["order_date"] == null
+            ? null
+            : DateTime.parse(json["order_date"]),
+        //   orderDate: json["order_date"],
         cartId: json["cart_id"],
         orderNumber: json["order_number"],
         orderStatus: json["order_status"],

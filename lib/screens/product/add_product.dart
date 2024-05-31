@@ -10,7 +10,7 @@ import '../../providers/grid_provider.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
-
+ 
 class AddProductScreen extends StatelessWidget {
   const AddProductScreen({super.key});
 

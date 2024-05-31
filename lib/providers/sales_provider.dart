@@ -40,7 +40,7 @@ class SalesProvider with ChangeNotifier {
     DateTime now = DateTime.now();
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-    debugPrint("fetchOrders customerId $userId $date");
+    debugPrint("fetchOrders customerId $userId $date"); 
     final response = orderNumberSelect
         ? await http.get(
             Uri.parse(

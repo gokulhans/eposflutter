@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_order_list_design.dart';
 import 'package:pos_machine/components/build_round_button.dart';
+// import 'package:pos_machine/components/build_title.dart';
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/resources/font_manager.dart';
 import 'package:pos_machine/resources/style_manager.dart';
@@ -10,11 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
 import '../components/build_payment_row.dart';
-
 import '../models/add_to_order.dart';
+import '../models/customer_list.dart';
 import '../models/list_cart.dart';
 import '../providers/auth_model.dart';
 import '../providers/cart_provider.dart';
+import '../providers/customer_provider.dart';
 import '../resources/color_manager.dart';
 
 class OrderList extends StatefulWidget {
@@ -27,11 +28,13 @@ class OrderList extends StatefulWidget {
 class _OrderListState extends State<OrderList> {
   final TextEditingController mobileNumberTextController =
       TextEditingController();
-  // bool expanded = false;
-  // bool expanded1 = false;
   CartProvider cartProvider = CartProvider();
   bool iconColor = true;
   UniqueKey keyTile = UniqueKey();
+  bool isInitLoading = false;
+  List<CustomerListModelData>? customerList = [];
+  CustomerListModelData? selectedCustomer;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +43,38 @@ class _OrderListState extends State<OrderList> {
     int? customerId = Provider.of<AuthModel>(context, listen: false).userId;
     Provider.of<CartProvider>(context, listen: false).fetchCartDataFromApi(
         customerId: customerId ?? 2, accessToken: accessToken ?? '');
+
+    getCustomersDetails();
+  }
+
+  void getCustomersDetails() async {
+    try {
+      setState(() {
+        // Set loading state if needed
+      });
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+      debugPrint("accessToken From AuthModel $accessToken");
+      CustomerProvider()
+          .listCustomer(accessToken ?? "", context)
+          .then((response) {
+        if (response["status"] == "success") {
+          CustomerListModel customerListModel =
+              CustomerListModel.fromJson(response);
+          setState(() {
+            customerList = customerListModel.data;
+          });
+        } else {
+          // Handle error
+        }
+      });
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        // Reset loading state if needed
+      });
+    }
   }
 
   // @override
@@ -114,6 +149,7 @@ class _OrderListState extends State<OrderList> {
                       FontSize.s10, 0.16, ColorManager.textColor),
                 ),
                 const SizedBox(height: 5),
+
                 Row(
                   children: [
                     Expanded(
@@ -148,7 +184,64 @@ class _OrderListState extends State<OrderList> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 5),
+                Text(
+                  'Select Customer',
+                  style: buildCustomStyle(FontWeightManager.regular,
+                      FontSize.s10, 0.16, ColorManager.textColor),
+                ),
+                const SizedBox(height: 5),
+                customerList != null && customerList!.isNotEmpty
+                    ? BuildBoxShadowContainer(
+                        circleRadius: 7,
+                        alignment: Alignment.centerLeft,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 0, vertical: 0),
+                        padding: const EdgeInsets.only(left: 15),
+                        height: size.height * .07,
+                        width: size.width / 3,
+                        child: DropdownButtonFormField<CustomerListModelData>(
+                          decoration: const InputDecoration(
+                            border: InputBorder.none, // Remove the underline
+                          ),
+                          value: selectedCustomer,
+                          hint: Text(
+                            'Please Select',
+                            style: buildCustomStyle(
+                              FontWeightManager.medium,
+                              FontSize.s12,
+                              0.27,
+                              ColorManager.textColor.withOpacity(.5),
+                            ),
+                          ),
+                          items: customerList != null
+                              ? customerList!
+                                  .map((CustomerListModelData customer) {
+                                  return DropdownMenuItem<
+                                      CustomerListModelData>(
+                                    value: customer,
+                                    child: Text(
+                                      customer.name ?? '',
+                                      style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s12,
+                                        0.27,
+                                        ColorManager.textColor.withOpacity(.5),
+                                      ),
+                                    ),
+                                  );
+                                }).toList()
+                              : [],
+                          onChanged: (CustomerListModelData? selectedCustomer) {
+                            setState(() {
+                              this.selectedCustomer = selectedCustomer;
+                            });
+                          },
+                        ),
+                      )
+                    : Container(),
                 const SizedBox(height: 10),
+
                 SizedBox(
                   height: size.height * 0.2, // 150,
 
@@ -319,14 +412,33 @@ class _OrderListState extends State<OrderList> {
                                               SizedBox(
                                                 height: 25,
                                                 child: IconButton(
-                                                    onPressed: () {},
-                                                    icon: Icon(
-                                                      Icons
-                                                          .remove_circle_outline,
-                                                      color: ColorManager
-                                                          .kPrimaryColor
-                                                          .withOpacity(0.7),
-                                                    )),
+                                                  onPressed: () {
+                                                    String? accessToken =
+                                                        Provider.of<AuthModel>(
+                                                                context,
+                                                                listen: false)
+                                                            .token;
+                                                    debugPrint(
+                                                        "accessToken From AuthModel $accessToken");
+                                                    Provider.of<CartProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .removeFromCartAPI(
+                                                      accessToken:
+                                                          accessToken ?? "",
+                                                      customerId: 1,
+                                                      productId:
+                                                          cartItem[index].id ??
+                                                              1,
+                                                    );
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.remove_circle_outline,
+                                                    color: ColorManager
+                                                        .kPrimaryColor
+                                                        .withOpacity(0.7),
+                                                  ),
+                                                ),
                                               ),
                                               // Container(
                                               //     alignment: Alignment.center,
@@ -505,10 +617,80 @@ class _OrderListState extends State<OrderList> {
                   children: [
                     CustomRoundButton(
                       title: "Cash",
-                      fct: () {
-                        ScaffoldMessenger.of(context)
-                          ..removeCurrentSnackBar()
-                          ..showSnackBar(SnackBar(
+                      fct: () async {
+                        // Ensure the cart ID is available
+                        int cartId =
+                            Provider.of<CartProvider>(context, listen: false)
+                                .getCartIDForOrder;
+
+                        if (cartId != 0) {
+                          // Call the addToOrderAPI method
+                          dynamic result = await Provider.of<CartProvider>(
+                                  context,
+                                  listen: false)
+                              .addToOrderAPI(cartIds: cartId);
+
+                          // Check the result and show a Snackbar accordingly
+                          if (result != false) {
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(SnackBar(
+                                showCloseIcon: true,
+                                dismissDirection: DismissDirection.up,
+                                closeIconColor: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                                elevation: 0,
+                                margin: EdgeInsets.only(
+                                    top: 50,
+                                    left:
+                                        MediaQuery.of(context).size.width / 1.9,
+                                    right: 10),
+                                backgroundColor:
+                                    ColorManager.kPrimaryColor.withOpacity(0.6),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                content: Text(
+                                  'Order Added Successfully',
+                                  style: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s12,
+                                      0.12,
+                                      Colors.white),
+                                ),
+                              ));
+                          } else {
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(SnackBar(
+                                showCloseIcon: true,
+                                dismissDirection: DismissDirection.up,
+                                closeIconColor: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                                elevation: 0,
+                                margin: EdgeInsets.only(
+                                    top: 50,
+                                    left:
+                                        MediaQuery.of(context).size.width / 1.9,
+                                    right: 10),
+                                backgroundColor: Colors.red.withOpacity(0.6),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                content: Text(
+                                  'Failed to Add Order',
+                                  style: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s12,
+                                      0.12,
+                                      Colors.white),
+                                ),
+                              ));
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context)
+                            ..removeCurrentSnackBar()
+                            ..showSnackBar(SnackBar(
                               showCloseIcon: true,
                               dismissDirection: DismissDirection.up,
                               closeIconColor: Colors.white,
@@ -519,18 +701,19 @@ class _OrderListState extends State<OrderList> {
                                   top: 50,
                                   left: MediaQuery.of(context).size.width / 1.9,
                                   right: 10),
-                              backgroundColor:
-                                  ColorManager.kPrimaryColor.withOpacity(0.6),
+                              backgroundColor: Colors.red.withOpacity(0.6),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               content: Text(
-                                'Cash Details Added',
+                                'Cart ID not available',
                                 style: buildCustomStyle(
                                     FontWeightManager.medium,
                                     FontSize.s12,
                                     0.12,
                                     Colors.white),
-                              )));
+                              ),
+                            ));
+                        }
                       },
                       fontSize: FontSize.s12,
                       height: 40,
@@ -560,9 +743,10 @@ class _OrderListState extends State<OrderList> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  height: size.height * 0.38, // 280,
+                  height: size.height * 0.34, // 280,
+                  // height: size.height * 0.38, // 280,
                   margin: const EdgeInsets.only(
-                      left: 10, top: 20, bottom: 10, right: 10),
+                      left: 10, top: 10, bottom: 10, right: 10),
                   padding: const EdgeInsets.all(8),
                   decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(

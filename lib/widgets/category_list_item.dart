@@ -102,7 +102,7 @@ class CategoryListItem extends StatelessWidget {
                       ),
                       labelStyle: buildCustomStyle(FontWeightManager.regular,
                           FontSize.s10, 0.10, ColorManager.textColor),
-                      hintText: 'Search category or product',
+                      hintText: 'Search category',
                       hintStyle: buildCustomStyle(FontWeightManager.regular,
                           FontSize.s10, 0.13, ColorManager.textColor1),
                     ),

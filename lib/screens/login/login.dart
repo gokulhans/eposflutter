@@ -10,7 +10,7 @@ import 'package:pos_machine/screens/login/forgot_password.dart';
 import 'package:provider/provider.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+ 
 import '../../components/build_round_button.dart';
 import '../../components/build_title.dart';
 import '../../providers/auth_model.dart';

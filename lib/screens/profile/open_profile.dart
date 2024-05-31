@@ -10,7 +10,7 @@ import '../../resources/asset_manager.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
-
+ 
 class OpenProfileScreen extends StatefulWidget {
   const OpenProfileScreen({super.key});
 

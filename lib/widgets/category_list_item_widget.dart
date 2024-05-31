@@ -9,7 +9,7 @@ import '../providers/cart_provider.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
-
+ 
 class CategoryListItemWidget extends StatelessWidget {
   final String imageUrlPath;
   final String price;

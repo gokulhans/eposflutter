@@ -139,7 +139,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Today’s Sales ",
+                        "Today's Sales ",
                         style: buildCustomStyle(FontWeightManager.semiBold,
                             FontSize.s15, 0.23, ColorManager.textColor),
                       ),

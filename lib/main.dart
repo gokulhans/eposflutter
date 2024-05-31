@@ -1,5 +1,5 @@
 import 'dart:io';
-
+ 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +12,7 @@ import 'package:pos_machine/providers/category_providers.dart';
 import 'package:pos_machine/providers/cart.dart';
 
 import 'package:pos_machine/providers/grid_provider.dart';
+
 import 'package:pos_machine/providers/invoice_provider.dart';
 import 'package:pos_machine/providers/sales_provider.dart';
 
@@ -36,8 +37,10 @@ void main() {
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
   // ]);
-  if (Platform.isMacOS) {
-    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  if (!kIsWeb) {
+    if (Platform.isMacOS) {
+      debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+    }
   }
   Get.put(CategoryProvider());
   runApp(const MyApp());

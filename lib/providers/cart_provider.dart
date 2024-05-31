@@ -33,6 +33,7 @@ class CartProvider with ChangeNotifier {
   }
 
   int get getCartIDForOrder => cartId;
+
   Future<void> fetchCartDataFromApi(
       {required int customerId, required String accessToken}) async {
     // Fetch cart data from your API and add it to the stream
@@ -79,7 +80,6 @@ class CartProvider with ChangeNotifier {
       debugPrint('inside ${response.statusCode}');
       if (response.statusCode == 200) {
         debugPrint('inside');
-
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
         ListCartModel listCartModel = ListCartModel.fromJson(jsonData);
@@ -177,13 +177,60 @@ class CartProvider with ChangeNotifier {
     } finally {}
   }
 
-  //          *********************** ADD TO CART API ***************************************************
+  //          *********************** REMOVE FROM CART API ***************************************************
+
+Future<dynamic> removeFromCartAPI({
+  required int customerId,
+  required int productId,
+  // required int quantity,
+  required String accessToken,
+}) async {
+  debugPrint("********************REMOVE FROM CART API******************** ");
+  final Map<String, dynamic> apiBodyData = {
+    'cart_item_id': productId,
+  };
+  debugPrint("productId $productId");
+  // debugPrint("customerId $customerId");
+  final url = Uri.parse(APPUrl.removeFromCartUrl); // Update this to the correct endpoint for removing items
+  try {
+    final response =
+        await http.post(url, body: json.encode(apiBodyData), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken',
+    });
+    debugPrint('inside ${response.statusCode}');
+    if (response.statusCode == 200) {
+      debugPrint('inside');
+
+      debugPrint(json.decode(response.body).toString());
+      final jsonData = json.decode(response.body);
+      AddToCartModel addToCartModel = AddToCartModel.fromJson(jsonData);
+      await fetchCartDataFromApi(
+          customerId: customerId, accessToken: accessToken);
+      debugPrint(addToCartModel.status);
+      if (addToCartModel.status == 'success') {
+        debugPrint("  if (addToCartModel.status == 'success') {");
+        debugPrint("${addToCartModel.cart!.cartItem![0].cartItemId ?? 0}");
+
+        setCartIDForOrder(addToCartModel.cart!.cartItem![0].cartItemId ?? 0);
+      }
+
+      return jsonData; // Return response data or success status
+    } else {
+      return false;
+    }
+  } finally {}
+}
+
+  //          *********************** ADD TO ORDER API ***************************************************
 
   Future<dynamic> addToOrderAPI({
     required int cartIds,
   }) async {
     debugPrint("********************ADD TO CART API******************** ");
     DateTime now = DateTime.now();
+
+    
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
     debugPrint("$cartIds CadtId Inside ADD TO CART API $formattedDate");

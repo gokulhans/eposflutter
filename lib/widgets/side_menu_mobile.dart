@@ -9,10 +9,10 @@ import 'package:websafe_svg/websafe_svg.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
-
+  
 class SideMenuMobile extends StatelessWidget {
   const SideMenuMobile({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

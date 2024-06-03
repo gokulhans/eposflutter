@@ -268,7 +268,9 @@ class AddCategoryScreen extends StatelessWidget {
                                                   size: 18,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  
+                                                },
                                               )),
                                         ],
                                       ),

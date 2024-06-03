@@ -151,7 +151,8 @@ class CategoryListItem extends StatelessWidget {
 
                           // debugPrint(
                           //     "Inside category ListItem Widgetcategorys.categorySlug");
-                          // debugPrint(categorys.categorySlug);
+                          // debugPrint("categorys.categoryImage");
+                          // debugPrint(categorys.categoryIcon);
                           // debugPrint("${provider.category!.length}");
                           return GestureDetector(
                             onTap: () {
@@ -186,17 +187,16 @@ class CategoryListItem extends StatelessWidget {
                                         ? ColorManager.kPrimaryColor
                                         : ColorManager.textColor1,
                                     radius: 50,
-                                    child: Container(
-                                      height: 95,
-                                      width: 95,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: WebsafeSvg.asset(
-                                        ImageAssets.allCategoryIcon,
-                                        fit: BoxFit.none,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          47.5), // Half of the height/width to make it a circle
+                                      child: Image.network(
+                                        provider.category![index]
+                                                .categoryIcon ??
+                                            'https://epos-bucket.s3.ap-southeast-1.amazonaws.com/images/Owtpjeb18CalthcsGsfnWlBIZxb137QI5TIneBdd.jpg',
+                                        fit: BoxFit.cover,
+                                        height: 95,
+                                        width: 95,
                                       ),
                                     ),
                                   ),

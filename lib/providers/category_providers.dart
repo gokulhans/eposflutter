@@ -40,10 +40,13 @@ class CategoryProvider extends ChangeNotifier {
 
   List<Category>? get category => categoryList;
   Category categoryDemo = Category(
-      categoryId: 0,
-      categorySlug: "ALL",
-      categoryName: "ALL",
-      productsCount: 0);
+    categoryId: 0,
+    categorySlug: "ALL",
+    categoryName: "ALL",
+    productsCount: 0,
+    categoryIcon: "https://via.placeholder.com/95",
+    categoryImage: "https://via.placeholder.com/95",
+  );
   int categoryId = 0;
   int get getCategoryId => categoryId;
 

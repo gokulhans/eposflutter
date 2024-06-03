@@ -42,7 +42,8 @@ class _OrderListState extends State<OrderList> {
     debugPrint("accessToken From AuthModel $accessToken");
     int? customerId = Provider.of<AuthModel>(context, listen: false).userId;
     Provider.of<CartProvider>(context, listen: false).fetchCartDataFromApi(
-        customerId: customerId ?? 2, accessToken: accessToken ?? '');
+        // customerId: customerId ?? 1, accessToken: accessToken ?? '');
+        customerId: 1, accessToken: accessToken ?? '');
 
     getCustomersDetails();
   }
@@ -306,9 +307,28 @@ class _OrderListState extends State<OrderList> {
                                       //   style: buildCustomStyle(FontWeightManager.regular,
                                       //       FontSize.s10, 0.21, ColorManager.textColor),
                                       // ),
-                                      trailing: WebsafeSvg.asset(
-                                        ImageAssets.oderlistCloseIcon,
-                                        fit: BoxFit.none,
+                                      trailing: GestureDetector(
+                                        onTap: () {
+                                          String? accessToken =
+                                              Provider.of<AuthModel>(context,
+                                                      listen: false)
+                                                  .token;
+                                          debugPrint(
+                                              "accessToken From AuthModel $accessToken");
+                                          Provider.of<CartProvider>(context,
+                                                  listen: false)
+                                              .removeFromCartAPI(
+                                                  accessToken:
+                                                      accessToken ?? "",
+                                                  customerId: 1,
+                                                  productId:
+                                                      cartItem[index].id ?? 1,
+                                                  remove: "true");
+                                        },
+                                        child: WebsafeSvg.asset(
+                                          ImageAssets.oderlistCloseIcon,
+                                          fit: BoxFit.none,
+                                        ),
                                       ), //const SizedBox(),
                                       // initiallyExpanded: expanded,
                                       // leading: expanded
@@ -430,6 +450,7 @@ class _OrderListState extends State<OrderList> {
                                                       productId:
                                                           cartItem[index].id ??
                                                               1,
+                                                      remove: '',
                                                     );
                                                   },
                                                   icon: Icon(

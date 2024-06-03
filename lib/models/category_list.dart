@@ -37,12 +37,16 @@ class Category {
   final String? categoryName;
   final String? categorySlug;
   final int? productsCount;
+  final String? categoryImage;
+  final String? categoryIcon;
 
   Category({
     this.categoryId,
     this.categoryName,
     this.categorySlug,
     this.productsCount,
+    this.categoryImage,
+    this.categoryIcon,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
@@ -50,6 +54,8 @@ class Category {
         categoryName: json["category_name"],
         categorySlug: json["category_slug"],
         productsCount: json["products_count"],
+        categoryImage: json["category_image"],
+        categoryIcon: json["category_icon"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,5 +63,7 @@ class Category {
         "category_name": categoryName,
         "category_slug": categorySlug,
         "products_count": productsCount,
+        "category_image": categoryImage,
+        "category_icon": categoryIcon,
       };
 }

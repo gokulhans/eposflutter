@@ -41,6 +41,15 @@ class DrawerListTileExpandableColumn extends StatefulWidget {
 class _DrawerListTileExpandableColumnState
     extends State<DrawerListTileExpandableColumn> {
   bool _isExpanded = true;
+  int _selectedTileIndex = 0;
+
+  void _onTapTile(int index, VoidCallback onTap) {
+    setState(() {
+      _selectedTileIndex = index;
+    });
+    onTap();
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.selected
@@ -102,7 +111,10 @@ class _DrawerListTileExpandableColumnState
                   child: Column(
                     children: [
                       ListTile(
-                        selected: widget.selected,
+                        selected: _selectedTileIndex == 0,
+                        selectedTileColor: _selectedTileIndex == 0
+                            ? Colors.blue.withOpacity(0.1)
+                            : null,
                         contentPadding: ResponsiveWidget.isTablet(context)
                             ? const EdgeInsets.only(left: 15, right: 10)
                             : const EdgeInsets.only(left: 45, right: 15),
@@ -110,7 +122,7 @@ class _DrawerListTileExpandableColumnState
                         visualDensity:
                             const VisualDensity(vertical: -4, horizontal: 0),
                         minVerticalPadding: 0,
-                        onTap: widget.onTapTitle1,
+                        onTap: () => _onTapTile(0, widget.onTapTitle1),
                         leading: const BubbleIcon(),
                         title: Text(
                           widget.listTitle1,
@@ -119,7 +131,10 @@ class _DrawerListTileExpandableColumnState
                         ),
                       ),
                       ListTile(
-                        selected: widget.selected,
+                        selected: _selectedTileIndex == 1,
+                        selectedTileColor: _selectedTileIndex == 1
+                            ? Colors.blue.withOpacity(0.1)
+                            : null,
                         contentPadding: ResponsiveWidget.isTablet(context)
                             ? const EdgeInsets.only(left: 15, right: 10)
                             : const EdgeInsets.only(left: 45, right: 15),
@@ -127,7 +142,7 @@ class _DrawerListTileExpandableColumnState
                         visualDensity:
                             const VisualDensity(vertical: -4, horizontal: 0),
                         minVerticalPadding: 0,
-                        onTap: widget.onTapTitle2,
+                        onTap: () => _onTapTile(1, widget.onTapTitle2),
                         leading: const BubbleIcon(),
                         title: Text(
                           widget.listTitle2,
@@ -137,15 +152,19 @@ class _DrawerListTileExpandableColumnState
                       ),
                       widget.listTitle3 != null
                           ? ListTile(
-                              selected: widget.selected,
-                              contentPadding: ResponsiveWidget.isTablet(context)
-                                  ? const EdgeInsets.only(left: 15, right: 10)
-                                  : const EdgeInsets.only(left: 45, right: 15),
+                              selected: _selectedTileIndex == 2,
+                              selectedTileColor: _selectedTileIndex == 2
+                                  ? Colors.blue.withOpacity(0.1)
+                                  : null,
+                              contentPadding:
+                                  ResponsiveWidget.isTablet(context)
+                                      ? const EdgeInsets.only(left: 15, right: 10)
+                                      : const EdgeInsets.only(left: 45, right: 15),
                               horizontalTitleGap: 0.0,
-                              visualDensity: const VisualDensity(
-                                  vertical: -4, horizontal: 0),
+                              visualDensity:
+                                  const VisualDensity(vertical: -4, horizontal: 0),
                               minVerticalPadding: 0,
-                              onTap: widget.onTapTitle3,
+                              onTap: () => _onTapTile(2, widget.onTapTitle3!),
                               leading: const BubbleIcon(),
                               title: Text(
                                 widget.listTitle3 ?? '',
@@ -172,9 +191,7 @@ class _DrawerListTileExpandableColumnState
             minVerticalPadding: 0,
             onTap: widget.onTap,
             leading: WebsafeSvg.asset(widget.iconPath,
-                color: ColorManager.kPrimaryColor
-                // color: selected ? Colors.white : ColorManager.kPrimaryColor
-                ),
+                color: widget.selected ? Colors.white : ColorManager.kPrimaryColor),
             title: Text(
               widget.title,
               style: buildCustomStyle(FontWeightManager.medium, FontSize.s14,

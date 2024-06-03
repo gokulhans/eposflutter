@@ -69,9 +69,9 @@ class CartProvider with ChangeNotifier {
     debugPrint("LIST ALL CART ITEMS ");
     debugPrint("customerId $customerId");
     // sample data
-    customerId = 1;
+    // customerId = 1;
     final Map<String, dynamic> apiBodyData = {
-      'customer_id': customerId,
+      'customer_id': 1,
     };
     final url = Uri.parse(APPUrl.listCartUrl);
     try {
@@ -133,10 +133,10 @@ class CartProvider with ChangeNotifier {
     required String accessToken,
   }) async {
     // sample data
-    customerId = 1;
+    // customerId = 1;
     debugPrint("********************ADD TO CART API******************** ");
     final Map<String, dynamic> apiBodyData = {
-      'customer_id': customerId,
+      'customer_id': 1,
       'quantity': quantity,
       'app_type': "api",
       'product_id': productId,
@@ -158,8 +158,8 @@ class CartProvider with ChangeNotifier {
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
         AddToCartModel addToCartModel = AddToCartModel.fromJson(jsonData);
-        await fetchCartDataFromApi(
-            customerId: customerId, accessToken: accessToken);
+        await fetchCartDataFromApi(customerId: 1, accessToken: accessToken);
+        // customerId: customerId, accessToken: accessToken);
         debugPrint(addToCartModel.status);
         // List<ListCartModelData> cartData = await fetchCartData(customerId: 1);
         //   _cartStreamController.add(cartData);
@@ -213,8 +213,8 @@ class CartProvider with ChangeNotifier {
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
         AddToCartModel addToCartModel = AddToCartModel.fromJson(jsonData);
-        await fetchCartDataFromApi(
-            customerId: customerId, accessToken: accessToken);
+        await fetchCartDataFromApi(customerId: 1, accessToken: accessToken);
+        // customerId: customerId, accessToken: accessToken);
         debugPrint(addToCartModel.status);
         if (addToCartModel.status == 'success') {
           debugPrint("  if (addToCartModel.status == 'success') {");
@@ -234,32 +234,39 @@ class CartProvider with ChangeNotifier {
 
   Future<dynamic> addToOrderAPI({
     required int cartIds,
+    required String accessToken,
   }) async {
     debugPrint("********************ADD TO ORDER API******************** ");
     DateTime now = DateTime.now();
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
     debugPrint("$cartIds CadtId Inside ADD TO CART API $formattedDate");
+
+    // 'cart_id': cartIds,
     final Map<String, dynamic> apiBodyData = {
-      // 'cart_id': cartIds,
       "store_id": 1,
-      "customer_id":1,
-      // "order_date": formattedDate
+      "customer_id": 1,
     };
+    // "order_date": formattedDate
+
     final url = Uri.parse(APPUrl.addToOrderUrl);
+
     try {
-      final response = await http.post(url,
-          body: json.encode(apiBodyData),
-          headers: {'Content-Type': 'application/json'});
+      final response =
+          await http.post(url, body: json.encode(apiBodyData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
       debugPrint('inside ${response.statusCode}');
       if (response.statusCode == 200) {
-        debugPrint('inside');
+        debugPrint('inside 200');
 
-        debugPrint(json.decode(response.body).toString());
+        // debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
-        AddToOrderModel addToOrderModel = AddToOrderModel.fromJson(jsonData);
+        // AddToOrderModel addToOrderModel = AddToOrderModel.fromJson(jsonData);
 
-        debugPrint(addToOrderModel.status);
+        // debugPrint(jsonData);
+        // debugPrint(addToOrderModel.status);
         getData();
         return jsonData; //addToOrderModel.status == 'success' ? true : false;
       } else {

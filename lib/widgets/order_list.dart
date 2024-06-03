@@ -43,7 +43,8 @@ class _OrderListState extends State<OrderList> {
     int? customerId = Provider.of<AuthModel>(context, listen: false).userId;
     Provider.of<CartProvider>(context, listen: false).fetchCartDataFromApi(
         // customerId: customerId ?? 1, accessToken: accessToken ?? '');
-        customerId: 1, accessToken: accessToken ?? '');
+        customerId: 1,
+        accessToken: accessToken ?? '');
 
     getCustomersDetails();
   }
@@ -639,6 +640,11 @@ class _OrderListState extends State<OrderList> {
                     CustomRoundButton(
                       title: "Cash",
                       fct: () async {
+                        String? accessToken =
+                            Provider.of<AuthModel>(context, listen: false)
+                                .token;
+                        debugPrint("accessToken From AuthModel $accessToken");
+
                         // Ensure the cart ID is available
                         int cartId =
                             Provider.of<CartProvider>(context, listen: false)
@@ -649,7 +655,10 @@ class _OrderListState extends State<OrderList> {
                           dynamic result = await Provider.of<CartProvider>(
                                   context,
                                   listen: false)
-                              .addToOrderAPI(cartIds: cartId);
+                              .addToOrderAPI(
+                            cartIds: cartId,
+                            accessToken: accessToken ?? "",
+                          );
 
                           // Check the result and show a Snackbar accordingly
                           if (result != false) {
@@ -977,6 +986,11 @@ class _OrderListState extends State<OrderList> {
                         flex: 3,
                         child: GestureDetector(
                           onTap: () async {
+                            String? accessToken =
+                                Provider.of<AuthModel>(context, listen: false)
+                                    .token;
+                            debugPrint(
+                                "accessToken From AuthModel $accessToken");
                             final provider = Provider.of<CartProvider>(context,
                                 listen: false);
                             int cartId = provider.getCartIDForOrder;
@@ -984,7 +998,10 @@ class _OrderListState extends State<OrderList> {
                             try {
                               await Provider.of<CartProvider>(context,
                                       listen: false)
-                                  .addToOrderAPI(cartIds: cartId)
+                                  .addToOrderAPI(
+                                cartIds: cartId,
+                                accessToken: accessToken ?? "",
+                              )
                                   .then((response) {
                                 AddToOrderModel addToOrderModel =
                                     AddToOrderModel.fromJson(response);

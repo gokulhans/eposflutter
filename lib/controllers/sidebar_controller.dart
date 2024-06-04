@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:pos_machine/screens/category/add_category.dart';
 import 'package:pos_machine/screens/category/add_category_properties.dart';
 import 'package:pos_machine/screens/category/add_category_screen.dart';
+import 'package:pos_machine/screens/category/edit_category_screen.dart';
 import 'package:pos_machine/screens/category/widgets/view_category.dart';
 import 'package:pos_machine/screens/customers/add_customers.dart';
 import 'package:pos_machine/screens/cart/cart_list.dart';
@@ -78,5 +79,6 @@ class SideBarController extends GetxController {
     ViewInvoiceDetailsWidget(), //31
     ViewVoucherDetailsWidget(), //32
     StockDetailsWidget(), //33
+    EditCategoryPageScreen(), //34
   ];
 }

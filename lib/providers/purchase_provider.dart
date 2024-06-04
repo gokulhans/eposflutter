@@ -35,6 +35,7 @@ class PurchaseProvider extends ChangeNotifier {
     code: "Select Store",
     status: "Y",
   );
+  
   void callVoucherDetails({required int voucherId, required int purchaseId}) {
     debugPrint("voucherId $voucherId purchaseId $purchaseId");
     List<PurchaseItem> purchaseItemList = purchaseItemListAllPurchase!;

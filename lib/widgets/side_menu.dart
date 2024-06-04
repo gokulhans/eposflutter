@@ -144,24 +144,26 @@ class SideMenu extends StatelessWidget {
           ),
           Obx(
             () => DrawerListTileExpandableColumn(
-                onTapTitle1: () {
-                  sideBarController.index.value = 12;
-                },
-                onTapTitle2: () {
-                  sideBarController.index.value = 13;
-                },
-                listTitle1: "Category",
-                listTitle2: "Category Properties",
-                iconPath: ImageAssets.creditCardIcon,
-                title: 'Category',
-                onTap: () {
-                  sideBarController.index.value = 12;
-                  debugPrint(" 'Category',${sideBarController.index.value}");
-                },
-                selected: sideBarController.index.value == 12 ||
-                    sideBarController.index.value == 13 ||
-                    sideBarController.index.value == 27 ||
-                    sideBarController.index.value == 16),
+              onTapTitle1: () {
+                sideBarController.index.value = 12;
+              },
+              onTapTitle2: () {
+                sideBarController.index.value = 13;
+              },
+              listTitle1: "Category",
+              listTitle2: "Category Properties",
+              iconPath: ImageAssets.creditCardIcon,
+              title: 'Category',
+              onTap: () {
+                sideBarController.index.value = 12;
+                debugPrint(" 'Category',${sideBarController.index.value}");
+              },
+              selected: sideBarController.index.value == 12 ||
+                  sideBarController.index.value == 13 ||
+                  sideBarController.index.value == 27 ||
+                  sideBarController.index.value == 16 ||
+                  sideBarController.index.value == 34,
+            ),
           ),
           Obx(
             () => DrawerListTileExpandableColumn(

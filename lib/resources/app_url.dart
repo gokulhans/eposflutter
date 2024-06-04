@@ -1,8 +1,13 @@
 class APPUrl {
   static const String baseURL = "https://epos.enke.in";
   // static const String baseURL = "http://13.212.33.222";
+
   static const String categoryListUrl = '$baseURL/api/list-category';
   static const String viewCategoryListUrl = '$baseURL/api/category-details';
+  static const String addCategoryUrl = '$baseURL/api/category/add-category';
+  static const String editCategoryUrl = '$baseURL/api/category/edit-category';
+
+
   static const String getProcductUrl = '$baseURL/api/list-products';
   static const String addToCartUrl = '$baseURL/api/add-to-cart';
   static const String removeFromCartUrl = '$baseURL/api/remove-from-cart';
@@ -19,7 +24,6 @@ class APPUrl {
   static const String dashBoardUrl = '$baseURL/api/sales/dashboard';
   static const String addCustomerUrl = '$baseURL/api/sales/add-customer';
   static const String customerListUrl = '$baseURL/api/sales/list-customer';
-  static const String addCategoryUrl = '$baseURL/api/category/add-category';
   static const String addProductUrl =
       '$baseURL/api/product/add-product-general-item';
   static const String addProductNameUrl =

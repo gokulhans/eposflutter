@@ -1448,7 +1448,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                                 .all(15.0),
                                                         child: Center(
                                                           child: Text(
-                                                            "${products.unitPrice}",
+                                                            "${products.unitPrice! * products.quantity!}",
                                                             style:
                                                                 buildCustomStyle(
                                                               FontWeightManager

@@ -254,7 +254,15 @@ class AddCategoryScreen extends StatelessWidget {
                                                   size: 18,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  categoryProvider
+                                                      .viewCategoryApi(
+                                                          categoryId: category
+                                                                  .categoryId ??
+                                                              1);
+                                                  sideBarController
+                                                      .index.value = 34;
+                                                },
                                               )),
                                           BuildBoxShadowContainer(
                                               margin: const EdgeInsets.only(
@@ -268,9 +276,7 @@ class AddCategoryScreen extends StatelessWidget {
                                                   size: 18,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {
-                                                  
-                                                },
+                                                onPressed: () {},
                                               )),
                                         ],
                                       ),

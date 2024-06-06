@@ -24,6 +24,7 @@ class APPUrl {
   static const String dashBoardUrl = '$baseURL/api/sales/dashboard';
   static const String addCustomerUrl = '$baseURL/api/sales/add-customer';
   static const String customerListUrl = '$baseURL/api/sales/list-customer';
+
   static const String addProductUrl =
       '$baseURL/api/product/add-product-general-item';
   static const String addProductNameUrl =
@@ -32,6 +33,15 @@ class APPUrl {
       '$baseURL/api/product/add-product-props';
   static const String addProductImageUrl =
       '$baseURL/api/product/add-product-image';
+
+  static const String editProductUrl =
+      '$baseURL/api/product/edit-product-general-item';
+  static const String editProductNameUrl =
+      '$baseURL/api/product/edit-product-name';
+  static const String editProductPropsUrl =
+      '$baseURL/api/product/edit-product-props';
+  static const String editProductImageUrl =
+      '$baseURL/api/product/edit-product-image';
   static const String listFilesForImageUrl = '$baseURL/api/file/list-files';
 
   static const String getStores = '$baseURL/api/stores/get-stores?store_name';

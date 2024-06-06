@@ -4,18 +4,18 @@ import 'package:get/get.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:provider/provider.dart';
 
-import '../../../components/build_container_box.dart';
-import '../../../components/build_round_button.dart';
-import '../../../components/build_title.dart';
-import '../../../controllers/sidebar_controller.dart';
-import '../../../models/category_list.dart';
-import '../../../providers/auth_model.dart';
-import '../../../providers/category_providers.dart';
-import '../../../providers/grid_provider.dart';
-import '../../../providers/purchase_provider.dart';
-import '../../../resources/color_manager.dart';
-import '../../../resources/font_manager.dart';
-import '../../../resources/style_manager.dart';
+import '../../../../components/build_container_box.dart';
+import '../../../../components/build_round_button.dart';
+import '../../../../components/build_title.dart';
+import '../../../../controllers/sidebar_controller.dart';
+import '../../../../models/category_list.dart';
+import '../../../../providers/auth_model.dart';
+import '../../../../providers/category_providers.dart';
+import '../../../../providers/grid_provider.dart';
+import '../../../../providers/purchase_provider.dart';
+import '../../../../resources/color_manager.dart';
+import '../../../../resources/font_manager.dart';
+import '../../../../resources/style_manager.dart';
 
 class AddProductPageScreen extends StatelessWidget {
   final Function(int) navigateToScreen;

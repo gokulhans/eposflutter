@@ -23,6 +23,7 @@ class ViewPrimaryDetailsScreen extends StatelessWidget {
         Provider.of<GridSelectionProvider>(
       context,
     );
+    
     GetProduct? getProduct = gridSelectionProvider.getProductDetails;
     debugPrint(getProduct == null ? "getProduct" : getProduct.productName);
 

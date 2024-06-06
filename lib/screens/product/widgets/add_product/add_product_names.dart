@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../../../components/build_container_box.dart';
-import '../../../components/build_dialog_box.dart';
-import '../../../components/build_round_button.dart';
-import '../../../components/build_title.dart';
-import '../../../controllers/sidebar_controller.dart';
+import '../../../../components/build_container_box.dart';
+import '../../../../components/build_dialog_box.dart';
+import '../../../../components/build_round_button.dart';
+import '../../../../components/build_title.dart';
+import '../../../../controllers/sidebar_controller.dart';
 
-import '../../../providers/auth_model.dart';
-import '../../../providers/grid_provider.dart';
-import '../../../resources/color_manager.dart';
-import '../../../resources/font_manager.dart';
-import '../../../resources/style_manager.dart';
+import '../../../../providers/auth_model.dart';
+import '../../../../providers/grid_provider.dart';
+import '../../../../resources/color_manager.dart';
+import '../../../../resources/font_manager.dart';
+import '../../../../resources/style_manager.dart';
 
 class AddProductNamePageScreen extends StatelessWidget {
   final Function(int) navigateToScreen;

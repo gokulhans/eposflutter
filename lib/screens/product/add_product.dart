@@ -251,7 +251,14 @@ class AddProductScreen extends StatelessWidget {
                                                     size: 18,
                                                     color: Colors.white,
                                                   ),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                     productProvider
+                                                        .callProductDetails(
+                                                            products.productId ??
+                                                                1);
+                                                    sideBarController
+                                                        .index.value = 35;
+                                                  },
                                                 )),
                                             BuildBoxShadowContainer(
                                                 margin: const EdgeInsets.only(

@@ -186,7 +186,9 @@ class SideMenu extends StatelessWidget {
                     sideBarController.index.value == 18 ||
                     sideBarController.index.value == 28 ||
                     sideBarController.index.value == 17 ||
-                    sideBarController.index.value == 33),
+                    sideBarController.index.value == 33 ||
+                    sideBarController.index.value == 35
+                    ),
           ),
           Obx(
             () => DrawerListTileExpandableColumn(

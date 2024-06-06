@@ -385,6 +385,166 @@ class GridSelectionProvider extends ChangeNotifier {
       }
     } finally {}
   }
+
+    Future<dynamic> editProductAPI(
+      {
+      required String productId,
+      required String categoryId,
+      required String slug,
+      required String productName,
+      required String price,
+      required String currency,
+      required String unit,
+      required String barcode,
+      required String accessToken}) async {
+    final Map<String, dynamic> apiBodyData = {
+      'name': productName,
+      'slug': slug,
+      'price': price,
+      'currency': currency,
+      'category_id': categoryId,
+      'barcode': barcode,
+      'unit': unit,
+      'product_id': productId,
+    };
+    final Map<String, dynamic> error = {
+      'status': "failed",
+      'message': "Something went wrong, Please try Again!"
+    };
+    debugPrint(apiBodyData.toString());
+    final url = Uri.parse(APPUrl.editProductUrl);
+    try {
+      final response =
+          await http.post(url, body: json.encode(apiBodyData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
+      debugPrint('inside ${response.statusCode}');
+      if (response.statusCode == 200) {
+        debugPrint(json.decode(response.body).toString());
+        debugPrint(json.decode(response.body).toString());
+        return json.decode(response.body);
+      } else {
+        return error;
+      }
+    } finally {}
+  }
+  //          *********************** ADD PRODUCT NAMES API ***************************************************
+
+  Future<dynamic> editProductNamesAPI(
+      {required String productId,
+      required String productNameEnglish,
+      required String productNameHindi,
+      required String productNameArabic,
+      required String accessToken}) async {
+    final Map<String, dynamic> apiBodyData = {
+      'product_id': productId,
+      'product_lang_name[ar]': productNameEnglish,
+      'product_lang_name[hi]': productNameHindi,
+      'product_lang_name[en]': productNameArabic,
+    };
+    final Map<String, dynamic> error = {
+      'status': "failed",
+      'message': "Something went wrong, Please try Again!"
+    };
+    debugPrint(apiBodyData.toString());
+    final url = Uri.parse(APPUrl.editProductNameUrl);
+    try {
+      final response = await http.post(url, body: apiBodyData, headers: {
+        // 'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
+      debugPrint('inside ${response.statusCode}');
+      if (response.statusCode == 200) {
+        debugPrint(json.decode(response.body).toString());
+        debugPrint(json.decode(response.body).toString());
+        return json.decode(response.body);
+      } else {
+        return error;
+      }
+    } finally {}
+  }
+  //          *********************** ADD PRODUCT PROPS API ***************************************************
+
+  Future<dynamic> editProductPropsAPI(
+      {required String productId,
+      required String productColor1,
+      required String productColor2,
+      required String productColor3,
+      required String productPropID,
+      required String productPropCode,
+      required String accessToken}) async {
+    final Map<String, dynamic> apiBodyData = {
+      'productId': productId,
+      'propdata[PRODUCT_COLOR][]': productColor1,
+      // 'propdata[PRODUCT_COLOR][]': productColor2,
+      // 'propdata[PRODUCT_COLOR][]':productColor3,
+      'prop_id[]': productPropID,
+      'prop_code[]': productPropCode
+    };
+//     Two keys in a map literal shouldn't be equal.
+// Change or remove the duplicate key.
+    final Map<String, dynamic> error = {
+      'status': "failed",
+      'message': "Something went wrong, Please try Again!"
+    };
+    debugPrint(apiBodyData.toString());
+    final url = Uri.parse(APPUrl.editProductPropsUrl);
+    try {
+      final response =
+          await http.post(url, body: json.encode(apiBodyData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
+      debugPrint('inside ${response.statusCode}');
+      if (response.statusCode == 200) {
+        debugPrint(json.decode(response.body).toString());
+        debugPrint(json.decode(response.body).toString());
+        return json.decode(response.body);
+      } else {
+        return error;
+      }
+    } finally {}
+  }
+  //          *********************** ADD PRODUCT IMAGE/VIDEO API ***************************************************
+
+  Future<dynamic> editProductImageAPI(
+      {required String title,
+      required String alt,
+      required String filePath,
+      required String productId,
+      required String isPrimary,
+      required String accessToken}) async {
+    final Map<String, dynamic> apiBodyData = {
+      'product_id': productId,
+      'is_primary[1]': isPrimary,
+      'title[]': title,
+      'alt[]': alt,
+      'file_path[]': filePath,
+    };
+    final Map<String, dynamic> error = {
+      'status': "failed",
+      'message': "Something went wrong, Please try Again!"
+    };
+    debugPrint(apiBodyData.toString());
+    final url = Uri.parse(APPUrl.editProductImageUrl);
+    try {
+      final response = await http.post(url, body: apiBodyData, headers: {
+        //  'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
+      debugPrint('inside ${response.statusCode}');
+      if (response.statusCode == 200) {
+        debugPrint(json.decode(response.body).toString());
+
+        return json.decode(response.body);
+      } else {
+        return error;
+      }
+    } finally {}
+  }
+
+
   //          *********************** GET PRODUCT LIST FILES API ***************************************************
 
   Future<dynamic> getProductListFilesAPI({required String accessToken}) async {

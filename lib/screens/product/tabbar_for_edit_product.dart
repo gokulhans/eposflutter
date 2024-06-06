@@ -7,19 +7,19 @@ import '../../controllers/sidebar_controller.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
-import 'widgets/add_image_or_video.dart';
-import 'widgets/add_primary_details.dart';
-import 'widgets/add_product_names.dart';
-import 'widgets/add_product_properties.dart';
+import 'widgets/edit_product/edit_image_or_video.dart';
+import 'widgets/edit_product/edit_primary_details.dart';
+import 'widgets/edit_product/edit_product_names.dart';
+import 'widgets/edit_product/edit_product_properties.dart';
 
-class TabBarForAddNewProduct extends StatefulWidget {
-  const TabBarForAddNewProduct({Key? key}) : super(key: key);
+class TabBarForEditProduct extends StatefulWidget {
+  const TabBarForEditProduct({Key? key}) : super(key: key);
 
   @override
-  State<TabBarForAddNewProduct> createState() => _TabBarForAddNewProductState();
+  State<TabBarForEditProduct> createState() => _TabBarForEditProductState();
 }
 
-class _TabBarForAddNewProductState extends State<TabBarForAddNewProduct>
+class _TabBarForEditProductState extends State<TabBarForEditProduct>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   SideBarController sideBarController = Get.put(SideBarController());
@@ -71,7 +71,7 @@ class _TabBarForAddNewProductState extends State<TabBarForAddNewProduct>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Add New Product',
+                      'Edit Product',
                       style: buildCustomStyle(FontWeightManager.semiBold,
                           FontSize.s20, 0.30, ColorManager.textColor),
                     ),
@@ -100,14 +100,14 @@ class _TabBarForAddNewProductState extends State<TabBarForAddNewProduct>
                         key: UniqueKey(),
                         controller: tabController,
                         children: [
-                          AddProductPageScreen(
+                          EditProductPageScreen(
                             navigateToScreen: navigateToScreen,
                           ),
-                          AddProductNamePageScreen(
+                          EditProductNamePageScreen(
                               navigateToScreen: navigateToScreen),
-                          AddProductPropertiesScreen(
+                          EditProductPropertiesScreen(
                               navigateToScreen: navigateToScreen),
-                          AddProductImageOrVideoScreen(
+                          EditProductImageOrVideoScreen(
                               navigateToScreen: navigateToScreen),
                         ],
                       ),

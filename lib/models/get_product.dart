@@ -41,6 +41,7 @@ class GetProduct {
   final int? categoryId;
   final String? productName;
   final String? productSlug;
+  final String? barcode;
   final List<ProductCategory>? category;
   final String? numberOfProductsAvailble;
   final String? rating;
@@ -57,6 +58,7 @@ class GetProduct {
     this.categoryId,
     this.productName,
     this.productSlug,
+    this.barcode,
     this.category,
     this.numberOfProductsAvailble,
     this.rating,
@@ -72,6 +74,7 @@ class GetProduct {
         categoryId: json["category_id"],
         productName: json["product_name"],
         productSlug: json["product_slug"],
+        barcode: json["barcode"],
         category: json["category"] == null
             ? []
             : List<ProductCategory>.from(
@@ -97,6 +100,7 @@ class GetProduct {
         "category_id": categoryId,
         "product_name": productName,
         "product_slug": productSlug,
+        "barcode": barcode,
         "category": category == null
             ? []
             : List<dynamic>.from(category!.map((x) => x.toJson())),

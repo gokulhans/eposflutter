@@ -12,9 +12,10 @@ import 'package:pos_machine/screens/dashboard/dashboard.dart';
 import 'package:pos_machine/screens/loyality_card/loyality.dart';
 import 'package:pos_machine/screens/notifications/notifications.dart';
 import 'package:pos_machine/screens/product/add_product.dart';
+import 'package:pos_machine/screens/product/tabbar_for_edit_product.dart';
 import 'package:pos_machine/screens/product/widgets/view_product.dart';
 import 'package:pos_machine/screens/purchase/purchase.dart';
-import 'package:pos_machine/screens/product/tabbar_for_add_new_product.dart.dart';
+import 'package:pos_machine/screens/product/tabbar_for_add_new_product.dart';
 import 'package:pos_machine/screens/product/stock.dart';
 import 'package:pos_machine/screens/purchase/purchase_voucher.dart';
 import 'package:pos_machine/screens/purchase/widgets/add_purchase.dart';
@@ -80,5 +81,6 @@ class SideBarController extends GetxController {
     ViewVoucherDetailsWidget(), //32
     StockDetailsWidget(), //33
     EditCategoryPageScreen(), //34
+    TabBarForEditProduct(), //35
   ];
 }

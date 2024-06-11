@@ -31,11 +31,11 @@ class _EditProductNamePageScreenState extends State<EditProductNamePageScreen> {
         Provider.of<GridSelectionProvider>(context, listen: false);
     GetProduct? getProduct = gridSelectionProvider.getProductDetails;
     final TextEditingController productNameEnglishController =
-        TextEditingController(text: getProduct?.productName ?? '');
+        TextEditingController(text: getProduct?.names?.en ?? '');
     final TextEditingController productNameHindiController =
-        TextEditingController(text: getProduct?.productName ?? '');
+        TextEditingController(text: getProduct?.names?.hi ?? '');
     final TextEditingController productNameArabicController =
-        TextEditingController(text: getProduct?.productName ?? '');
+        TextEditingController(text: getProduct?.names?.ar ?? '');
 
     Size size = MediaQuery.of(context).size;
     SideBarController sideBarController = Get.put(SideBarController());
@@ -196,9 +196,7 @@ class _EditProductNamePageScreenState extends State<EditProductNamePageScreen> {
                           child: CustomRoundButton(
                             title: "Submit",
                             fct: () async {
-                              int? productId =
-                                  gridSelectionProvider.getProductId;
-                              if (productId == null) {
+                              if (getProduct!.productId == null) {
                                 showScaffold(
                                   context: context,
                                   message: 'Failed',
@@ -230,7 +228,7 @@ class _EditProductNamePageScreenState extends State<EditProductNamePageScreen> {
                                       "accessToken From AuthModel $accessToken");
                                   gridSelectionProvider
                                       .editProductNamesAPI(
-                                          productId: "$productId",
+                                          productId: "${getProduct.productId}",
                                           productNameEnglish:
                                               productNameEnglishController.text,
                                           productNameHindi:

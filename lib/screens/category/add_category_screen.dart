@@ -246,9 +246,13 @@ class AddCategoryPageScreen extends StatelessWidget {
                                 children: [
                                   buildColumnWidgetForTextFields(
                                     onchanged: ((value) {
-                                      categorySlugController.text =
-                                          categoryNameController.text
-                                              .toLowerCase();
+                                      categorySlugController.text = categoryNameController
+                                          .text
+                                          .toLowerCase() // Convert to lowercase
+                                          .replaceAll(RegExp(r'\s+'),
+                                              '-') // Replace spaces with hyphens
+                                          .replaceAll(RegExp(r'[^a-z0-9-]'),
+                                              ''); // Remove non-alphanumeric characters except hyphens
                                     }),
                                     isLeft: false,
                                     readOnly: false,

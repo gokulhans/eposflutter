@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos_machine/components/build_container_box.dart';
 
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
@@ -10,15 +11,19 @@ class BuildPaymentRow extends StatelessWidget {
   final Color color;
   final double? padding;
   final TextStyle? firstRowTextStyle;
-  final TextStyle? secondtRowTextStyle;
+  final TextStyle? secondRowTextStyle;
+  final bool? isTextField;
+  final Widget? child;
   const BuildPaymentRow({
     Key? key,
     required this.title,
     required this.amount,
     required this.color,
-    this.secondtRowTextStyle,
     this.padding,
     this.firstRowTextStyle,
+    this.secondRowTextStyle,
+    this.isTextField,
+    this.child,
   }) : super(key: key);
 
   @override
@@ -36,16 +41,28 @@ class BuildPaymentRow extends StatelessWidget {
                 color,
               ),
         ),
-        BuildTitle(
-          title: amount,
-          textStyle: secondtRowTextStyle ??
-              buildCustomStyle(
-                FontWeightManager.medium,
-                FontSize.s12,
-                0.18,
-                color,
-              ),
-        ),
+        isTextField == false
+            ? BuildTitle(
+                title: amount,
+                textStyle: secondRowTextStyle ??
+                    buildCustomStyle(
+                      FontWeightManager.medium,
+                      FontSize.s12,
+                      0.18,
+                      color,
+                    ),
+              )
+            : child ??
+                BuildTitle(
+                  title: amount,
+                  textStyle: secondRowTextStyle ??
+                      buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.18,
+                        color,
+                      ),
+                ),
       ],
     );
   }

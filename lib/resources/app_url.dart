@@ -7,7 +7,6 @@ class APPUrl {
   static const String addCategoryUrl = '$baseURL/api/category/add-category';
   static const String editCategoryUrl = '$baseURL/api/category/edit-category';
 
-
   static const String getProcductUrl = '$baseURL/api/list-products';
   static const String addToCartUrl = '$baseURL/api/add-to-cart';
   static const String removeFromCartUrl = '$baseURL/api/remove-from-cart';

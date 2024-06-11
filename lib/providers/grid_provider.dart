@@ -317,7 +317,7 @@ class GridSelectionProvider extends ChangeNotifier {
       required String productPropCode,
       required String accessToken}) async {
     final Map<String, dynamic> apiBodyData = {
-      'productId': productId,
+      'product_id': productId,
       'propdata[PRODUCT_COLOR][]': productColor1,
       // 'propdata[PRODUCT_COLOR][]': productColor2,
       // 'propdata[PRODUCT_COLOR][]':productColor3,
@@ -386,9 +386,8 @@ class GridSelectionProvider extends ChangeNotifier {
     } finally {}
   }
 
-    Future<dynamic> editProductAPI(
-      {
-      required String productId,
+  Future<dynamic> editProductAPI(
+      {required String productId,
       required String categoryId,
       required String slug,
       required String productName,
@@ -443,10 +442,17 @@ class GridSelectionProvider extends ChangeNotifier {
       'product_lang_name[hi]': productNameHindi,
       'product_lang_name[en]': productNameArabic,
     };
+    print({
+      'product_id': productId,
+      'product_lang_name[ar]': productNameEnglish,
+      'product_lang_name[hi]': productNameHindi,
+      'product_lang_name[en]': productNameArabic,
+    });
     final Map<String, dynamic> error = {
       'status': "failed",
       'message': "Something went wrong, Please try Again!"
     };
+
     debugPrint(apiBodyData.toString());
     final url = Uri.parse(APPUrl.editProductNameUrl);
     try {
@@ -543,7 +549,6 @@ class GridSelectionProvider extends ChangeNotifier {
       }
     } finally {}
   }
-
 
   //          *********************** GET PRODUCT LIST FILES API ***************************************************
 

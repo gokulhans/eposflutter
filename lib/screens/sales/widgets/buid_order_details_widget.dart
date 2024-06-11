@@ -176,7 +176,7 @@ class OrderDetailWidget extends StatelessWidget {
                         BuildPaymentRow(
                           amount: "${priceSummary!.netPayable}.00",
                           title: "Payable",
-                          secondtRowTextStyle: buildCustomStyle(
+                          secondRowTextStyle: buildCustomStyle(
                             FontWeightManager.bold,
                             FontSize.s15,
                             0.23,
@@ -193,7 +193,7 @@ class OrderDetailWidget extends StatelessWidget {
                         BuildPaymentRow(
                           amount: "Rs 0.00",
                           title: "Balance amount",
-                          secondtRowTextStyle: buildCustomStyle(
+                          secondRowTextStyle: buildCustomStyle(
                             FontWeightManager.medium,
                             FontSize.s12,
                             0.18,

@@ -67,7 +67,7 @@ ScaffoldMessengerState showScaffold({required BuildContext context, message}) {
         elevation: 0,
         margin: EdgeInsets.only(
             top: 50, left: MediaQuery.of(context).size.width / 1.9, right: 10),
-        backgroundColor: ColorManager.kPrimaryColor.withOpacity(0.6),
+        backgroundColor: ColorManager.kPrimaryColor.withOpacity(1.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         content: Text(
           '$message',

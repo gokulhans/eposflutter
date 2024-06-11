@@ -141,6 +141,8 @@ class CategoryProvider extends ChangeNotifier {
       'category_lang_name[en]': categoryNameEnglish,
       'category_lang_name[hi]': categoryNameHindi,
       'category_lang_name[ar]': categoryNameArabic,
+      'category_image': "1",
+      'category_icon': "1"
     };
     debugPrint(apiBodyData.toString());
     final url = Uri.parse(APPUrl.addCategoryUrl);

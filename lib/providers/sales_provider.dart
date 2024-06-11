@@ -40,7 +40,8 @@ class SalesProvider with ChangeNotifier {
     DateTime now = DateTime.now();
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-    debugPrint("fetchOrders customerId $userId $date"); 
+    debugPrint("fetchOrders customerId $userId $date");
+    debugPrint("fetchOrders orderNumberSelect $orderNumberSelect");
     final response = orderNumberSelect
         ? await http.get(
             Uri.parse(
@@ -52,7 +53,7 @@ class SalesProvider with ChangeNotifier {
         : date != null
             ? await http.get(
                 Uri.parse(
-                    "${APPUrl.getListOrder}?order_date=$date &store_id=$storeId"),
+                    "${APPUrl.getListOrder}?order_date=$date&store_id=$storeId&customer_id=$userId"),
                 headers: {
                     'Authorization': 'Bearer $accessToken',
                     'content-type': 'application/json'
@@ -63,7 +64,7 @@ class SalesProvider with ChangeNotifier {
             //     :
             : await http.get(
                 Uri.parse(
-                    "${APPUrl.getListOrder}?customer_id=$userId&order_date=${date ?? formattedDate}&store_id=$storeId"),
+                    "${APPUrl.getListOrder}?customer_id=$userId&store_id=$storeId"),
                 headers: {
                     'Authorization': 'Bearer $accessToken',
                     'content-type': 'application/json'

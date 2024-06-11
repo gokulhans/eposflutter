@@ -51,6 +51,7 @@ class GetProduct {
   final ProductPrice? price;
   final List<Attachment>? attachment;
   bool isSelected = false;
+  final Names? names;
   // final List<dynamic>? attachement;
 
   GetProduct({
@@ -67,6 +68,7 @@ class GetProduct {
     this.currency,
     this.description,
     this.attachment,
+    this.names,
   });
 
   factory GetProduct.fromJson(Map<String, dynamic> json) => GetProduct(
@@ -90,6 +92,7 @@ class GetProduct {
             ? []
             : List<Attachment>.from(
                 json["attachment"]!.map((x) => Attachment.fromJson(x))),
+        names: json["names"] == null ? null : Names.fromJson(json["names"]),
         // attachment: json["attachement"] == null
         //     ? []
         //     : List<dynamic>.from(json["attachement"]!.map((x) => x)),
@@ -117,6 +120,7 @@ class GetProduct {
         // "attachement": attachement == null
         //     ? []
         //     : List<dynamic>.from(attachement!.map((x) => x)),
+        "names": names?.toJson(),
       };
 }
 
@@ -214,5 +218,29 @@ class ProductPrice {
         "old_price": oldPrice,
         "price": price,
         "percentage": percentage,
+      };
+}
+
+class Names {
+  final String? en;
+  final String? hi;
+  final String? ar;
+
+  Names({
+    this.en,
+    this.hi,
+    this.ar,
+  });
+
+  factory Names.fromJson(Map<String, dynamic> json) => Names(
+        en: json["en"],
+        hi: json["hi"],
+        ar: json["ar"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "en": en,
+        "hi": hi,
+        "ar": ar,
       };
 }

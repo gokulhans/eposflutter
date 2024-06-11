@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:pos_machine/models/view_category.dart';
 
 import 'package:provider/provider.dart';
 
@@ -23,10 +24,15 @@ class EditCategoryPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CategoryProvider categoryProvider = Provider.of<CategoryProvider>(
+      context,
+    );
+    ViewCategory? viewCategory = categoryProvider.getViewCategory;
+
     final TextEditingController categoryNameEnglishController =
-        TextEditingController();
+        TextEditingController(text: viewCategory?.name);
     final TextEditingController categoryNameController =
-        TextEditingController();
+        TextEditingController(text: viewCategory?.name);
     final TextEditingController categoryNameArabicController =
         TextEditingController();
     final TextEditingController categoryNameHindiController =
@@ -39,11 +45,6 @@ class EditCategoryPageScreen extends StatelessWidget {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     SideBarController sideBarController = Get.put(SideBarController());
     Size size = MediaQuery.of(context).size;
-
-    // Access the CategoryProvider
-    CategoryProvider categoryProvider = Provider.of<CategoryProvider>(
-      context,
-    );
 
     // Access the category list
     List<Category>? categoryList = categoryProvider.category;
@@ -246,9 +247,13 @@ class EditCategoryPageScreen extends StatelessWidget {
                                 children: [
                                   buildColumnWidgetForTextFields(
                                     onchanged: ((value) {
-                                      categorySlugController.text =
-                                          categoryNameController.text
-                                              .toLowerCase();
+                                      categorySlugController.text = categoryNameController
+                                          .text
+                                          .toLowerCase() // Convert to lowercase
+                                          .replaceAll(RegExp(r'\s+'),
+                                              '-') // Replace spaces with hyphens
+                                          .replaceAll(RegExp(r'[^a-z0-9-]'),
+                                              ''); // Remove non-alphanumeric characters except hyphens
                                     }),
                                     isLeft: false,
                                     readOnly: false,

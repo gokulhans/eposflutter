@@ -27,7 +27,7 @@ class SalesScreen extends StatelessWidget {
     final dateController =
         TextEditingController(text: formattedDate); //"6,April,2023");
     final dateFormatController = TextEditingController();
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;  
     return SafeArea(
       child: Container(
           margin:
@@ -59,30 +59,30 @@ class SalesScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SizedBox(
-                          height: 45,
-                          width: 150, //size.width * 0.5,
-                          child: TextField(
-                            cursorColor: ColorManager.kPrimaryColor,
-                            cursorHeight: 13,
-                            controller: searchTextController,
-                            style: buildCustomStyle(FontWeightManager.medium,
-                                FontSize.s10, 0.18, ColorManager.textColor),
-                            decoration: decoration.copyWith(
-                                hintText: "Search Order",
-                                hintStyle: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.18,
-                                    ColorManager.textColor),
-                                // prefixIcon: const Icon(
-                                //   Icons.search,
-                                //   color: Colors.black,
-                                //   size: 35,
-                                // ),
-                                prefixIconColor: Colors.black),
-                          ),
-                        ),
+                        // SizedBox(
+                        //   height: 45,
+                        //   width: 150, //size.width * 0.5,
+                        //   child: TextField(
+                        //     cursorColor: ColorManager.kPrimaryColor,
+                        //     cursorHeight: 13,
+                        //     controller: searchTextController,
+                        //     style: buildCustomStyle(FontWeightManager.medium,
+                        //         FontSize.s10, 0.18, ColorManager.textColor),
+                        //     decoration: decoration.copyWith(
+                        //         hintText: "Search Order",
+                        //         hintStyle: buildCustomStyle(
+                        //             FontWeightManager.medium,
+                        //             FontSize.s10,
+                        //             0.18,
+                        //             ColorManager.textColor),
+                        //         // prefixIcon: const Icon(
+                        //         //   Icons.search,
+                        //         //   color: Colors.black,
+                        //         //   size: 35,
+                        //         // ),
+                        //         prefixIconColor: Colors.black),
+                        //   ),
+                        // ),
                         BuildBoxShadowContainer(
                           margin: const EdgeInsets.all(15),
                           // padding: const EdgeInsets.all(15),

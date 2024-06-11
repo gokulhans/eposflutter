@@ -31,7 +31,10 @@ class InvoiceProvider extends ChangeNotifier {
 
   String? getUserUpOnId(int value) {
     var user = getUsersList!.firstWhere((e) => e.id == value,
-        orElse: () => GetUsersModelData(id: 0, name: "Unknown"));
+        // sample data
+        // orElse: () => GetUsersModelData(id: 0, name: "Unknown"));
+        orElse: () => GetUsersModelData(id: 0, name: "Super Admin"));
+
     return user.name;
   }
 

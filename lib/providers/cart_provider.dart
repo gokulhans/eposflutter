@@ -48,9 +48,9 @@ class CartProvider with ChangeNotifier {
   }
   getData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // int? customerId = prefs.getInt('customerId');
+    int? customerId = prefs.getInt('customerId');
     // sample data
-    int? customerId = 1;
+    // int? customerId = 1;
     String? token = prefs.getString('access_token');
     fetchCartDataFromApi(customerId: customerId ?? 1, accessToken: token ?? "");
   }
@@ -71,7 +71,7 @@ class CartProvider with ChangeNotifier {
     // sample data
     // customerId = 1;
     final Map<String, dynamic> apiBodyData = {
-      'customer_id': 1,
+      'customer_id': customerId,
     };
     final url = Uri.parse(APPUrl.listCartUrl);
     try {
@@ -136,7 +136,7 @@ class CartProvider with ChangeNotifier {
     // customerId = 1;
     debugPrint("********************ADD TO CART API******************** ");
     final Map<String, dynamic> apiBodyData = {
-      'customer_id': 1,
+      'customer_id': customerId,
       'quantity': quantity,
       'app_type': "api",
       'product_id': productId,
@@ -158,7 +158,8 @@ class CartProvider with ChangeNotifier {
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
         AddToCartModel addToCartModel = AddToCartModel.fromJson(jsonData);
-        await fetchCartDataFromApi(customerId: 1, accessToken: accessToken);
+        await fetchCartDataFromApi(
+            customerId: customerId, accessToken: accessToken);
         // customerId: customerId, accessToken: accessToken);
         debugPrint(addToCartModel.status);
         // List<ListCartModelData> cartData = await fetchCartData(customerId: 1);
@@ -213,7 +214,8 @@ class CartProvider with ChangeNotifier {
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
         AddToCartModel addToCartModel = AddToCartModel.fromJson(jsonData);
-        await fetchCartDataFromApi(customerId: 1, accessToken: accessToken);
+        await fetchCartDataFromApi(
+            customerId: customerId, accessToken: accessToken);
         // customerId: customerId, accessToken: accessToken);
         debugPrint(addToCartModel.status);
         if (addToCartModel.status == 'success') {
@@ -232,10 +234,10 @@ class CartProvider with ChangeNotifier {
 
   //          *********************** ADD TO ORDER API ***************************************************
 
-  Future<dynamic> addToOrderAPI({
-    required int cartIds,
-    required String accessToken,
-  }) async {
+  Future<dynamic> addToOrderAPI(
+      {required int cartIds,
+      required String accessToken,
+      required int customerId}) async {
     debugPrint("********************ADD TO ORDER API******************** ");
     DateTime now = DateTime.now();
 
@@ -245,7 +247,7 @@ class CartProvider with ChangeNotifier {
     // 'cart_id': cartIds,
     final Map<String, dynamic> apiBodyData = {
       "store_id": 1,
-      "customer_id": 1,
+      "customer_id": customerId,
     };
     // "order_date": formattedDate
 

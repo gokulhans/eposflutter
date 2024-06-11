@@ -22,7 +22,7 @@ class EditProductPageScreen extends StatefulWidget {
   final Function(int) navigateToScreen;
   const EditProductPageScreen({super.key, required this.navigateToScreen});
 
-  @override
+  @override 
   State<EditProductPageScreen> createState() => _EditProductPageScreenState();
 }
 
@@ -41,7 +41,7 @@ class _EditProductPageScreenState extends State<EditProductPageScreen> {
     final productPriceController =
         TextEditingController(text: getProduct!.price!.price.toString());
     final productBarcodeController =
-        TextEditingController(text: getProduct.barcode ?? '');
+        TextEditingController(text: getProduct.barcode ?? 'barcode');
 
     final TextEditingController idController = TextEditingController(text: "0");
     Size size = MediaQuery.of(context).size;
@@ -86,9 +86,11 @@ class _EditProductPageScreenState extends State<EditProductPageScreen> {
 
 // Assign default values
     selectedUnit =
-        getProduct.unit ?? 'Piece'; // Use 'Piece' as the default unit
+        getProduct.unit; // Use 'Piece' as the default unit
     selectedCurrency =
-        getProduct.currency ?? 'INR'; // Use 'INR' as the default currency
+        getProduct.currency; // Use 'INR' as the default currency
+
+    print({"currency", getProduct.currency});
 
     if (getProduct.categoryId != null) {
       parentCategory = getProduct.categoryId.toString();

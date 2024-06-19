@@ -182,6 +182,7 @@ class VoucherDetail {
   final String? currency;
   final dynamic transactionId;
   final String? status;
+  final int? quantity;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -198,6 +199,7 @@ class VoucherDetail {
     this.currency,
     this.transactionId,
     this.status,
+    this.quantity,
     this.createdAt,
     this.updatedAt,
   });
@@ -215,6 +217,7 @@ class VoucherDetail {
         currency: json["currency"],
         transactionId: json["transaction_id"],
         status: json["status"],
+        quantity: json["quantity"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -236,6 +239,7 @@ class VoucherDetail {
         "currency": currency,
         "transaction_id": transactionId,
         "status": status,
+        "quantity": quantity,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
       };
@@ -354,6 +358,7 @@ class VoucherDetails {
   final String? currency;
   final dynamic transactionId;
   final String? status;
+  final int? quantity;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final GetStoreModelData? store;
@@ -372,6 +377,7 @@ class VoucherDetails {
       this.currency,
       this.transactionId,
       this.status,
+      this.quantity,
       this.createdAt,
       this.updatedAt,
       this.store,
@@ -390,6 +396,7 @@ class VoucherDetails {
         currency: json["currency"],
         transactionId: json["transaction_id"],
         status: json["status"],
+        quantity: json["quantity"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -417,6 +424,7 @@ class VoucherDetails {
         "currency": currency,
         "transaction_id": transactionId,
         "status": status,
+        "quantity": quantity,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "store": store?.toJson(),

@@ -22,11 +22,11 @@ class EditProductPageScreen extends StatefulWidget {
   final Function(int) navigateToScreen;
   const EditProductPageScreen({super.key, required this.navigateToScreen});
 
-  @override 
+  @override
   State<EditProductPageScreen> createState() => _EditProductPageScreenState();
 }
 
-class _EditProductPageScreenState extends State<EditProductPageScreen> {
+class _EditProductPageScreenState extends State<EditProductPageScreen> { 
   @override
   Widget build(BuildContext context) {
     GridSelectionProvider gridSelectionProvider =
@@ -85,10 +85,8 @@ class _EditProductPageScreenState extends State<EditProductPageScreen> {
     debugPrint(getProduct.productName);
 
 // Assign default values
-    selectedUnit =
-        getProduct.unit; // Use 'Piece' as the default unit
-    selectedCurrency =
-        getProduct.currency; // Use 'INR' as the default currency
+    selectedUnit = getProduct.unit; // Use 'Piece' as the default unit
+    selectedCurrency = getProduct.currency; // Use 'INR' as the default currency
 
     print({"currency", getProduct.currency});
 
@@ -572,7 +570,7 @@ class _EditProductPageScreenState extends State<EditProductPageScreen> {
                             Padding(
                               padding: const EdgeInsets.only(left: 10.0),
                               child: CustomRoundButton(
-                                title: "Submit",
+                                title: "Next",
                                 fct: () async {
                                   debugPrint(parentCategory);
                                   idController.text =
@@ -666,21 +664,21 @@ class _EditProductPageScreenState extends State<EditProductPageScreen> {
                                 fontSize: FontSize.s12,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: CustomRoundButton(
-                                title: "Next",
-                                boxColor: Colors.white,
-                                textColor: ColorManager.kPrimaryColor,
-                                fct: () async {
-                                  widget.navigateToScreen(1);
-                                  //  sideBarController.index.value = 14;
-                                },
-                                height: 50,
-                                width: size.width * 0.19,
-                                fontSize: FontSize.s12,
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 10.0),
+                            //   child: CustomRoundButton(
+                            //     title: "Next",
+                            //     boxColor: Colors.white,
+                            //     textColor: ColorManager.kPrimaryColor,
+                            //     fct: () async {
+                            //       widget.navigateToScreen(1);
+                            //       //  sideBarController.index.value = 14;
+                            //     },
+                            //     height: 50,
+                            //     width: size.width * 0.19,
+                            //     fontSize: FontSize.s12,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

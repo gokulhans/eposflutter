@@ -14,6 +14,8 @@ class CategoryProvider extends ChangeNotifier {
   String categoryText = '';
   ViewCategory? viewCategory;
   String parentCategory = '0';
+  int editCategoryId = 0;
+  int propCategory = 0;
   //bool _isLoading = false;
   CategoryProvider() {
     listAllCategory();
@@ -22,7 +24,11 @@ class CategoryProvider extends ChangeNotifier {
   String get getCategoryText => categoryText;
   int categoryCount = 0;
   String get getParentCategory => parentCategory;
+  int get getEditCategoryId => editCategoryId;
+  int get getPropCategoryId => propCategory;
   int get getCount => categoryCount;
+  List<dynamic>? propValues;
+  List? get categoryProperties => propValues;
 
   setCategoryItemCount(int value) {
     categoryCount = value;
@@ -31,6 +37,17 @@ class CategoryProvider extends ChangeNotifier {
 
   setParentCategory(String value) {
     parentCategory = value;
+    notifyListeners();
+  }
+
+  setCategoryIdforProp({required int categoryId}) {
+    debugPrint("SET CATEGORY ID FOR PROP $categoryId");
+    propCategory = categoryId;
+    notifyListeners();
+  }
+
+  setEditCategoryId({required int categoryId}) {
+    editCategoryId = categoryId;
     notifyListeners();
   }
 
@@ -224,8 +241,12 @@ class CategoryProvider extends ChangeNotifier {
       'category_lang_name[en]': categoryNameEnglish,
       'category_lang_name[hi]': categoryNameHindi,
       'category_lang_name[ar]': categoryNameArabic,
+      'category_image': "1",
+      'category_icon': "1"
     };
+
     debugPrint(apiBodyData.toString());
+
     final url = Uri.parse("${APPUrl.editCategoryUrl}/$categoryId");
     try {
       final response = await http.post(url, body: apiBodyData, headers: {
@@ -243,6 +264,39 @@ class CategoryProvider extends ChangeNotifier {
     } finally {
       // _isLoading = false;
       // notifyListeners();
+    }
+  }
+
+  Future<void> fetchPropValues({
+    required int categoryId,
+    required String accessToken,
+  }) async {
+    debugPrint("FETCH PROP VALUES for category_id $categoryId");
+    final url =
+        Uri.parse("${APPUrl.fetchCategoryProps}?category_id=$categoryId");
+
+    try {
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      });
+      debugPrint('Response status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        debugPrint("Response body: ${response.body}");
+        final jsonData = json.decode(response.body);
+        debugPrint("Parsed JSON data: ${jsonData.toString()}");
+        propValues = jsonData['success'];
+        notifyListeners();
+      } else {
+        debugPrint("Response body: ${response.body}");
+        final jsonData = json.decode(response.body);
+        debugPrint("Parsed Null data: ${jsonData.toString()}");
+        propValues = [];
+        notifyListeners();
+        debugPrint("Failed to fetch data. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint('Error fetching prop values: ${e.toString()}');
     }
   }
 }

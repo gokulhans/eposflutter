@@ -6,6 +6,8 @@ class APPUrl {
   static const String viewCategoryListUrl = '$baseURL/api/category-details';
   static const String addCategoryUrl = '$baseURL/api/category/add-category';
   static const String editCategoryUrl = '$baseURL/api/category/edit-category';
+  static const String fetchCategoryProps =
+      '$baseURL/api/product/fetch-prop-values';
 
   static const String getProcductUrl = '$baseURL/api/list-products';
   static const String addToCartUrl = '$baseURL/api/add-to-cart';
@@ -23,6 +25,7 @@ class APPUrl {
   static const String dashBoardUrl = '$baseURL/api/sales/dashboard';
   static const String addCustomerUrl = '$baseURL/api/sales/add-customer';
   static const String customerListUrl = '$baseURL/api/sales/list-customer';
+  static const String findCustomerByPhone = '$baseURL/api/search-user-by-phone';
 
   static const String addProductUrl =
       '$baseURL/api/product/add-product-general-item';

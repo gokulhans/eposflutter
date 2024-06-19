@@ -52,6 +52,8 @@ class GetProduct {
   final List<Attachment>? attachment;
   bool isSelected = false;
   final Names? names;
+  final Map<String, String>? productProps;
+  // final List<dynamic>? propValues;
   // final List<dynamic>? attachement;
 
   GetProduct({
@@ -69,6 +71,7 @@ class GetProduct {
     this.description,
     this.attachment,
     this.names,
+    this.productProps,
   });
 
   factory GetProduct.fromJson(Map<String, dynamic> json) => GetProduct(
@@ -93,6 +96,9 @@ class GetProduct {
             : List<Attachment>.from(
                 json["attachment"]!.map((x) => Attachment.fromJson(x))),
         names: json["names"] == null ? null : Names.fromJson(json["names"]),
+        productProps: json["product_props"] == null
+            ? {}
+            : Map<String, String>.from(json["product_props"]), // Updated field
         // attachment: json["attachement"] == null
         //     ? []
         //     : List<dynamic>.from(json["attachement"]!.map((x) => x)),
@@ -121,6 +127,9 @@ class GetProduct {
         //     ? []
         //     : List<dynamic>.from(attachement!.map((x) => x)),
         "names": names?.toJson(),
+        "product_props": productProps == null
+            ? {}
+            : Map<String, String>.from(productProps!), // Updated field
       };
 }
 
@@ -198,9 +207,9 @@ class ProductCategory {
 }
 
 class ProductPrice {
-  final int? oldPrice;
-  final int? price;
-  final String? percentage;
+  final dynamic oldPrice;
+  final dynamic price;
+  final dynamic percentage;
 
   ProductPrice({
     this.oldPrice,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/providers/category_providers.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/build_container_box.dart';
@@ -18,6 +19,11 @@ class AddProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //  Size size = MediaQuery.of(context).size;
     SideBarController sideBarController = Get.put(SideBarController());
+    CategoryProvider categoryProvider = Provider.of<CategoryProvider>(
+      context,
+    );
+    GridSelectionProvider gridSelectionProvider =
+        Provider.of<GridSelectionProvider>(context);
     return SafeArea(
       child: Container(
         margin: const EdgeInsets.only(left: 10, top: 20, bottom: 0, right: 10),
@@ -47,30 +53,30 @@ class AddProductScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 45,
-                        width: 180, //size.width * 0.5,
-                        child: TextField(
-                          cursorColor: ColorManager.kPrimaryColor,
-                          cursorHeight: 13,
-                          //  controller: searchTextController,
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s10, 0.18, ColorManager.textColor),
-                          decoration: decoration.copyWith(
-                              hintText: "Search    ",
-                              hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor),
-                              // prefixIcon: const Icon(
-                              //   Icons.search,
-                              //   color: Colors.black,
-                              //   size: 35,
-                              // ),
-                              prefixIconColor: Colors.black),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 45,
+                      //   width: 180, //size.width * 0.5,
+                      //   child: TextField(
+                      //     cursorColor: ColorManager.kPrimaryColor,
+                      //     cursorHeight: 13,
+                      //     //  controller: searchTextController,
+                      //     style: buildCustomStyle(FontWeightManager.medium,
+                      //         FontSize.s10, 0.18, ColorManager.textColor),
+                      //     decoration: decoration.copyWith(
+                      //         hintText: "Search    ",
+                      //         hintStyle: buildCustomStyle(
+                      //             FontWeightManager.medium,
+                      //             FontSize.s10,
+                      //             0.18,
+                      //             ColorManager.textColor),
+                      //         // prefixIcon: const Icon(
+                      //         //   Icons.search,
+                      //         //   color: Colors.black,
+                      //         //   size: 35,
+                      //         // ),
+                      //         prefixIconColor: Colors.black),
+                      //   ),
+                      // ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -251,29 +257,37 @@ class AddProductScreen extends StatelessWidget {
                                                     size: 18,
                                                     color: Colors.white,
                                                   ),
-                                                  onPressed: () {
+                                                  onPressed: () async {
+                                                    gridSelectionProvider
+                                                        .setProductIDForAdding(
+                                                            products.productId);
+                                                    await categoryProvider
+                                                        .setCategoryIdforProp(
+                                                            categoryId: products
+                                                                    .categoryId ??
+                                                                1);
                                                     productProvider
                                                         .callProductDetails(
-                                                            products.productId ??
-                                                                1);
+                                                            products
+                                                                .productId!);
                                                     sideBarController
                                                         .index.value = 35;
                                                   },
                                                 )),
-                                            BuildBoxShadowContainer(
-                                                margin: const EdgeInsets.only(
-                                                    left: 5, right: 5),
-                                                circleRadius: 5,
-                                                color:
-                                                    Colors.red.withOpacity(0.9),
-                                                child: IconButton(
-                                                  icon: const Icon(
-                                                    Icons.delete,
-                                                    size: 18,
-                                                    color: Colors.white,
-                                                  ),
-                                                  onPressed: () {},
-                                                )),
+                                            // BuildBoxShadowContainer(
+                                            //     margin: const EdgeInsets.only(
+                                            //         left: 5, right: 5),
+                                            //     circleRadius: 5,
+                                            //     color:
+                                            //         Colors.red.withOpacity(0.9),
+                                            //     child: IconButton(
+                                            //       icon: const Icon(
+                                            //         Icons.delete,
+                                            //         size: 18,
+                                            //         color: Colors.white,
+                                            //       ),
+                                            //       onPressed: () {},
+                                            //     )),
                                           ],
                                         ),
                                       ),

@@ -48,33 +48,33 @@ class AddCategoryScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      height: 45,
-                      width: 180, //size.width * 0.5,
-                      child: TextField(
-                        onChanged: (value) {
-                          //  filterCategories(value, categoryProvider.categoryList);
-                        },
-                        cursorColor: ColorManager.kPrimaryColor,
-                        cursorHeight: 13,
-                        controller: searchTextController,
-                        style: buildCustomStyle(FontWeightManager.medium,
-                            FontSize.s10, 0.18, ColorManager.textColor),
-                        decoration: decoration.copyWith(
-                            hintText: "Search    ",
-                            hintStyle: buildCustomStyle(
-                                FontWeightManager.medium,
-                                FontSize.s10,
-                                0.18,
-                                ColorManager.textColor),
-                            // prefixIcon: const Icon(
-                            //   Icons.search,
-                            //   color: Colors.black,
-                            //   size: 35,
-                            // ),
-                            prefixIconColor: Colors.black),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   height: 45,
+                    //   width: 180, //size.width * 0.5,
+                    //   child: TextField(
+                    //     onChanged: (value) {
+                    //       //  filterCategories(value, categoryProvider.categoryList);
+                    //     },
+                    //     cursorColor: ColorManager.kPrimaryColor,
+                    //     cursorHeight: 13,
+                    //     controller: searchTextController,
+                    //     style: buildCustomStyle(FontWeightManager.medium,
+                    //         FontSize.s10, 0.18, ColorManager.textColor),
+                    //     decoration: decoration.copyWith(
+                    //         hintText: "Search    ",
+                    //         hintStyle: buildCustomStyle(
+                    //             FontWeightManager.medium,
+                    //             FontSize.s10,
+                    //             0.18,
+                    //             ColorManager.textColor),
+                    //         // prefixIcon: const Icon(
+                    //         //   Icons.search,
+                    //         //   color: Colors.black,
+                    //         //   size: 35,
+                    //         // ),
+                    //         prefixIconColor: Colors.black),
+                    //   ),
+                    // ),
                     const SizedBox(
                       width: 10,
                     ),
@@ -232,8 +232,8 @@ class AddCategoryScreen extends StatelessWidget {
                                                       .kPrimaryColor
                                                       .withOpacity(0.9),
                                                 ),
-                                                onPressed: () {
-                                                  categoryProvider
+                                                onPressed: () async {
+                                                  await categoryProvider
                                                       .viewCategoryApi(
                                                           categoryId: category
                                                                   .categoryId ??
@@ -254,8 +254,13 @@ class AddCategoryScreen extends StatelessWidget {
                                                   size: 18,
                                                   color: Colors.white,
                                                 ),
-                                                onPressed: () {
-                                                  categoryProvider
+                                                onPressed: () async {
+                                                  await categoryProvider
+                                                      .setEditCategoryId(
+                                                          categoryId: category
+                                                                  .categoryId ??
+                                                              1);
+                                                  await categoryProvider
                                                       .viewCategoryApi(
                                                           categoryId: category
                                                                   .categoryId ??
@@ -264,20 +269,20 @@ class AddCategoryScreen extends StatelessWidget {
                                                       .index.value = 34;
                                                 },
                                               )),
-                                          BuildBoxShadowContainer(
-                                              margin: const EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              circleRadius: 5,
-                                              color:
-                                                  Colors.red.withOpacity(0.9),
-                                              child: IconButton(
-                                                icon: const Icon(
-                                                  Icons.delete,
-                                                  size: 18,
-                                                  color: Colors.white,
-                                                ),
-                                                onPressed: () {},
-                                              )),
+                                          // BuildBoxShadowContainer(
+                                          //     margin: const EdgeInsets.only(
+                                          //         left: 5, right: 5),
+                                          //     circleRadius: 5,
+                                          //     color:
+                                          //         Colors.red.withOpacity(0.9),
+                                          //     child: IconButton(
+                                          //       icon: const Icon(
+                                          //         Icons.delete,
+                                          //         size: 18,
+                                          //         color: Colors.white,
+                                          //       ),
+                                          //       onPressed: () {},
+                                          //     )),
                                         ],
                                       ),
                                     ),

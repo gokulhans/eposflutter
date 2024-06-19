@@ -27,7 +27,6 @@ class OrderList extends StatefulWidget {
 }
 
 class _OrderListState extends State<OrderList> {
-  
   final TextEditingController mobileNumberTextController =
       TextEditingController();
   final TextEditingController _transactionNumberController =
@@ -233,155 +232,181 @@ class _OrderListState extends State<OrderList> {
                           //   ),
                           // ),
                           // const SizedBox(height: 20),
-                          customerList!.isNotEmpty
-                              ? BuildBoxShadowContainer(
-                                  circleRadius: 7,
-                                  alignment: Alignment.centerLeft,
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 0, vertical: 0),
-                                  padding: const EdgeInsets.only(left: 15),
-                                  height:
-                                      MediaQuery.of(context).size.height * .07,
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Autocomplete<CustomerListModelData>(
-                                    optionsBuilder:
-                                        (mobileNumberTextController) {
-                                      debugPrint(
-                                          mobileNumberTextController.text);
-                                      if (mobileNumberTextController
-                                          .text.isEmpty) {
-                                        return const Iterable<
-                                            CustomerListModelData>.empty();
-                                      }
-                                      return customerList!;
-                                      // !.where(
-                                      //     (CustomerListModelData customer) {
-                                      //   return customer.name!
-                                      //       .toLowerCase()
-                                      //       .contains(textEditingValue.text
-                                      //           .toLowerCase());
+                          // customerList!.isNotEmpty
+                          //     ?
+                          BuildBoxShadowContainer(
+                            circleRadius: 7,
+                            alignment: Alignment.centerLeft,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 0),
+                            padding: const EdgeInsets.only(left: 15),
+                            height: MediaQuery.of(context).size.height * .07,
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Autocomplete<CustomerListModelData>(
+                              optionsBuilder:
+                                  (mobileNumberTextController) async {
+                                debugPrint(mobileNumberTextController.text);
+                                if (mobileNumberTextController.text.isEmpty) {
+                                  return const Iterable<
+                                      CustomerListModelData>.empty();
+                                }
+                                if (mobileNumberTextController.text.length ==
+                                    10) {
+                                  debugPrint("called");
+                                  String? accessToken = Provider.of<AuthModel>(
+                                          context,
+                                          listen: false)
+                                      .token;
+                                  debugPrint(
+                                      "accessToken From AuthModel $accessToken");
+
+                                  debugPrint(mobileNumberTextController.text);
+
+                                  try {
+                                    final response = await CustomerProvider()
+                                        .findCustomerByPhone(
+                                            accessToken ?? "",
+                                            mobileNumberTextController.text,
+                                            context);
+
+                                    if (response["status"] == "success") {
+                                      CustomerListModel customerListModel =
+                                          CustomerListModel.fromJson(response);
+
+                                      List<CustomerListModelData>?
+                                          filterdCustomerList =
+                                          customerListModel.data;
+
+                                      return filterdCustomerList!;
+                                      // setState(() {
                                       // });
-                                    },
-                                    displayStringForOption:
-                                        (CustomerListModelData customer) =>
-                                            customer.name ?? '',
-                                    onSelected:
-                                        (CustomerListModelData selection) {
-                                      setState(() {
-                                        // mobileNumberTextController.text =
-                                        //     selection.phone!;
-                                        mobileNumberText = selection.phone!;
-                                        selectedCustomer = selection;
-                                      });
-                                    },
-                                    fieldViewBuilder: (BuildContext context,
-                                        mobileNumberTextController,
-                                        FocusNode focusNode,
-                                        VoidCallback onFieldSubmitted) {
-                                      return TextField(
-                                        controller: mobileNumberTextController,
-                                        focusNode: focusNode,
-                                        decoration: InputDecoration(
-                                          hintText: 'Enter mobile number',
-                                          hintStyle: buildCustomStyle(
-                                            FontWeight.w500,
-                                            12,
-                                            0.27,
-                                            Colors.grey.withOpacity(.5),
-                                          ),
-                                          border: InputBorder.none,
-                                        ),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            mobileNumberText = value;
-                                          });
-                                        },
-                                        style: buildCustomStyle(
-                                          FontWeight.w500,
-                                          12,
-                                          0.27,
-                                          Colors.black.withOpacity(.5),
-                                        ),
-                                      );
-                                    },
-                                    optionsViewBuilder: (BuildContext context,
-                                        AutocompleteOnSelected<
-                                                CustomerListModelData>
-                                            onSelected,
-                                        Iterable<CustomerListModelData>
-                                            options) {
-                                      return Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Material(
-                                          elevation: 4,
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            color: Colors.white,
-                                            constraints: const BoxConstraints(
-                                              maxHeight:
-                                                  200, // Set the height limit
-                                            ),
-                                            child: ListView.builder(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              itemCount: options.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                final CustomerListModelData
-                                                    option =
-                                                    options.elementAt(index);
-                                                return MouseRegion(
-                                                  onEnter: (_) {
-                                                    setState(() {
-                                                      hoverMap[index] = true;
-                                                    });
-                                                  },
-                                                  onExit: (_) {
-                                                    setState(() {
-                                                      hoverMap[index] = false;
-                                                    });
-                                                  },
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      onSelected(option);
-                                                    },
-                                                    child: Container(
-                                                      color: hoverMap[index] ==
-                                                              true
-                                                          ? Colors.grey[200]
-                                                          : Colors.white,
-                                                      child: ListTile(
-                                                        title: Text(
-                                                          option.name ?? '',
-                                                          style:
-                                                              buildCustomStyle(
-                                                            FontWeight.w500,
-                                                            12,
-                                                            0.27,
-                                                            Colors.black
-                                                                .withOpacity(
-                                                                    .5),
-                                                          ),
-                                                        ),
-                                                        hoverColor: Colors.grey[
-                                                            200], // Hover effect
-                                                      ),
+                                    } else {
+                                      // Handle error
+                                      debugPrint(
+                                          'Error in response: ${response["message"]}');
+                                    }
+                                  } catch (error) {
+                                    // Handle network or parsing error
+                                    debugPrint('Exception caught: $error');
+                                  }
+                                }
+                                return customerList!;
+                                // !.where(
+                                //     (CustomerListModelData customer) {
+                                //   return customer.name!
+                                //       .toLowerCase()
+                                //       .contains(textEditingValue.text
+                                //           .toLowerCase());
+                                // });
+                              },
+                              displayStringForOption:
+                                  (CustomerListModelData customer) =>
+                                      customer.name ?? '',
+                              onSelected: (CustomerListModelData selection) {
+                                setState(() {
+                                  // mobileNumberTextController.text =
+                                  //     selection.phone!;
+                                  mobileNumberText = selection.phone!;
+                                  selectedCustomer = selection;
+                                });
+                              },
+                              fieldViewBuilder: (BuildContext context,
+                                  mobileNumberTextController,
+                                  FocusNode focusNode,
+                                  VoidCallback onFieldSubmitted) {
+                                return TextField(
+                                  controller: mobileNumberTextController,
+                                  focusNode: focusNode,
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter mobile number',
+                                    hintStyle: buildCustomStyle(
+                                      FontWeight.w500,
+                                      12,
+                                      0.27,
+                                      Colors.grey.withOpacity(.5),
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      mobileNumberText = value;
+                                    });
+                                  },
+                                  style: buildCustomStyle(
+                                    FontWeight.w500,
+                                    12,
+                                    0.27,
+                                    Colors.black.withOpacity(.5),
+                                  ),
+                                );
+                              },
+                              optionsViewBuilder: (BuildContext context,
+                                  AutocompleteOnSelected<CustomerListModelData>
+                                      onSelected,
+                                  Iterable<CustomerListModelData> options) {
+                                return Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Material(
+                                    elevation: 4,
+                                    child: Container(
+                                      width:
+                                          MediaQuery.of(context).size.width / 3,
+                                      color: Colors.white,
+                                      constraints: const BoxConstraints(
+                                        maxHeight: 200, // Set the height limit
+                                      ),
+                                      child: ListView.builder(
+                                        padding: const EdgeInsets.all(8.0),
+                                        itemCount: options.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final CustomerListModelData option =
+                                              options.elementAt(index);
+                                          return MouseRegion(
+                                            onEnter: (_) {
+                                              setState(() {
+                                                hoverMap[index] = true;
+                                              });
+                                            },
+                                            onExit: (_) {
+                                              setState(() {
+                                                hoverMap[index] = false;
+                                              });
+                                            },
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                onSelected(option);
+                                              },
+                                              child: Container(
+                                                color: hoverMap[index] == true
+                                                    ? Colors.grey[200]
+                                                    : Colors.white,
+                                                child: ListTile(
+                                                  title: Text(
+                                                    option.name ?? '',
+                                                    style: buildCustomStyle(
+                                                      FontWeight.w500,
+                                                      12,
+                                                      0.27,
+                                                      Colors.black
+                                                          .withOpacity(.5),
                                                     ),
                                                   ),
-                                                );
-                                              },
+                                                  hoverColor: Colors.grey[
+                                                      200], // Hover effect
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                )
-                              : Container(),
+                                );
+                              },
+                            ),
+                          )
+                          // : Container(),
                         ],
                       ),
                     ),
@@ -1017,7 +1042,7 @@ class _OrderListState extends State<OrderList> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  height: size.height * 0.34, // 280,
+                  height: size.height * 0.35, // 280,
                   // height: size.height * 0.38, // 280,
                   margin: const EdgeInsets.only(
                       left: 10, top: 10, bottom: 10, right: 10),
@@ -1268,24 +1293,24 @@ class _OrderListState extends State<OrderList> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        if (iconColor == 1)
-                          BuildPaymentRow(
-                            amount: _balanceAmount.toStringAsFixed(2),
-                            title: "Balance amount",
-                            secondRowTextStyle: buildCustomStyle(
-                              FontWeightManager.medium,
-                              FontSize.s12,
-                              0.18,
-                              ColorManager.textColorRed,
-                            ),
-                            firstRowTextStyle: buildCustomStyle(
-                              FontWeightManager.bold,
-                              FontSize.s15,
-                              0.23,
-                              ColorManager.textColorRed,
-                            ),
-                            color: ColorManager.textColorRed,
+                        // if (iconColor == 1)
+                        BuildPaymentRow(
+                          amount: _balanceAmount.toStringAsFixed(2),
+                          title: "Balance amount",
+                          secondRowTextStyle: buildCustomStyle(
+                            FontWeightManager.medium,
+                            FontSize.s12,
+                            0.18,
+                            ColorManager.textColorRed,
                           ),
+                          firstRowTextStyle: buildCustomStyle(
+                            FontWeightManager.bold,
+                            FontSize.s15,
+                            0.23,
+                            ColorManager.textColorRed,
+                          ),
+                          color: ColorManager.textColorRed,
+                        ),
                       ],
                     ),
                   )),

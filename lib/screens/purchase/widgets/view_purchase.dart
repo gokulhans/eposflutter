@@ -14,8 +14,8 @@ import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
 import '../../../resources/style_manager.dart';
 
-class ViewVoucherWidget extends StatelessWidget {
-  const ViewVoucherWidget({Key? key}) : super(key: key);
+class ViewPurchaseWidget extends StatelessWidget {
+  const ViewPurchaseWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class ViewVoucherWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Voucher Details",
+                  "Show Purchase",
                   style: buildCustomStyle(FontWeightManager.semiBold,
                       FontSize.s20, 0.30, ColorManager.textColor),
                 ),
@@ -100,7 +100,7 @@ class ViewVoucherWidget extends StatelessWidget {
               margin: const EdgeInsets.only(
                   top: 20, bottom: 0, left: 10, right: 10),
               child: Text(
-                " Voucher Details",
+                "Show Purchase",
                 style: buildCustomStyle(FontWeightManager.semiBold,
                     FontSize.s15, 0.30, Colors.white),
               ),
@@ -126,7 +126,7 @@ class ViewVoucherWidget extends StatelessWidget {
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: "Purchase Date: ",
+                                    text: "Purchase Name: ",
                                     style: buildCustomStyle(
                                         FontWeightManager.bold,
                                         FontSize.s15,
@@ -137,131 +137,6 @@ class ViewVoucherWidget extends StatelessWidget {
                                     text: voucherDetails == null
                                         ? ""
                                         : voucherDetails.purchaseDate,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Store: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null ? "" : store,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Voucher Number: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.voucherNumber ?? "",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Amount: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "${voucherDetails == null ? "" : voucherDetails.amountTotal}",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Tax: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.taxAmount ?? "",
                                     // style: buildCustomStyle(
                                     //     FontWeightManager.semiBold,
                                     //     FontSize.s15,
@@ -315,7 +190,7 @@ class ViewVoucherWidget extends StatelessWidget {
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: "Supplier: ",
+                                    text: "Quantity: ",
                                     style: buildCustomStyle(
                                         FontWeightManager.bold,
                                         FontSize.s15,
@@ -324,7 +199,7 @@ class ViewVoucherWidget extends StatelessWidget {
                                   ),
                                   TextSpan(
                                     text:
-                                        voucherDetails == null ? "" : supplier,
+                                        "${voucherDetails == null ? "" : voucherDetails.quantity}",
                                     // style: buildCustomStyle(
                                     //     FontWeightManager.semiBold,
                                     //     FontSize.s15,
@@ -337,8 +212,66 @@ class ViewVoucherWidget extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child:
-                              Container(), // Empty container to maintain row structure
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 8.0, left: 8.0, top: 10),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "Status: ",
+                                    style: buildCustomStyle(
+                                        FontWeightManager.bold,
+                                        FontSize.s15,
+                                        0.30,
+                                        ColorManager.textColor),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "${voucherDetails == null ? "" : voucherDetails.status}",
+                                    // style: buildCustomStyle(
+                                    //     FontWeightManager.,
+                                    //     FontSize.s15,
+                                    //     0.30,
+                                    //     ColorManager.textColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 8.0, left: 8.0, top: 10),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "Price: ",
+                                    style: buildCustomStyle(
+                                        FontWeightManager.bold,
+                                        FontSize.s15,
+                                        0.30,
+                                        ColorManager.textColor),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "${voucherDetails == null ? "" : voucherDetails.amountTotal ?? ""}",
+                                    // style: buildCustomStyle(
+                                    //     FontWeightManager.semiBold,
+                                    //     FontSize.s15,
+                                    //     0.30,
+                                    //     ColorManager.textColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

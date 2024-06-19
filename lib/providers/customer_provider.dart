@@ -79,4 +79,37 @@ class CustomerProvider {
       rethrow;
     } finally {}
   }
+
+// *********************** FIND CUSTOMER BY PHONE API ***************************************************
+
+  Future<dynamic> findCustomerByPhone(
+      String accessToken, String phoneNumber, BuildContext context) async {
+    final url = Uri.parse('${APPUrl.findCustomerByPhone}?phone=$phoneNumber');
+
+    try {
+      debugPrint('accessToken: $accessToken');
+      debugPrint('phoneNumber: $phoneNumber');
+
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json'
+      });
+
+      debugPrint('response: ${response.toString()}');
+      debugPrint('response status: ${response.statusCode}');
+      debugPrint('response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        debugPrint('Decoded response: ${json.decode(response.body)}');
+        return json.decode(response.body);
+      } else if (response.statusCode > 400) {
+        throw const HttpException("Customer Not Found. Try Again!");
+      } else {
+        throw const HttpException('Failed to load data, Try Again Later!');
+      }
+    } catch (error) {
+      debugPrint('Error: ${error.toString()}');
+      rethrow;
+    }
+  }
 }

@@ -20,6 +20,7 @@ import 'package:pos_machine/screens/product/stock.dart';
 import 'package:pos_machine/screens/purchase/purchase_voucher.dart';
 import 'package:pos_machine/screens/purchase/widgets/add_purchase.dart';
 import 'package:pos_machine/screens/profile/open_profile.dart';
+import 'package:pos_machine/screens/purchase/widgets/view_purchase.dart';
 import 'package:pos_machine/screens/purchase/widgets/view_voucher.dart';
 import 'package:pos_machine/screens/sales/sales.dart';
 import 'package:pos_machine/screens/support/support.dart';
@@ -82,5 +83,6 @@ class SideBarController extends GetxController {
     StockDetailsWidget(), //33
     EditCategoryPageScreen(), //34
     TabBarForEditProduct(), //35
+    ViewPurchaseWidget(), //36
   ];
 }

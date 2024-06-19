@@ -529,10 +529,110 @@ class AddProductPageScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 15.0),
                         child: Row(
                           children: [
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 10.0),
+                            //   child: CustomRoundButton(
+                            //     title: "Submit",
+                            //     fct: () async {
+                            //       debugPrint(parentCategory);
+                            //       idController.text =
+                            //           categoryProvider.getParentCategory;
+                            //       debugPrint("idController.tex");
+                            //       debugPrint(idController.text);
+                            //       debugPrint(
+                            //           "selectedCurrency $selectedCurrency");
+                            //       debugPrint("selectedUnit $selectedUnit");
+                            //       if (formKey.currentState!.validate()) {
+                            //         formKey.currentState!.save();
+                            //         debugPrint("submit");
+                            //         debugPrint(
+                            //             "categoryIdController.text ${idController.text}");
+
+                            //         if (productPriceController.text.isEmpty ||
+                            //             productSlugController.text.isEmpty ||
+                            //             productNameController.text.isEmpty ||
+                            //             selectedCurrency == null ||
+                            //             selectedUnit == null) {
+                            //           showScaffold(
+                            //             context: context,
+                            //             message:
+                            //                 'Please Fill the Required Fields',
+                            //           );
+                            //           // sideBarController.index.value = 14;
+                            //         } else {
+                            //           showDialog(
+                            //               context: context,
+                            //               barrierDismissible: false,
+                            //               builder: (context) {
+                            //                 return const Center(
+                            //                   child: CircularProgressIndicator
+                            //                       .adaptive(),
+                            //                 );
+                            //               });
+
+                            //           String? accessToken =
+                            //               Provider.of<AuthModel>(context,
+                            //                       listen: false)
+                            //                   .token;
+                            //           debugPrint(
+                            //               "accessToken From AuthModel $accessToken");
+                            //           gridSelectionProvider
+                            //               .addProductAPI(
+                            //                   productName:
+                            //                       productNameController.text,
+                            //                   price:
+                            //                       productPriceController.text,
+                            //                   barcode:
+                            //                       productBarcodeController.text,
+                            //                   accessToken: accessToken ?? "",
+                            //                   categoryId: idController.text,
+                            //                   unit: selectedUnit ?? "Piece",
+                            //                   slug: productSlugController.text,
+                            //                   currency:
+                            //                       selectedCurrency ?? "INR")
+                            //               .then((value) {
+                            //             if (value["status"] == "success") {
+                            //               gridSelectionProvider
+                            //                   .listAllProductsAPI(
+                            //                       categoryId: 0);
+                            //               showScaffold(
+                            //                 context: context,
+                            //                 message: '${value["message"]}',
+                            //               );
+
+                            //               gridSelectionProvider
+                            //                   .setProductIDForAdding(
+                            //                       value["product_id"]);
+                            //               // Navigator.pop(context);
+                            //               // productBarcodeController.clear();
+                            //               // productNameController.clear();
+                            //               // productSlugController.clear();
+                            //               // productPriceController.clear();
+                            //               navigateToScreen(1);
+                            //             } else {
+                            //               debugPrint("errors.password !=null");
+                            //               Navigator.pop(context);
+                            //               showScaffold(
+                            //                 context: context,
+                            //                 message: '${value["message"]}',
+                            //               );
+                            //               // sideBarController.index.value = 14;
+                            //             }
+                            //           });
+                            //         }
+                            //       }
+                            //     },
+                            //     height: 50,
+                            //     width: size.width * 0.19,
+                            //     fontSize: FontSize.s12,
+                            //   ),
+                            // ),
                             Padding(
                               padding: const EdgeInsets.only(left: 10.0),
                               child: CustomRoundButton(
-                                title: "Submit",
+                                title: "Next",
+                                boxColor: Colors.white,
+                                textColor: ColorManager.kPrimaryColor,
                                 fct: () async {
                                   debugPrint(parentCategory);
                                   idController.text =
@@ -549,7 +649,6 @@ class AddProductPageScreen extends StatelessWidget {
                                         "categoryIdController.text ${idController.text}");
 
                                     if (productPriceController.text.isEmpty ||
-                                        productBarcodeController.text.isEmpty ||
                                         productSlugController.text.isEmpty ||
                                         productNameController.text.isEmpty ||
                                         selectedCurrency == null ||
@@ -559,7 +658,7 @@ class AddProductPageScreen extends StatelessWidget {
                                         message:
                                             'Please Fill the Required Fields',
                                       );
-                                      sideBarController.index.value = 14;
+                                      // sideBarController.index.value = 14;
                                     } else {
                                       showDialog(
                                           context: context,
@@ -577,6 +676,12 @@ class AddProductPageScreen extends StatelessWidget {
                                               .token;
                                       debugPrint(
                                           "accessToken From AuthModel $accessToken");
+
+                                      await categoryProvider
+                                          .setCategoryIdforProp(
+                                              categoryId:
+                                                  int.parse(idController.text));
+
                                       gridSelectionProvider
                                           .addProductAPI(
                                               productName:
@@ -605,10 +710,10 @@ class AddProductPageScreen extends StatelessWidget {
                                               .setProductIDForAdding(
                                                   value["product_id"]);
                                           Navigator.pop(context);
-                                          productBarcodeController.clear();
-                                          productNameController.clear();
-                                          productSlugController.clear();
-                                          productPriceController.clear();
+                                          // productBarcodeController.clear();
+                                          // productNameController.clear();
+                                          // productSlugController.clear();
+                                          // productPriceController.clear();
                                           navigateToScreen(1);
                                         } else {
                                           debugPrint("errors.password !=null");
@@ -617,25 +722,13 @@ class AddProductPageScreen extends StatelessWidget {
                                             context: context,
                                             message: '${value["message"]}',
                                           );
-                                          sideBarController.index.value = 14;
+                                          // sideBarController.index.value = 14;
                                         }
                                       });
                                     }
                                   }
-                                },
-                                height: 50,
-                                width: size.width * 0.19,
-                                fontSize: FontSize.s12,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: CustomRoundButton(
-                                title: "Next",
-                                boxColor: Colors.white,
-                                textColor: ColorManager.kPrimaryColor,
-                                fct: () async {
-                                  navigateToScreen(1);
+                                  // old data
+                                  // navigateToScreen(1);
                                   //  sideBarController.index.value = 14;
                                 },
                                 height: 50,

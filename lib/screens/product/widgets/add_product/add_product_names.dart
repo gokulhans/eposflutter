@@ -179,10 +179,89 @@ class AddProductNamePageScreen extends StatelessWidget {
                             fontSize: FontSize.s12,
                           ),
                         ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 10.0),
+                        //   child: CustomRoundButton(
+                        //     title: "Submit",
+                        //     fct: () async {
+                        //       int? productId =
+                        //           gridSelectionProvider.getProductId;
+                        //       if (productId == null) {
+                        //         showScaffold(
+                        //           context: context,
+                        //           message: 'Failed',
+                        //         );
+                        //       } else {
+                        //         if (productNameArabicController.text.isEmpty ||
+                        //             productNameHindiController.text.isEmpty ||
+                        //             productNameArabicController.text.isEmpty) {
+                        //           showScaffold(
+                        //             context: context,
+                        //             message: 'Please Fill the Required Fields',
+                        //           );
+                        //           sideBarController.index.value = 14;
+                        //         } else {
+                        //           showDialog(
+                        //               context: context,
+                        //               barrierDismissible: false,
+                        //               builder: (context) {
+                        //                 return const Center(
+                        //                   child: CircularProgressIndicator
+                        //                       .adaptive(),
+                        //                 );
+                        //               });
+                        //           String? accessToken = Provider.of<AuthModel>(
+                        //                   context,
+                        //                   listen: false)
+                        //               .token;
+                        //           debugPrint(
+                        //               "accessToken From AuthModel $accessToken");
+                        //           gridSelectionProvider
+                        //               .addProductNamesAPI(
+                        //                   productId: "$productId",
+                        //                   productNameEnglish:
+                        //                       productNameEnglishController.text,
+                        //                   productNameHindi:
+                        //                       productNameHindiController.text,
+                        //                   productNameArabic:
+                        //                       productNameArabicController.text,
+                        //                   accessToken: accessToken ?? "")
+                        //               .then((value) {
+                        //             if (value["status"] == "success") {
+                        //               showScaffold(
+                        //                 context: context,
+                        //                 message: '${value["message"]}',
+                        //               );
+
+                        //               Navigator.pop(context);
+                        //               navigateToScreen(2);
+                        //               productNameArabicController.clear();
+                        //               productNameEnglishController.clear();
+                        //               productNameHindiController.clear();
+                        //             } else {
+                        //               Navigator.pop(context);
+                        //               showScaffold(
+                        //                 context: context,
+                        //                 message: '${value["message"]}',
+                        //               );
+                        //               sideBarController.index.value = 14;
+                        //             }
+                        //           });
+                        //         }
+                        //       }
+                        //     },
+                        //     height: 50,
+                        //     width: size.width * 0.19,
+                        //     fontSize: FontSize.s12,
+                        //   ),
+                        // ),
+
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: CustomRoundButton(
-                            title: "Submit",
+                            title: "Next",
+                            boxColor: Colors.white,
+                            textColor: ColorManager.kPrimaryColor,
                             fct: () async {
                               int? productId =
                                   gridSelectionProvider.getProductId;
@@ -199,7 +278,7 @@ class AddProductNamePageScreen extends StatelessWidget {
                                     context: context,
                                     message: 'Please Fill the Required Fields',
                                   );
-                                  sideBarController.index.value = 14;
+                                  // sideBarController.index.value = 14;
                                 } else {
                                   showDialog(
                                       context: context,
@@ -235,34 +314,22 @@ class AddProductNamePageScreen extends StatelessWidget {
 
                                       Navigator.pop(context);
                                       navigateToScreen(2);
-                                      productNameArabicController.clear();
-                                      productNameEnglishController.clear();
-                                      productNameHindiController.clear();
+                                      // productNameArabicController.clear();
+                                      // productNameEnglishController.clear();
+                                      // productNameHindiController.clear();
                                     } else {
                                       Navigator.pop(context);
                                       showScaffold(
                                         context: context,
                                         message: '${value["message"]}',
                                       );
-                                      sideBarController.index.value = 14;
+                                      // sideBarController.index.value = 14;
                                     }
                                   });
                                 }
                               }
-                            },
-                            height: 50,
-                            width: size.width * 0.19,
-                            fontSize: FontSize.s12,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: CustomRoundButton(
-                            title: "Next",
-                            boxColor: Colors.white,
-                            textColor: ColorManager.kPrimaryColor,
-                            fct: () async {
-                              navigateToScreen(2);
+                              // old data
+                              // navigateToScreen(2);
                               // sideBarController.index.value = 14;
                             },
                             height: 50,

@@ -190,6 +190,7 @@ class GridSelectionProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   //          *********************** LIST ALL PRODUCTS FUNCTION RETURNING PRODUCT LIST API ***************************************************
 
   Future<List<GetProduct>> listAllProductList({required int categoryId}) async {
@@ -308,29 +309,41 @@ class GridSelectionProvider extends ChangeNotifier {
   }
   //          *********************** ADD PRODUCT PROPS API ***************************************************
 
-  Future<dynamic> addProductPropsAPI(
-      {required String productId,
-      required String productColor1,
-      required String productColor2,
-      required String productColor3,
-      required String productPropID,
-      required String productPropCode,
-      required String accessToken}) async {
+  Future<dynamic> addProductPropsAPI({
+    required String productId,
+    required Map<String, List<String>> productPropData,
+    required Map<String, String> productPropStockApplicable,
+    String? accessToken,
+    required List<String> productPropCodes,
+    required List<String> productPropIds,
+  }) async {
+    // final Map<String, dynamic> apiBodyData = {
+    //   'prop_id[]': "1",
+    //   'prop_code[]': "MANUFACTURER",
+    //   'propdata': {
+    //     'MANUFACTURER': ['USHA']
+    //   },
+    //   'product_id': 79,
+    //   'stock_applicable[MANUFACTURER]': "Y",
+    // };
+
     final Map<String, dynamic> apiBodyData = {
+      'prop_id[]': productPropIds,
+      'prop_code[]': productPropCodes,
+      'propdata': productPropData,
       'product_id': productId,
-      'propdata[PRODUCT_COLOR][]': productColor1,
-      // 'propdata[PRODUCT_COLOR][]': productColor2,
-      // 'propdata[PRODUCT_COLOR][]':productColor3,
-      'prop_id[]': productPropID,
-      'prop_code[]': productPropCode
+      'stock_applicable': productPropStockApplicable,
     };
+
+    debugPrint("add prop body ${apiBodyData.toString()}");
+
 //     Two keys in a map literal shouldn't be equal.
 // Change or remove the duplicate key.
     final Map<String, dynamic> error = {
       'status': "failed",
       'message': "Something went wrong, Please try Again!"
     };
-    debugPrint(apiBodyData.toString());
+    debugPrint("apiBodyData + ${apiBodyData.toString()}");
     final url = Uri.parse(APPUrl.addProductPropsUrl);
     try {
       final response =
@@ -364,6 +377,7 @@ class GridSelectionProvider extends ChangeNotifier {
       'alt[]': alt,
       'file_path[]': filePath,
     };
+    debugPrint("apiBodyData + ${apiBodyData.toString()}" + filePath);
     final Map<String, dynamic> error = {
       'status': "failed",
       'message': "Something went wrong, Please try Again!"
@@ -378,7 +392,9 @@ class GridSelectionProvider extends ChangeNotifier {
       debugPrint('inside ${response.statusCode}');
       if (response.statusCode == 200) {
         debugPrint(json.decode(response.body).toString());
-
+        listAllProducts(categoryId: 0);
+        listAllProductsAPI(categoryId: 0);
+        notifyListeners();
         return json.decode(response.body);
       } else {
         return error;
@@ -472,22 +488,23 @@ class GridSelectionProvider extends ChangeNotifier {
   }
   //          *********************** ADD PRODUCT PROPS API ***************************************************
 
-  Future<dynamic> editProductPropsAPI(
-      {required String productId,
-      required String productColor1,
-      required String productColor2,
-      required String productColor3,
-      required String productPropID,
-      required String productPropCode,
-      required String accessToken}) async {
+  Future<dynamic> editProductPropsAPI({
+    required String productId,
+    required Map<String, List<String>> productPropData,
+    required Map<String, String> productPropStockApplicable,
+    required List<String> productPropCodes,
+    required List<String> productPropIds,
+    required String accessToken,
+  }) async {
     final Map<String, dynamic> apiBodyData = {
-      'productId': productId,
-      'propdata[PRODUCT_COLOR][]': productColor1,
-      // 'propdata[PRODUCT_COLOR][]': productColor2,
-      // 'propdata[PRODUCT_COLOR][]':productColor3,
-      'prop_id[]': productPropID,
-      'prop_code[]': productPropCode
+      'prop_id[]': productPropIds,
+      'prop_code[]': productPropCodes,
+      'propdata': productPropData,
+      'product_id': productId,
+      'stock_applicable': productPropStockApplicable,
     };
+
+    debugPrint("edit prop body ${apiBodyData.toString()}");
 //     Two keys in a map literal shouldn't be equal.
 // Change or remove the duplicate key.
     final Map<String, dynamic> error = {

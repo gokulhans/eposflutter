@@ -55,6 +55,7 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
   final TextEditingController idController = TextEditingController(text: "0");
   final TextEditingController categoryIDController =
       TextEditingController(text: "0");
+
   GetStoreModelData? storeSelected;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   SideBarController sideBarController = Get.put(SideBarController());
@@ -93,6 +94,10 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
 
     List<GetProduct>? productList =
         gridSelectionProvider.getSelectedProductListAPI;
+
+    String? parentCategory;
+    // Access the category list
+    List<Category>? categoryList = categoryProvider.category;
 
     return SafeArea(
       child: Container(
@@ -154,155 +159,284 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                     thickness: 0.5,
                                   ),
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      SizedBox(
-                                        height: size.height * .17,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            BuildTextTile(
-                                              isStarRed: true,
-                                              isTextField: true,
-                                              title: "Select Product ",
-                                              textStyle: buildCustomStyle(
-                                                FontWeightManager.regular,
-                                                FontSize.s14,
-                                                0.27,
-                                                Colors.black.withOpacity(0.6),
-                                              ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          BuildTextTile(
+                                            title: "Select Category",
+                                            isStarRed: true,
+                                            isTextField: true,
+                                            textStyle: buildCustomStyle(
+                                              FontWeightManager.regular,
+                                              FontSize.s14,
+                                              0.27,
+                                              Colors.black.withOpacity(0.6),
                                             ),
-                                            BuildBoxShadowContainer(
-                                              circleRadius: 7,
-                                              alignment: Alignment.centerLeft,
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 0),
-                                              padding: const EdgeInsets.only(
-                                                  left: 15),
-                                              height: size.height * .07,
-                                              width: size.width / 3,
-                                              child:
-                                                  DropdownButtonHideUnderline(
-                                                child:
-                                                    DropdownButton2<GetProduct>(
-                                                  isExpanded: true,
-                                                  hint: Text(
-                                                    '--Select--',
-                                                    style: buildCustomStyle(
-                                                      FontWeightManager.regular,
-                                                      FontSize.s14,
-                                                      0.27,
-                                                      Colors.black
-                                                          .withOpacity(0.6),
-                                                    ),
-                                                  ),
-                                                  items: productList!
-                                                      .map((item) =>
-                                                          DropdownMenuItem(
-                                                              value: item,
-                                                              child: Text(
-                                                                item.productName ??
-                                                                    "",
+                                          ),
+                                          BuildBoxShadowContainer(
+                                            circleRadius: 7,
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(
+                                              left: 15,
+                                            ),
+                                            padding:
+                                                const EdgeInsets.only(left: 15),
+                                            height: size.height * .07,
+                                            width: size.width / 3,
+                                            child: DropdownButtonFormField<
+                                                Category>(
+                                              decoration: const InputDecoration(
+                                                border: InputBorder
+                                                    .none, // Remove the underline
+                                              ),
+                                              value: categoryProvider
+                                                          .selectedCategoryIndex >=
+                                                      0
+                                                  ? categoryList![
+                                                      categoryProvider
+                                                          .selectedCategoryIndex]
+                                                  : null,
+                                              hint: Text(
+                                                'Select Category',
+                                                style: buildCustomStyle(
+                                                  FontWeightManager.medium,
+                                                  FontSize.s12,
+                                                  0.27,
+                                                  ColorManager.textColor
+                                                      .withOpacity(.5),
+                                                ),
+                                              ),
+                                              items: categoryList!
+                                                  .map((Category category) {
+                                                    return DropdownMenuItem<
+                                                            Category>(
+                                                        value: category,
+                                                        child: category
+                                                                    .categoryName ==
+                                                                "ALL"
+                                                            ? Text(
+                                                                ' Please Select',
                                                                 style:
                                                                     buildCustomStyle(
                                                                   FontWeightManager
-                                                                      .regular,
-                                                                  FontSize.s14,
+                                                                      .medium,
+                                                                  FontSize.s12,
                                                                   0.27,
-                                                                  Colors.black
+                                                                  ColorManager
+                                                                      .textColor
                                                                       .withOpacity(
-                                                                          0.6),
+                                                                          .5),
                                                                 ),
-                                                              )))
-                                                      .toList(),
-                                                  value: selectedValue,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      selectedValue = value;
-                                                    });
-                                                    idController.text = value ==
-                                                            null
-                                                        ? ""
-                                                        : "${value.productId ?? 0}";
-                                                    debugPrint(
-                                                        idController.text);
-                                                    ProductPrice? price =
-                                                        value?.price;
-                                                    productAvailabeStockController.text =
-                                                        value == null
-                                                            ? ""
-                                                            : value.numberOfProductsAvailble!
-                                                                    .isEmpty
-                                                                ? "0"
-                                                                : value.numberOfProductsAvailble ??
-                                                                    "0";
+                                                              )
+                                                            : Text(
+                                                                category.categoryName ??
+                                                                    '',
+                                                                style:
+                                                                    buildCustomStyle(
+                                                                  FontWeightManager
+                                                                      .medium,
+                                                                  FontSize.s12,
+                                                                  0.27,
+                                                                  ColorManager
+                                                                      .textColor
+                                                                      .withOpacity(
+                                                                          .5),
+                                                                ),
+                                                              ));
+                                                  })
+                                                  .toSet()
+                                                  .toList(),
+                                              onChanged:
+                                                  (Category? selectedCategory) {
+                                                if (selectedCategory != null) {
+                                                  // Update the selected category in the provider
+                                                  categoryProvider
+                                                      .selectCategory(
+                                                    categoryList.indexOf(
+                                                        selectedCategory),
+                                                    selectedCategory
+                                                            .categoryName ??
+                                                        '',
+                                                    selectedCategory
+                                                            .productsCount ??
+                                                        0,
+                                                  );
+                                                  parentCategory =
+                                                      "${selectedCategory.categoryId ?? 0}";
+                                                  debugPrint(parentCategory);
+                                                  categoryProvider
+                                                      .setParentCategory(
+                                                          "${selectedCategory.categoryId ?? 0}");
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          BuildTextTile(
+                                            isStarRed: true,
+                                            isTextField: true,
+                                            title: "Select Product ",
+                                            textStyle: buildCustomStyle(
+                                              FontWeightManager.regular,
+                                              FontSize.s14,
+                                              0.27,
+                                              Colors.black.withOpacity(0.6),
+                                            ),
+                                          ),
+                                          BuildBoxShadowContainer(
+                                            circleRadius: 7,
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 0),
+                                            padding:
+                                                const EdgeInsets.only(left: 15),
+                                            height: size.height * .07,
+                                            width: size.width / 3,
+                                            child: DropdownButtonHideUnderline(
+                                              child:
+                                                  DropdownButton2<GetProduct>(
+                                                isExpanded: true,
+                                                hint: Text(
+                                                  '--Select--',
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.regular,
+                                                    FontSize.s14,
+                                                    0.27,
+                                                    Colors.black
+                                                        .withOpacity(0.6),
+                                                  ),
+                                                ),
+                                                items: productList!
+                                                    .map((item) =>
+                                                        DropdownMenuItem(
+                                                            value: item,
+                                                            child: Text(
+                                                              item.productName ??
+                                                                  "",
+                                                              style:
+                                                                  buildCustomStyle(
+                                                                FontWeightManager
+                                                                    .regular,
+                                                                FontSize.s14,
+                                                                0.27,
+                                                                Colors.black
+                                                                    .withOpacity(
+                                                                        0.6),
+                                                              ),
+                                                            )))
+                                                    .toList(),
+                                                value: selectedValue,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    selectedValue = value;
+                                                  });
+                                                  idController.text = value ==
+                                                          null
+                                                      ? ""
+                                                      : "${value.productId ?? 0}";
+                                                  debugPrint(idController.text);
+                                                  ProductPrice? price =
+                                                      value?.price;
+                                                  productAvailabeStockController.text =
+                                                      value == null
+                                                          ? ""
+                                                          : value.numberOfProductsAvailble!
+                                                                  .isEmpty
+                                                              ? "0"
+                                                              : value.numberOfProductsAvailble ??
+                                                                  "0";
 
-                                                    productCurrencyController
-                                                        .text = value ==
-                                                            null
-                                                        ? ""
-                                                        : value.currency ?? "";
-                                                    productSlugController
-                                                        .text = value ==
-                                                            null
-                                                        ? ""
-                                                        : value.productSlug ??
-                                                            "";
-                                                    productPriceController
-                                                        .text = value ==
-                                                            null
-                                                        ? ""
-                                                        : "${price == null ? 0 : price.price ?? 0}";
-                                                  },
-                                                  buttonStyleData:
-                                                      ButtonStyleData(
-                                                    height: size.height * .07,
-                                                    width:
-                                                        size.width / 3, //3.05,
+                                                  productCurrencyController
+                                                      .text = value ==
+                                                          null
+                                                      ? ""
+                                                      : value.currency ?? "";
+                                                  productSlugController.text =
+                                                      value == null
+                                                          ? ""
+                                                          : value.productSlug ??
+                                                              "";
+                                                  productPriceController
+                                                      .text = value ==
+                                                          null
+                                                      ? ""
+                                                      : "${price == null ? 0 : price.price ?? 0}";
+                                                },
+                                                buttonStyleData:
+                                                    ButtonStyleData(
+                                                  height: size.height * .07,
+                                                  width: size.width / 3, //3.05,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 14, right: 14),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            7),
+                                                    // border: Border.all(
+                                                    //   color: Colors.grey.withOpacity(0.4),
+                                                    // ),
+                                                    color: Colors.white,
+                                                  ),
+                                                  //  elevation: 1,
+                                                ),
+                                                dropdownStyleData:
+                                                    const DropdownStyleData(
+                                                  maxHeight: 300,
+                                                ),
+                                                menuItemStyleData:
+                                                    const MenuItemStyleData(
+                                                  height: 40,
+                                                ),
+                                                dropdownSearchData:
+                                                    DropdownSearchData(
+                                                  searchController:
+                                                      textEditingController,
+                                                  searchInnerWidgetHeight: 50,
+                                                  searchInnerWidget: Container(
+                                                    height: 50,
                                                     padding:
                                                         const EdgeInsets.only(
-                                                            left: 14,
-                                                            right: 14),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              7),
-                                                      // border: Border.all(
-                                                      //   color: Colors.grey.withOpacity(0.4),
-                                                      // ),
-                                                      color: Colors.white,
+                                                      top: 8,
+                                                      bottom: 4,
+                                                      right: 8,
+                                                      left: 8,
                                                     ),
-                                                    //  elevation: 1,
-                                                  ),
-                                                  dropdownStyleData:
-                                                      const DropdownStyleData(
-                                                    maxHeight: 300,
-                                                  ),
-                                                  menuItemStyleData:
-                                                      const MenuItemStyleData(
-                                                    height: 40,
-                                                  ),
-                                                  dropdownSearchData:
-                                                      DropdownSearchData(
-                                                    searchController:
-                                                        textEditingController,
-                                                    searchInnerWidgetHeight: 50,
-                                                    searchInnerWidget:
-                                                        Container(
-                                                      height: 50,
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        top: 8,
-                                                        bottom: 4,
-                                                        right: 8,
-                                                        left: 8,
+                                                    child: TextFormField(
+                                                      expands: true,
+                                                      maxLines: null,
+                                                      style: buildCustomStyle(
+                                                        FontWeightManager
+                                                            .regular,
+                                                        FontSize.s14,
+                                                        0.27,
+                                                        Colors.black
+                                                            .withOpacity(0.6),
                                                       ),
-                                                      child: TextFormField(
-                                                        expands: true,
-                                                        maxLines: null,
-                                                        style: buildCustomStyle(
+                                                      controller:
+                                                          textEditingController,
+                                                      cursorColor: ColorManager
+                                                          .kPrimaryColor,
+                                                      decoration:
+                                                          decoration.copyWith(
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 8,
+                                                        ),
+                                                        hintText: '',
+                                                        hintStyle:
+                                                            buildCustomStyle(
                                                           FontWeightManager
                                                               .regular,
                                                           FontSize.s14,
@@ -310,77 +444,50 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                           Colors.black
                                                               .withOpacity(0.6),
                                                         ),
-                                                        controller:
-                                                            textEditingController,
-                                                        cursorColor:
-                                                            ColorManager
-                                                                .kPrimaryColor,
-                                                        decoration:
-                                                            decoration.copyWith(
-                                                          contentPadding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                            horizontal: 10,
-                                                            vertical: 8,
-                                                          ),
-                                                          hintText: '',
-                                                          hintStyle:
-                                                              buildCustomStyle(
-                                                            FontWeightManager
-                                                                .regular,
-                                                            FontSize.s14,
-                                                            0.27,
-                                                            Colors.black
-                                                                .withOpacity(
-                                                                    0.6),
-                                                          ),
-                                                          border:
-                                                              OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        7),
-                                                          ),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(7),
                                                         ),
                                                       ),
                                                     ),
-                                                    searchMatchFn:
-                                                        (item, searchValue) {
-                                                      return item
-                                                          .value!.productName
-                                                          .toString()
-                                                          .toLowerCase()
-                                                          .contains(searchValue
-                                                              .toLowerCase());
-                                                    },
                                                   ),
-                                                  //This to clear the search value when you close the menu
-                                                  onMenuStateChange: (isOpen) {
-                                                    if (!isOpen) {
-                                                      textEditingController
-                                                          .clear();
-                                                    }
+                                                  searchMatchFn:
+                                                      (item, searchValue) {
+                                                    return item
+                                                        .value!.productName
+                                                        .toString()
+                                                        .toLowerCase()
+                                                        .contains(searchValue
+                                                            .toLowerCase());
                                                   },
                                                 ),
+                                                //This to clear the search value when you close the menu
+                                                onMenuStateChange: (isOpen) {
+                                                  if (!isOpen) {
+                                                    textEditingController
+                                                        .clear();
+                                                  }
+                                                },
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: size.height * .17,
-                                        child: BuildTextFieldColumn(
-                                            isLeft: true,
-                                            size: size,
-                                            isStarRed: true,
-                                            isTextField: true,
-                                            controller: productSlugController,
-                                            title: "Slug"),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
+                                      BuildTextFieldColumn(
+                                          isLeft: true,
+                                          size: size,
+                                          isStarRed: true,
+                                          isTextField: true,
+                                          controller: productSlugController,
+                                          title: "Slug"),
                                       BuildTextFieldColumn(
                                           isLeft: false,
                                           size: size,
@@ -388,6 +495,12 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                           isTextField: true,
                                           controller: productPriceController,
                                           title: "Product Price"),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
                                       BuildTextFieldColumn(
                                           isLeft: true,
                                           isStarRed: true,
@@ -396,10 +509,6 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                           hintText: 'Enter...',
                                           controller: productCurrencyController,
                                           title: "Currency"),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
                                       BuildTextFieldColumn(
                                           isLeft: false,
                                           size: size,

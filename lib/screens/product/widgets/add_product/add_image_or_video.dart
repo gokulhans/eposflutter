@@ -389,7 +389,7 @@ class _AddProductImageOrVideoScreenState
                                           context: context,
                                           message: 'Failed',
                                         );
-                                        sideBarController.index.value = 14;
+                                        // sideBarController.index.value = 14;
                                       } else {
                                         if (imageAltController.text.isEmpty ||
                                             imageFilePathController
@@ -879,7 +879,7 @@ class _AddProductImageOrVideoScreenState
                                                             "showDialog $index $selectedImageIndex");
                                                         imageFilePathController
                                                                 .text =
-                                                            image.path ?? "";
+                                                            image.id.toString();
                                                         imageAltController
                                                                 .text =
                                                             image.alt ?? "";
@@ -1195,8 +1195,9 @@ class _AddProductImageOrVideoScreenState
                                                         debugPrint(
                                                             "showDialog $index $selectedImageIndex");
                                                         pathEditingController
-                                                                .text =
-                                                            image.path ?? "";
+                                                            .text = image.id
+                                                                .toString() ??
+                                                            "";
                                                         altEditingController
                                                                 .text =
                                                             image.alt ?? "";

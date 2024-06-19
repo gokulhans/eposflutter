@@ -81,6 +81,9 @@ class ViewCategory {
         status: json["status"],
         categoryIconFullPath: json["category_icon_full_path"],
         categoryImageFullPath: json["category_image_full_path"],
+        names: json["names"] == null
+            ? null
+            : CategoryNames.fromJson(json["names"]),
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -103,6 +106,7 @@ class ViewCategory {
         "status": status,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
+        "names": names?.toJson(),
       };
 }
 

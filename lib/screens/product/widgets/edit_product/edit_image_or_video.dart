@@ -82,7 +82,6 @@ class _EditProductImageOrVideoScreenState
 
   @override
   Widget build(BuildContext context) {
-    
     GridSelectionProvider gridSelectionProvider =
         Provider.of<GridSelectionProvider>(context);
     Size size = MediaQuery.of(context).size;
@@ -93,7 +92,6 @@ class _EditProductImageOrVideoScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           SizedBox(
             height: size.height * 0.8,
             width: double.infinity,
@@ -111,6 +109,120 @@ class _EditProductImageOrVideoScreenState
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(
+                            // height: size.height * 0.8,
+                            width: double.infinity,
+                            child: BuildBoxShadowContainer(
+                                circleRadius: 7,
+                                // margin: const EdgeInsets.only(bottom: 10),
+                                blurRadius: 6,
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, right: 20, top: 30, bottom: 10),
+                                offsetValue: const Offset(1, 1),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    getProduct != null &&
+                                            getProduct.attachment != null &&
+                                            getProduct.attachment!.isNotEmpty
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: getProduct.attachment!
+                                                .map((attach) {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 12.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        bottom: 8.0,
+                                                        left: 8.0,
+                                                        top: 10,
+                                                      ),
+                                                      child: Text.rich(
+                                                        TextSpan(
+                                                          text: 'Title : ',
+                                                          style: buildCustomStyle(
+                                                              FontWeightManager
+                                                                  .semiBold,
+                                                              FontSize.s15,
+                                                              0.30,
+                                                              ColorManager
+                                                                  .textColor),
+                                                          children: <TextSpan>[
+                                                            TextSpan(
+                                                              text:
+                                                                  "${attach.title}",
+                                                              style: buildCustomStyle(
+                                                                  FontWeightManager
+                                                                      .medium,
+                                                                  FontSize.s15,
+                                                                  0.30,
+                                                                  ColorManager
+                                                                      .textColor),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    BuildBoxShadowContainer(
+                                                        margin: const EdgeInsets
+                                                            .only(
+                                                            left: 5, right: 5),
+                                                        circleRadius: 5,
+                                                        height: 100,
+                                                        width: 150,
+                                                        child: Image.network(
+                                                          attach.filePath ?? "",
+                                                          fit: BoxFit.cover,
+                                                        )),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 8.0,
+                                                              left: 8.0,
+                                                              top: 10,
+                                                              right: 20),
+                                                      child: Text.rich(
+                                                        TextSpan(
+                                                          text: 'Alt : ',
+                                                          style: buildCustomStyle(
+                                                              FontWeightManager
+                                                                  .semiBold,
+                                                              FontSize.s15,
+                                                              0.30,
+                                                              ColorManager
+                                                                  .textColor),
+                                                          children: <TextSpan>[
+                                                            TextSpan(
+                                                              text:
+                                                                  "${attach.alt}",
+                                                              style: buildCustomStyle(
+                                                                  FontWeightManager
+                                                                      .medium,
+                                                                  FontSize.s15,
+                                                                  0.30,
+                                                                  ColorManager
+                                                                      .textColor),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList())
+                                        : const SizedBox.shrink(),
+                                  ],
+                                )),
+                          ),
                           Row(
                             children: [
                               Column(
@@ -387,81 +499,82 @@ class _EditProductImageOrVideoScreenState
                                   child: CustomRoundButton(
                                     title: "Submit",
                                     fct: () async {
-                                      int? productId =
-                                          gridSelectionProvider.getProductId;
+                                      int? productId = getProduct!.productId;
                                       if (productId == null) {
                                         showScaffold(
                                           context: context,
                                           message: 'Failed',
                                         );
-                                        sideBarController.index.value = 14;
+                                        // sideBarController.index.value = 14;
                                       } else {
-                                        if (imageAltController.text.isEmpty ||
-                                            imageFilePathController
-                                                .text.isEmpty ||
-                                            imageTitleController.text.isEmpty) {
-                                          showScaffold(
+                                        // if (imageAltController.text.isEmpty ||
+                                        //     imageFilePathController
+                                        //         .text.isEmpty ||
+                                        //     imageTitleController.text.isEmpty) {
+                                        //   showScaffold(
+                                        //     context: context,
+                                        //     message:
+                                        //         'Please Fill the Required Fields',
+                                        //   );
+                                        // } else {
+                                        showDialog(
                                             context: context,
-                                            message:
-                                                'Please Fill the Required Fields',
-                                          );
-                                        } else {
-                                          showDialog(
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return const Center(
+                                                child: CircularProgressIndicator
+                                                    .adaptive(),
+                                              );
+                                            });
+                                        String? accessToken =
+                                            Provider.of<AuthModel>(context,
+                                                    listen: false)
+                                                .token;
+                                        debugPrint(
+                                            "accessToken From AuthModel $accessToken");
+                                        gridSelectionProvider
+                                            .addProductImageAPI(
+                                                productId: "$productId",
+                                                title:
+                                                    imageTitleController.text,
+                                                alt: imageAltController.text,
+                                                filePath:
+                                                    imageFilePathController
+                                                        .text,
+                                                isPrimary:
+                                                    isChecked ? "1" : "0",
+                                                accessToken: accessToken ?? "")
+                                            .then((value) {
+                                          if (value["status"] == "success") {
+                                            showScaffold(
                                               context: context,
-                                              barrierDismissible: false,
-                                              builder: (context) {
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator
-                                                          .adaptive(),
-                                                );
-                                              });
-                                          String? accessToken =
-                                              Provider.of<AuthModel>(context,
-                                                      listen: false)
-                                                  .token;
-                                          debugPrint(
-                                              "accessToken From AuthModel $accessToken");
-                                          gridSelectionProvider
-                                              .addProductImageAPI(
-                                                  productId: "$productId",
-                                                  title:
-                                                      imageTitleController.text,
-                                                  alt: imageAltController.text,
-                                                  filePath:
-                                                      imageFilePathController
-                                                          .text,
-                                                  isPrimary:
-                                                      isChecked ? "1" : "0",
-                                                  accessToken:
-                                                      accessToken ?? "")
-                                              .then((value) {
-                                            if (value["status"] == "success") {
-                                              showScaffold(
-                                                context: context,
-                                                message: '${value["message"]}',
-                                              );
-                                              sideBarController.index.value =
-                                                  14;
-                                              gridSelectionProvider
-                                                  .setProductIDForAdding(null);
-                                              Navigator.pop(context);
-                                              imageAltController.clear();
-                                              imageFilePathController.clear();
-                                              imageTitleController.clear();
-                                            } else {
-                                              Navigator.pop(context);
+                                              message: '${value["message"]}',
+                                            );
+                                            sideBarController.index.value = 14;
+                                            gridSelectionProvider
+                                                .setProductIDForAdding(null);
+                                            Navigator.pop(context);
+                                            imageAltController.clear();
+                                            imageFilePathController.clear();
+                                            imageTitleController.clear();
+                                          } else {
+                                            Navigator.pop(context);
 
-                                              showScaffold(
-                                                context: context,
-                                                message: '${value["message"]}',
-                                              );
+                                            // showScaffold(
+                                            //   context: context,
+                                            //   message: '${value["message"]}',
+                                            // );
 
-                                              sideBarController.index.value =
-                                                  14;
-                                            }
-                                          });
-                                        }
+                                            showScaffold(
+                                              context: context,
+                                              message:
+                                                  'Product Updated Successfully',
+                                            );
+
+                                            sideBarController.index.value = 14;
+                                          }
+                                        });
+                                        // }
                                       }
                                     },
                                     height: 50,

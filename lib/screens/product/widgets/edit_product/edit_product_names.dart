@@ -194,7 +194,7 @@ class _EditProductNamePageScreenState extends State<EditProductNamePageScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: CustomRoundButton(
-                            title: "Submit",
+                            title: "Next",
                             fct: () async {
                               if (getProduct!.productId == null) {
                                 showScaffold(
@@ -254,7 +254,7 @@ class _EditProductNamePageScreenState extends State<EditProductNamePageScreen> {
                                         context: context,
                                         message: '${value["message"]}',
                                       );
-                                      sideBarController.index.value = 14;
+                                      // sideBarController.index.value = 14;
                                     }
                                   });
                                 }
@@ -265,21 +265,21 @@ class _EditProductNamePageScreenState extends State<EditProductNamePageScreen> {
                             fontSize: FontSize.s12,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: CustomRoundButton(
-                            title: "Next",
-                            boxColor: Colors.white,
-                            textColor: ColorManager.kPrimaryColor,
-                            fct: () async {
-                              widget.navigateToScreen(2);
-                              // sideBarController.index.value = 14;
-                            },
-                            height: 50,
-                            width: size.width * 0.19,
-                            fontSize: FontSize.s12,
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 10.0),
+                        //   child: CustomRoundButton(
+                        //     title: "Next",
+                        //     boxColor: Colors.white,
+                        //     textColor: ColorManager.kPrimaryColor,
+                        //     fct: () async {
+                        //       widget.navigateToScreen(2);
+                        //       // sideBarController.index.value = 14;
+                        //     },
+                        //     height: 50,
+                        //     width: size.width * 0.19,
+                        //     fontSize: FontSize.s12,
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],

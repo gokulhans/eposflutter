@@ -83,33 +83,33 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 45,
-                        width: 180, //size.width * 0.5,
-                        child: TextFormField(
-                          onChanged: ((value) => setState(() {
-                                searchTextController.text = value;
-                              })),
-                          cursorColor: ColorManager.kPrimaryColor,
-                          cursorHeight: 13,
-                          controller: searchTextController,
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s10, 0.18, ColorManager.textColor),
-                          decoration: decoration.copyWith(
-                              hintText: "Search    ",
-                              hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor),
-                              // prefixIcon: const Icon(
-                              //   Icons.search,
-                              //   color: Colors.black,
-                              //   size: 35,
-                              // ),
-                              prefixIconColor: Colors.black),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 45,
+                      //   width: 180, //size.width * 0.5,
+                      //   child: TextFormField(
+                      //     onChanged: ((value) => setState(() {
+                      //           searchTextController.text = value;
+                      //         })),
+                      //     cursorColor: ColorManager.kPrimaryColor,
+                      //     cursorHeight: 13,
+                      //     controller: searchTextController,
+                      //     style: buildCustomStyle(FontWeightManager.medium,
+                      //         FontSize.s10, 0.18, ColorManager.textColor),
+                      //     decoration: decoration.copyWith(
+                      //         hintText: "Search    ",
+                      //         hintStyle: buildCustomStyle(
+                      //             FontWeightManager.medium,
+                      //             FontSize.s10,
+                      //             0.18,
+                      //             ColorManager.textColor),
+                      //         // prefixIcon: const Icon(
+                      //         //   Icons.search,
+                      //         //   color: Colors.black,
+                      //         //   size: 35,
+                      //         // ),
+                      //         prefixIconColor: Colors.black),
+                      //   ),
+                      // ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -138,9 +138,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                             1: FractionColumnWidth(0.06),
                             2: FractionColumnWidth(0.06),
                             3: FractionColumnWidth(0.06),
-                            4: FractionColumnWidth(0.06),
-                            5: FractionColumnWidth(0.06),
-                            6: FractionColumnWidth(0.05),
+                            // 4: FractionColumnWidth(0.06),
+                            // 5: FractionColumnWidth(0.06),
+                            // 6: FractionColumnWidth(0.05),
                           },
                           border: TableBorder.symmetric(
                               outside: const BorderSide(
@@ -179,7 +179,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                         padding: const EdgeInsets.all(15.0),
                                         child: Center(
                                             child: Text(
-                                          "Purchase Date",
+                                          "Purchase Name",
                                           style: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s12,
@@ -188,38 +188,38 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                           ),
                                         )),
                                       )),
-                                  TableCell(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.middle,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Center(
-                                            child: Text(
-                                          "Store",
-                                          style: buildCustomStyle(
-                                            FontWeightManager.medium,
-                                            FontSize.s12,
-                                            0.18,
-                                            ColorManager.kPrimaryColor,
-                                          ),
-                                        )),
-                                      )),
-                                  TableCell(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.middle,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Center(
-                                            child: Text(
-                                          "SUpplier",
-                                          style: buildCustomStyle(
-                                            FontWeightManager.medium,
-                                            FontSize.s12,
-                                            0.18,
-                                            ColorManager.kPrimaryColor,
-                                          ),
-                                        )),
-                                      )),
+                                  // TableCell(
+                                  //     verticalAlignment:
+                                  //         TableCellVerticalAlignment.middle,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(15.0),
+                                  //       child: Center(
+                                  //           child: Text(
+                                  //         "Store",
+                                  //         style: buildCustomStyle(
+                                  //           FontWeightManager.medium,
+                                  //           FontSize.s12,
+                                  //           0.18,
+                                  //           ColorManager.kPrimaryColor,
+                                  //         ),
+                                  //       )),
+                                  //     )),
+                                  // TableCell(
+                                  //     verticalAlignment:
+                                  //         TableCellVerticalAlignment.middle,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(15.0),
+                                  //       child: Center(
+                                  //           child: Text(
+                                  //         "SUpplier",
+                                  //         style: buildCustomStyle(
+                                  //           FontWeightManager.medium,
+                                  //           FontSize.s12,
+                                  //           0.18,
+                                  //           ColorManager.kPrimaryColor,
+                                  //         ),
+                                  //       )),
+                                  //     )),
                                   TableCell(
                                       verticalAlignment:
                                           TableCellVerticalAlignment.middle,
@@ -260,9 +260,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                             1: FractionColumnWidth(0.06),
                             2: FractionColumnWidth(0.06),
                             3: FractionColumnWidth(0.06),
-                            4: FractionColumnWidth(0.06),
-                            5: FractionColumnWidth(0.06),
-                            6: FractionColumnWidth(0.05),
+                            // 4: FractionColumnWidth(0.06),
+                            // 5: FractionColumnWidth(0.06),
+                            // 6: FractionColumnWidth(0.05),
                           },
                           border: TableBorder.symmetric(
                               outside: const BorderSide(
@@ -310,38 +310,38 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                           ),
                                         )),
                                       )),
-                                  TableCell(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.middle,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Center(
-                                            child: Text(
-                                          "Store",
-                                          style: buildCustomStyle(
-                                            FontWeightManager.medium,
-                                            FontSize.s12,
-                                            0.18,
-                                            ColorManager.kPrimaryColor,
-                                          ),
-                                        )),
-                                      )),
-                                  TableCell(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.middle,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Center(
-                                            child: Text(
-                                          "SUpplier",
-                                          style: buildCustomStyle(
-                                            FontWeightManager.medium,
-                                            FontSize.s12,
-                                            0.18,
-                                            ColorManager.kPrimaryColor,
-                                          ),
-                                        )),
-                                      )),
+                                  // TableCell(
+                                  //     verticalAlignment:
+                                  //         TableCellVerticalAlignment.middle,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(15.0),
+                                  //       child: Center(
+                                  //           child: Text(
+                                  //         "Store",
+                                  //         style: buildCustomStyle(
+                                  //           FontWeightManager.medium,
+                                  //           FontSize.s12,
+                                  //           0.18,
+                                  //           ColorManager.kPrimaryColor,
+                                  //         ),
+                                  //       )),
+                                  //     )),
+                                  // TableCell(
+                                  //     verticalAlignment:
+                                  //         TableCellVerticalAlignment.middle,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(15.0),
+                                  //       child: Center(
+                                  //           child: Text(
+                                  //         "SUpplier",
+                                  //         style: buildCustomStyle(
+                                  //           FontWeightManager.medium,
+                                  //           FontSize.s12,
+                                  //           0.18,
+                                  //           ColorManager.kPrimaryColor,
+                                  //         ),
+                                  //       )),
+                                  //     )),
                                   TableCell(
                                       verticalAlignment:
                                           TableCellVerticalAlignment.middle,
@@ -422,7 +422,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                             padding: const EdgeInsets.all(15.0),
                                             child: Center(
                                               child: Text(
-                                                voucher.purchaseDate ?? "",
+                                                // voucher.purchaseDate ?? "",
+                                                "Sales Executive",
                                                 style: buildCustomStyle(
                                                   FontWeightManager.medium,
                                                   FontSize.s9,
@@ -432,40 +433,40 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                               ),
                                             ),
                                           )),
-                                      TableCell(
-                                          verticalAlignment:
-                                              TableCellVerticalAlignment.middle,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Center(
-                                              child: Text(
-                                                store,
-                                                style: buildCustomStyle(
-                                                  FontWeightManager.medium,
-                                                  FontSize.s9,
-                                                  0.13,
-                                                  Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          )),
-                                      TableCell(
-                                          verticalAlignment:
-                                              TableCellVerticalAlignment.middle,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Center(
-                                              child: Text(
-                                                supplier,
-                                                style: buildCustomStyle(
-                                                  FontWeightManager.medium,
-                                                  FontSize.s9,
-                                                  0.13,
-                                                  Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          )),
+                                      // TableCell(
+                                      //     verticalAlignment:
+                                      //         TableCellVerticalAlignment.middle,
+                                      //     child: Padding(
+                                      //       padding: const EdgeInsets.all(15.0),
+                                      //       child: Center(
+                                      //         child: Text(
+                                      //           store,
+                                      //           style: buildCustomStyle(
+                                      //             FontWeightManager.medium,
+                                      //             FontSize.s9,
+                                      //             0.13,
+                                      //             Colors.black,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     )),
+                                      // TableCell(
+                                      //     verticalAlignment:
+                                      //         TableCellVerticalAlignment.middle,
+                                      //     child: Padding(
+                                      //       padding: const EdgeInsets.all(15.0),
+                                      //       child: Center(
+                                      //         child: Text(
+                                      //           supplier,
+                                      //           style: buildCustomStyle(
+                                      //             FontWeightManager.medium,
+                                      //             FontSize.s9,
+                                      //             0.13,
+                                      //             Colors.black,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     )),
                                       TableCell(
                                           verticalAlignment:
                                               TableCellVerticalAlignment.middle,
@@ -515,26 +516,26 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                                                       voucher.purchaseId ??
                                                                           0);
                                                           sideBarController
-                                                              .index.value = 29;
+                                                              .index.value = 36;
                                                         },
                                                       )),
-                                                  BuildBoxShadowContainer(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              left: 5,
-                                                              right: 5),
-                                                      color: ColorManager
-                                                          .kPrimaryColor
-                                                          .withOpacity(0.9),
-                                                      circleRadius: 5,
-                                                      child: IconButton(
-                                                        icon: const Icon(
-                                                          Icons.add,
-                                                          size: 18,
-                                                          color: Colors.white,
-                                                        ),
-                                                        onPressed: () {},
-                                                      )),
+                                                  // BuildBoxShadowContainer(
+                                                  //     margin:
+                                                  //         const EdgeInsets.only(
+                                                  //             left: 5,
+                                                  //             right: 5),
+                                                  //     color: ColorManager
+                                                  //         .kPrimaryColor
+                                                  //         .withOpacity(0.9),
+                                                  //     circleRadius: 5,
+                                                  //     child: IconButton(
+                                                  //       icon: const Icon(
+                                                  //         Icons.add,
+                                                  //         size: 18,
+                                                  //         color: Colors.white,
+                                                  //       ),
+                                                  //       onPressed: () {},
+                                                  //     )),
                                                 ],
                                               ),
                                             ),

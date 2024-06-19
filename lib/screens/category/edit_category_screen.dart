@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
-import 'package:pos_machine/models/view_category.dart';
 
 import 'package:provider/provider.dart';
 
@@ -19,50 +18,98 @@ import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
 
-class EditCategoryPageScreen extends StatelessWidget {
+class EditCategoryPageScreen extends StatefulWidget {
   const EditCategoryPageScreen({super.key});
 
   @override
+  State<EditCategoryPageScreen> createState() => _EditCategoryPageScreenState();
+}
+
+class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late TextEditingController categoryNameEnglishController;
+  late TextEditingController categoryNameController;
+  late TextEditingController categoryNameArabicController;
+  late TextEditingController categoryNameHindiController;
+  late TextEditingController categorySlugController;
+  late TextEditingController idController;
+  late TextEditingController categoryIDController;
+  late SideBarController sideBarController;
+
+  @override
+  void initState() {
+    super.initState();
+    sideBarController = Get.put(SideBarController());
+    idController = TextEditingController(text: "0");
+
+    // Initialize controllers with default values to avoid null errors
+    categoryNameEnglishController = TextEditingController();
+    categoryNameController = TextEditingController();
+    categoryNameArabicController = TextEditingController();
+    categoryNameHindiController = TextEditingController();
+    categorySlugController = TextEditingController();
+    categoryIDController = TextEditingController();
+
+    // Use Future.microtask to ensure widget tree is built
+    Future.microtask(() {
+      final categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+      final viewCategory = categoryProvider.getViewCategory;
+
+      // Set the initial values for the text controllers
+      categoryNameEnglishController.text = viewCategory?.names?.en ?? '';
+      categoryNameController.text = viewCategory?.name ?? '';
+      categoryNameArabicController.text = viewCategory?.names?.ar ?? '';
+      categoryNameHindiController.text = viewCategory?.names?.hi ?? '';
+      categorySlugController.text = viewCategory!.name!
+          .toLowerCase() // Convert to lowercase
+          .replaceAll(RegExp(r'\s+'), '-') // Replace spaces with hyphens
+          .replaceAll(RegExp(r'[^a-z0-9-]'),
+              ''); // Remove non-alphanumeric characters except hyphens
+      categoryIDController.text = viewCategory.id?.toString() ?? '';
+
+      if (viewCategory.parentId != null) {
+        String parentCategory = viewCategory.parentId.toString();
+        categoryProvider.setParentCategory(parentCategory);
+        int? categoryIndex = categoryProvider.category?.indexWhere(
+            (category) => category.categoryId == viewCategory.parentId);
+        if (categoryIndex != null && categoryIndex >= 0) {
+          categoryProvider.selectCategory(
+            categoryIndex,
+            categoryProvider.category![categoryIndex].categoryName ?? '',
+            categoryProvider.category![categoryIndex].productsCount ?? 0,
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    categoryNameEnglishController.dispose();
+    categoryNameController.dispose();
+    categoryNameArabicController.dispose();
+    categoryNameHindiController.dispose();
+    categorySlugController.dispose();
+    idController.dispose();
+    categoryIDController.dispose();
+    super.dispose();
+  }
+
+  void clearText() {
+    categoryIDController.clear();
+    categoryNameArabicController.clear();
+    categoryNameController.clear();
+    categoryNameEnglishController.clear();
+    categoryNameHindiController.clear();
+    categorySlugController.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    CategoryProvider categoryProvider = Provider.of<CategoryProvider>(
-      context,
-    );
-    ViewCategory? viewCategory = categoryProvider.getViewCategory;
-
-    final TextEditingController categoryNameEnglishController =
-        TextEditingController(text: viewCategory?.name);
-    final TextEditingController categoryNameController =
-        TextEditingController(text: viewCategory?.name);
-    final TextEditingController categoryNameArabicController =
-        TextEditingController();
-    final TextEditingController categoryNameHindiController =
-        TextEditingController();
-    final TextEditingController categorySlugController =
-        TextEditingController();
-    final TextEditingController idController = TextEditingController(text: "0");
-    final TextEditingController categoryIDController =
-        TextEditingController(text: "0");
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    SideBarController sideBarController = Get.put(SideBarController());
-    Size size = MediaQuery.of(context).size;
-
-    // Access the category list
-    List<Category>? categoryList = categoryProvider.category;
-
-    // categoryList![0] = Category(
-    //   categoryId: 0,
-    //   categorySlug: "NEW_CATEGORY",
-    //   categoryName: "Select New Category",
-    //   productsCount: 0,
-    // );
-    void clearText() {
-      categoryIDController.clear();
-      categoryNameArabicController.clear();
-      categoryNameController.clear();
-      categoryNameEnglishController.clear();
-      categoryNameHindiController.clear();
-      categorySlugController.clear();
-    }
+    final categoryProvider = Provider.of<CategoryProvider>(context);
+    final categoryList = categoryProvider.category;
+    final size = MediaQuery.of(context).size;
 
     return SafeArea(
       child: Container(
@@ -352,10 +399,13 @@ class EditCategoryPageScreen extends StatelessWidget {
                                                 "accessToken From AuthModel $accessToken");
                                             categoryProvider
                                                 .editCategory(
-                                              categoryId: 1,
+                                              categoryId: categoryProvider
+                                                  .getEditCategoryId,
+                                              // categoryId: int.parse(
+                                              //     categoryIDController.text),
                                               categoryName:
                                                   categoryNameController.text,
-                                              slug: categorySlugController.text,
+                                              slug: categoryIDController.text,
                                               parentCategory: idController.text,
                                               categoryNameEnglish:
                                                   categoryNameEnglishController

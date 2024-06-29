@@ -27,6 +27,7 @@ import 'package:pos_machine/screens/support/support.dart';
 import 'package:pos_machine/screens/transaction-customer/invoice_list.dart';
 import 'package:pos_machine/screens/transaction-customer/receipt_voucher.dart';
 import 'package:pos_machine/screens/transaction-customer/transaction_list.dart';
+import 'package:pos_machine/screens/transaction-customer/widgets/add_voucher_details.dart';
 import 'package:pos_machine/screens/transaction-customer/widgets/create_new_invoice.dart';
 import 'package:pos_machine/screens/transaction-customer/widgets/create_new_voucher.dart';
 import 'package:pos_machine/screens/transaction-customer/widgets/view_invoice.dart';
@@ -84,5 +85,6 @@ class SideBarController extends GetxController {
     EditCategoryPageScreen(), //34
     TabBarForEditProduct(), //35
     ViewPurchaseWidget(), //36
+    AddVoucherDetailsWidget(), //37
   ];
 }

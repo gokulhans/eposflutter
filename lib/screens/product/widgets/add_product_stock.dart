@@ -2,6 +2,9 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
 
@@ -68,11 +71,31 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
   ];
   String? selectedUnit;
   // Track the selected unit
-  String? selectedProperty;
   GetProduct? selectedValue;
   String? selected;
   Category? selectedValueCategory;
   final TextEditingController textEditingController = TextEditingController();
+
+  Map<String, dynamic> apiBodyData = {};
+  Map<String, List<String>> productPropData = {};
+  Map<String, String> productPropStockApplicable = {};
+  Map<String, int> productPropIds = {};
+  Map<String, bool> stockApplicableMap = {};
+  String? selectedProperty;
+
+  void _getCategoryProperty(categoryId) {
+    String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
+
+    debugPrint("category id $categoryId");
+    if (categoryId != null) {
+      debugPrint("category id $categoryId");
+      Provider.of<CategoryProvider>(context, listen: false)
+          .fetchPropValues(categoryId: 1, accessToken: accessToken ?? "");
+    } else {
+      debugPrint("Category ID is null");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -250,8 +273,8 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                   })
                                                   .toSet()
                                                   .toList(),
-                                              onChanged:
-                                                  (Category? selectedCategory) {
+                                              onChanged: (Category?
+                                                  selectedCategory) async {
                                                 if (selectedCategory != null) {
                                                   // Update the selected category in the provider
                                                   categoryProvider
@@ -268,9 +291,17 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                   parentCategory =
                                                       "${selectedCategory.categoryId ?? 0}";
                                                   debugPrint(parentCategory);
-                                                  categoryProvider
+                                                  await categoryProvider
                                                       .setParentCategory(
                                                           "${selectedCategory.categoryId ?? 0}");
+                                                  await categoryProvider
+                                                      .setCategoryIdforProp(
+                                                          categoryId:
+                                                              selectedCategory
+                                                                  .categoryId!);
+                                                  _getCategoryProperty(
+                                                      selectedCategory
+                                                          .categoryId);
                                                 }
                                               },
                                             ),
@@ -779,6 +810,246 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                           title: "Batch Number"),
                                     ],
                                   ),
+                                  BuildTextTile(
+                                    title: "Product Properties",
+                                    textStyle: buildCustomStyle(
+                                      FontWeightManager.regular,
+                                      FontSize.s14,
+                                      0.27,
+                                      Colors.black,
+                                    ),
+                                  ),
+                                  const Divider(
+                                    thickness: 0.5,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.5,
+                                    child: Consumer<CategoryProvider>(
+                                      builder:
+                                          (context, categoryProvider, child) {
+                                        if (categoryProvider.propValues ==
+                                            null) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else if (categoryProvider
+                                            .propValues!.isEmpty) {
+                                          return const Center(
+                                              child:
+                                                  Text("No properties found"));
+                                        } else {
+                                          return ListView.builder(
+                                            itemCount: categoryProvider
+                                                .propValues!.length,
+                                            itemBuilder: (context, index) {
+                                              final property = categoryProvider
+                                                  .propValues![index];
+                                              final masterValue =
+                                                  property['master_value'];
+                                              final propsCode =
+                                                  property['props_code'];
+                                              debugPrint(propsCode);
+                                              if (masterValue == "NULL") {
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    BuildTextTile(
+                                                      title: propsCode,
+                                                      isStarRed: true,
+                                                      isTextField: true,
+                                                      textStyle:
+                                                          buildCustomStyle(
+                                                        FontWeightManager
+                                                            .regular,
+                                                        FontSize.s14,
+                                                        0.27,
+                                                        Colors.black
+                                                            .withOpacity(0.6),
+                                                      ),
+                                                    ),
+                                                    BuildBoxShadowContainer(
+                                                      circleRadius: 7,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 2),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15),
+                                                      height: size.height * .07,
+                                                      width: size.width / 3,
+                                                      child: TextFormField(
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            apiBodyData[
+                                                                    '$propsCode'] =
+                                                                value;
+                                                            productPropData[
+                                                                propsCode] = [
+                                                              value
+                                                            ];
+                                                          });
+                                                        },
+                                                        keyboardType:
+                                                            TextInputType.text,
+                                                        cursorColor:
+                                                            ColorManager
+                                                                .kPrimaryColor,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText:
+                                                              'Enter $propsCode',
+                                                          hintStyle:
+                                                              buildCustomStyle(
+                                                            FontWeightManager
+                                                                .medium,
+                                                            FontSize.s12,
+                                                            0.27,
+                                                            ColorManager
+                                                                .textColor
+                                                                .withOpacity(
+                                                                    .5),
+                                                          ),
+                                                        ),
+                                                        style: buildCustomStyle(
+                                                          FontWeightManager
+                                                              .medium,
+                                                          FontSize.s12,
+                                                          0.27,
+                                                          ColorManager.textColor
+                                                              .withOpacity(.5),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              } else {
+                                                final items = List<String>.from(
+                                                    masterValue.split(','));
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    BuildTextTile(
+                                                      title: propsCode,
+                                                      isStarRed: true,
+                                                      isTextField: true,
+                                                      textStyle:
+                                                          buildCustomStyle(
+                                                        FontWeightManager
+                                                            .regular,
+                                                        FontSize.s14,
+                                                        0.27,
+                                                        Colors.black
+                                                            .withOpacity(0.6),
+                                                      ),
+                                                    ),
+                                                    BuildBoxShadowContainer(
+                                                      circleRadius: 7,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 5,
+                                                          vertical: 0),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15),
+                                                      width: size.width / 3,
+                                                      child:
+                                                          MultiSelectDialogField(
+                                                        items: items
+                                                            .map((item) =>
+                                                                MultiSelectItem<
+                                                                        String>(
+                                                                    item, item))
+                                                            .toList(),
+                                                        title: Text(
+                                                            "Choose $propsCode"),
+                                                        selectedColor:
+                                                            ColorManager
+                                                                .kPrimaryColor,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10)),
+                                                          border: Border.all(
+                                                            color: Colors
+                                                                .transparent, // Transparent border
+                                                          ),
+                                                        ),
+                                                        buttonIcon: const Icon(
+                                                          Icons.arrow_drop_down,
+                                                          color: Colors.grey,
+                                                        ),
+                                                        buttonText: Text(
+                                                          "Choose $propsCode",
+                                                          // "",
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .grey[700],
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        onConfirm: (results) {
+                                                          setState(() {
+                                                            selectedProperty =
+                                                                results
+                                                                    .join(', ');
+                                                            apiBodyData[
+                                                                    '$propsCode'] =
+                                                                results;
+                                                            productPropData[
+                                                                    propsCode] =
+                                                                List<String>.from(
+                                                                    results);
+                                                          });
+                                                        },
+                                                        chipDisplay:
+                                                            MultiSelectChipDisplay(
+                                                          onTap: (value) {
+                                                            setState(() {
+                                                              apiBodyData[
+                                                                      '$propsCode']
+                                                                  .remove(
+                                                                      value);
+                                                              productPropData[
+                                                                      propsCode]
+                                                                  ?.remove(
+                                                                      value);
+                                                              if (apiBodyData[
+                                                                      '$propsCode']
+                                                                  .isEmpty) {
+                                                                apiBodyData.remove(
+                                                                    '$propsCode');
+                                                                productPropData
+                                                                    .remove(
+                                                                        propsCode);
+                                                              }
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }
+                                            },
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
                                   const SizedBox(height: 25),
                                   Row(
                                     children: [
@@ -952,69 +1223,3 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
     );
   }
 }
- // Row(
-                                  //   children: [
-                                  //     BuildTextFieldColumn3(
-                                  //         isLeft: false,
-                                  //         size: size,
-                                  //         isStarRed: false,
-                                  //         hintText: "Color",
-                                  //         isTextField: false,
-                                  //         controller: colorController,
-                                  //         title: "Color"),
-                                  //     BuildTextFieldColumn3(
-                                  //         isLeft: true,
-                                  //         isStarRed: true,
-                                  //         isTextField: true,
-                                  //         size: size,
-                                  //         isDatePicker: true,
-                                  //         hintText: 'Expiry Date',
-                                  //         controller: colorExpiryController,
-                                  //         title: "Expiry Date"),
-                                  //     BuildTextFieldColumn3(
-                                  //         isLeft: true,
-                                  //         isStarRed: true,
-                                  //         isTextField: true,
-                                  //         size: size,
-                                  //         hintText: 'Batch Number',
-                                  //         controller: colorBatchController,
-                                  //         title: "Batch Number"),
-                                  //   ],
-                                  // ),
-                                  // Row(
-                                  //   children: [
-                                  //     BuildTextFieldColumn3(
-                                  //         isLeft: false,
-                                  //         size: size,
-                                  //         isStarRed: false,
-                                  //         hintText: "Shirt_size",
-                                  //         isTextField: false,
-                                  //         controller: shirtSizeController,
-                                  //         title: "Shirt_size"),
-                                  //     BuildTextFieldColumn3(
-                                  //         isLeft: true,
-                                  //         isStarRed: true,
-                                  //         isTextField: true,
-                                  //         size: size,
-                                  //         hintText: 'Expiry Date',
-                                  //         isDatePicker: true,
-                                  //         controller: shirtSizeExpiryController,
-                                  //         title: "Expiry Date"),
-                                  //     BuildTextFieldColumn3(
-                                  //         isLeft: true,
-                                  //         isStarRed: true,
-                                  //         isTextField: true,
-                                  //         size: size,
-                                  //         hintText: 'Batch Number',
-                                  //         controller: shirtSizeBatchController,
-                                  //         title: "Batch Number"),
-                                  //   ],
-                                  // ),
-                                  // BuildTextFieldColumn3(
-                                  //     isLeft: false,
-                                  //     size: size,
-                                  //     isStarRed: false,
-                                  //     hintText: "Shoe_size",
-                                  //     isTextField: false,
-                                  //     controller: shoeSizeController,
-                                  //     title: "Shoe_size"),

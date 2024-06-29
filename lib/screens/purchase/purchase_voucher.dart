@@ -76,7 +76,7 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Vouchers List  ",
+                    "Vouchers List",
                     style: buildCustomStyle(FontWeightManager.semiBold,
                         FontSize.s20, 0.30, ColorManager.textColor),
                   ),
@@ -533,7 +533,18 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                                                           size: 18,
                                                           color: Colors.white,
                                                         ),
-                                                        onPressed: () {},
+                                                        onPressed: () {
+                                                          purchaseProvider
+                                                              .callVoucherDetails(
+                                                                  voucherId:
+                                                                      voucher.id ??
+                                                                          0,
+                                                                  purchaseId:
+                                                                      voucher.purchaseId ??
+                                                                          0);
+                                                          sideBarController
+                                                              .index.value = 37;
+                                                        },
                                                       )),
                                                 ],
                                               ),

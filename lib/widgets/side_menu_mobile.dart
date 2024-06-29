@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_machine/components/build_round_button.dart';
+import 'package:pos_machine/providers/shared_preferences.dart';
 
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/responsive.dart';
@@ -9,10 +10,10 @@ import 'package:websafe_svg/websafe_svg.dart';
 import '../resources/color_manager.dart';
 import '../resources/font_manager.dart';
 import '../resources/style_manager.dart';
-  
+
 class SideMenuMobile extends StatelessWidget {
   const SideMenuMobile({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -150,10 +151,19 @@ class SideMenuMobile extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(
-                      'Ajay Antony',
-                      style: buildCustomStyle(FontWeightManager.semiBold,
-                          FontSize.s14, 0.21, ColorManager.textColor),
+                    FutureBuilder<String>(
+                      future: SharedPreferenceProvider().getCustomerName(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return Text(
+                            snapshot.data ?? 'Default Name',
+                            style: buildCustomStyle(FontWeightManager.semiBold,
+                                FontSize.s14, 0.21, ColorManager.textColor),
+                          );
+                        } else {
+                          return const CircularProgressIndicator(); // Or any loading widget
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 10,

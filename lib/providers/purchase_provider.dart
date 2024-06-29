@@ -23,6 +23,11 @@ class PurchaseProvider extends ChangeNotifier {
   VoucherDetail? voucherDetails;
   List<PurchaseItem>? get getlistPurchaseItemView => listPurchaseItemView;
   VoucherDetail? get getVoucherDetails => voucherDetails;
+
+  ListPurchaseModelData? ListPurchaseModelDataDetails;
+  // List<PurchaseItem>? get getlistPurchaseItemView => listPurchaseItemView;
+  ListPurchaseModelData? get getListPurchaseModelDataDetails =>
+      ListPurchaseModelDataDetails;
   // UnitList? unitList;
   // UnitList? get getUnitList => unitList;
   Map<String, String>? unitList;
@@ -147,6 +152,7 @@ class PurchaseProvider extends ChangeNotifier {
       } else {}
     } finally {}
   }
+  
   //          *********************** LIST PURCHASES  API ***************************************************
 
   Future<void> listPurchase(
@@ -164,6 +170,7 @@ class PurchaseProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         debugPrint(response.body.toString());
         final jsonData = json.decode(response.body);
+
         ListPurchaseModel listPurchaseModel =
             ListPurchaseModel.fromJson(jsonData);
         List<ListPurchaseModelData>? data = listPurchaseModel.data;

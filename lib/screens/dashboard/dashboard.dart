@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_round_button.dart';
@@ -22,9 +23,9 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   bool isInitLoading = false;
   DashBoardModelData? dashBoardModelData;
-  Total? totalSales;
-  Total? totalCustomers;
+  TotalSales? totalSales;
   String value = 'today';
+
   @override
   void initState() {
     super.initState();
@@ -46,15 +47,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           setState(() {
             DashBoardModel dashBoardModel = DashBoardModel.fromJson(response);
             dashBoardModelData = dashBoardModel.data;
-            totalCustomers = dashBoardModelData!.totalCustomers;
             totalSales = dashBoardModelData!.totalSales;
           });
         } else {}
       });
-      // DashboardProvider().listCartItnes(context).then((value) {
-      //   debugPrint("listCartItems Listing");
-      //   debugPrint(value["status"]);
-      // });
     } catch (error) {
       debugPrint(error.toString());
     } finally {
@@ -195,306 +191,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       children: [
-                        BuildBoxShadowContainer(
-                            margin: const EdgeInsets.all(15),
-                            padding: const EdgeInsets.all(15),
-                            height: 136,
-                            width: 240,
-                            circleRadius: 7,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CircleAvatar(
-                                  backgroundColor: ColorManager.kPrimaryColor,
-                                  child: Icon(
-                                    Icons.calculate_rounded,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                isInitLoading || dashBoardModelData == null
-                                    ? Text(
-                                        "0",
-                                        style: buildCustomStyle(
-                                            FontWeightManager.semiBold,
-                                            FontSize.s25,
-                                            0.38,
-                                            ColorManager.textColor),
-                                      )
-                                    : value == "today"
-                                        ? Text(
-                                            "${totalSales!.today}",
-                                            style: buildCustomStyle(
-                                                FontWeightManager.semiBold,
-                                                FontSize.s25,
-                                                0.38,
-                                                ColorManager.textColor),
-                                          )
-                                        : value == "week"
-                                            ? Text("${totalSales!.week}",
-                                                style: buildCustomStyle(
-                                                    FontWeightManager.semiBold,
-                                                    FontSize.s25,
-                                                    0.38,
-                                                    ColorManager.textColor))
-                                            : value == "month"
-                                                ? Text("${totalSales!.month}",
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .semiBold,
-                                                        FontSize.s25,
-                                                        0.38,
-                                                        ColorManager.textColor))
-                                                : Text(
-                                                    "0",
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .semiBold,
-                                                        FontSize.s25,
-                                                        0.38,
-                                                        ColorManager.textColor),
-                                                  ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Count",
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s15,
-                                          0.23,
-                                          ColorManager.textColor),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(3),
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: ColorManager
-                                                  .kGreenWithOpacity),
-                                          child: const Icon(
-                                            Icons.arrow_forward,
-                                            size: 15,
-                                            color: ColorManager.kGreen,
-                                          ),
-                                        ),
-                                        Text(
-                                          "+ 0 %",
-                                          style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s15,
-                                              0.23,
-                                              ColorManager.kGreen),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                        BuildBoxShadowContainer(
-                            margin: const EdgeInsets.all(15),
-                            padding: const EdgeInsets.all(15),
-                            height: 136,
-                            width: 240,
-                            circleRadius: 7,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CircleAvatar(
-                                  backgroundColor: ColorManager.kMagentha,
-                                  child: Icon(
-                                    Icons.calculate_rounded,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                // isInitLoading || dashBoardModelData == null
-                                //     ?
-                                Text(
-                                  "0",
-                                  style: buildCustomStyle(
-                                      FontWeightManager.semiBold,
-                                      FontSize.s25,
-                                      0.38,
-                                      ColorManager.textColor),
-                                ),
-                                // : value == "today"
-                                //     ? Text(
-                                //         "${totalCustomers!.today}",
-                                //         style: buildCustomStyle(
-                                //             FontWeightManager.semiBold,
-                                //             FontSize.s25,
-                                //             0.38,
-                                //             ColorManager.textColor),
-                                //       )
-                                //     : value == "week"
-                                //         ? Text("${totalCustomers!.week}",
-                                //             style: buildCustomStyle(
-                                //                 FontWeightManager.semiBold,
-                                //                 FontSize.s25,
-                                //                 0.38,
-                                //                 ColorManager.textColor))
-                                //         : value == "month"
-                                //             ? Text(
-                                //                 "${totalCustomers!.month}",
-                                //                 style: buildCustomStyle(
-                                //                     FontWeightManager
-                                //                         .semiBold,
-                                //                     FontSize.s25,
-                                //                     0.38,
-                                //                     ColorManager.textColor))
-                                //             : Text(
-                                //                 "0",
-                                //                 style: buildCustomStyle(
-                                //                     FontWeightManager
-                                //                         .semiBold,
-                                //                     FontSize.s25,
-                                //                     0.38,
-                                //                     ColorManager.textColor),
-                                //               ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Amount",
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s15,
-                                          0.23,
-                                          ColorManager.textColor),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(3),
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: ColorManager
-                                                  .kMaroonWithOpacity),
-                                          child: const Icon(
-                                            Icons.arrow_forward,
-                                            size: 15,
-                                            color: ColorManager.kMaroon,
-                                          ),
-                                        ),
-                                        Text(
-                                          "+ 0 %",
-                                          style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s15,
-                                              0.23,
-                                              ColorManager.kMaroon),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                        BuildBoxShadowContainer(
-                            margin: const EdgeInsets.all(15),
-                            padding: const EdgeInsets.all(15),
-                            height: 136,
-                            width: 220,
-                            circleRadius: 7,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CircleAvatar(
-                                  backgroundColor: ColorManager.kOrange,
-                                  child: Icon(
-                                    Icons.calculate_rounded,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                isInitLoading || dashBoardModelData == null
-                                    ? Text(
-                                        "0",
-                                        style: buildCustomStyle(
-                                            FontWeightManager.semiBold,
-                                            FontSize.s25,
-                                            0.38,
-                                            ColorManager.textColor),
-                                      )
-                                    : value == "today"
-                                        ? Text(
-                                            "${totalCustomers!.today}",
-                                            style: buildCustomStyle(
-                                                FontWeightManager.semiBold,
-                                                FontSize.s25,
-                                                0.38,
-                                                ColorManager.textColor),
-                                          )
-                                        : value == "week"
-                                            ? Text("${totalCustomers!.week}",
-                                                style: buildCustomStyle(
-                                                    FontWeightManager.semiBold,
-                                                    FontSize.s25,
-                                                    0.38,
-                                                    ColorManager.textColor))
-                                            : value == "month"
-                                                ? Text(
-                                                    "${totalCustomers!.month}",
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .semiBold,
-                                                        FontSize.s25,
-                                                        0.38,
-                                                        ColorManager.textColor))
-                                                : Text(
-                                                    "0",
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .semiBold,
-                                                        FontSize.s25,
-                                                        0.38,
-                                                        ColorManager.textColor),
-                                                  ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Customers",
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s15,
-                                          0.23,
-                                          ColorManager.textColor),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(3),
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: ColorManager
-                                                  .kGreenWithOpacity),
-                                          child: const Icon(
-                                            Icons.arrow_forward,
-                                            size: 15,
-                                            color: ColorManager.kGreen,
-                                          ),
-                                        ),
-                                        Text(
-                                          "+ 0 %",
-                                          style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s15,
-                                              0.23,
-                                              ColorManager.kGreen),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
+                        _buildSalesCard("Count", ColorManager.kPrimaryColor),
+                        _buildSalesCard("Amount", ColorManager.kMagentha),
+                        _buildSalesCard("Customers", ColorManager.kOrange),
                       ],
                     ),
                   ),
@@ -557,6 +256,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               )),
                                         ],
                                       ),
+                                      Expanded(
+                                        child: LineChart(
+                                          LineChartData(
+                                            gridData:
+                                                const FlGridData(show: false),
+                                            titlesData:
+                                                const FlTitlesData(show: false),
+                                            borderData:
+                                                FlBorderData(show: false),
+                                            minX: 0,
+                                            maxX: 6,
+                                            minY: 0,
+                                            maxY: 6,
+                                            lineBarsData: [
+                                              LineChartBarData(
+                                                spots: [
+                                                  const FlSpot(0, 3),
+                                                  const FlSpot(1, 1),
+                                                  const FlSpot(2, 4),
+                                                  const FlSpot(3, 2),
+                                                  const FlSpot(4, 5),
+                                                  const FlSpot(5, 1),
+                                                ],
+                                                isCurved: true,
+                                                color:
+                                                    ColorManager.kPrimaryColor,
+                                                barWidth: 3,
+                                                isStrokeCapRound: true,
+                                                dotData: const FlDotData(
+                                                    show: false),
+                                                belowBarData:
+                                                    BarAreaData(show: false),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   )),
                             ],
@@ -615,6 +351,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               )),
                                         ],
                                       ),
+                                      Expanded(
+                                        child: PieChart(
+                                          PieChartData(
+                                            sectionsSpace: 0,
+                                            centerSpaceRadius: 40,
+                                            sections: [
+                                              PieChartSectionData(
+                                                color:
+                                                    ColorManager.kPrimaryColor,
+                                                value: 40,
+                                                title: '40%',
+                                                radius: 30,
+                                                titleStyle: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              PieChartSectionData(
+                                                color: ColorManager.kMagentha,
+                                                value: 30,
+                                                title: '30%',
+                                                radius: 30,
+                                                titleStyle: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              PieChartSectionData(
+                                                color: ColorManager.kOrange,
+                                                value: 30,
+                                                title: '30%',
+                                                radius: 30,
+                                                titleStyle: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   )),
                             ],
@@ -690,6 +470,112 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
           );
+  }
+
+  Widget _buildSalesCard(String title, Color color) {
+    return BuildBoxShadowContainer(
+      margin: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
+      height: 136,
+      width: 240,
+      circleRadius: 7,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: color,
+            child: const Icon(
+              Icons.calculate_rounded,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _getSalesValue(title),
+            style: buildCustomStyle(
+              FontWeightManager.semiBold,
+              FontSize.s20,
+              0.38,
+              ColorManager.textColor,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: buildCustomStyle(
+                  FontWeightManager.medium,
+                  FontSize.s15,
+                  0.23,
+                  ColorManager.textColor,
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: ColorManager.kGreenWithOpacity,
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      size: 15,
+                      color: ColorManager.kGreen,
+                    ),
+                  ),
+                  Text(
+                    "+ 0 %",
+                    style: buildCustomStyle(
+                      FontWeightManager.medium,
+                      FontSize.s15,
+                      0.23,
+                      ColorManager.kGreen,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getSalesValue(String title) {
+    if (totalSales == null) return "0";
+
+    PeriodStats? periodStats;
+    switch (value) {
+      case "today":
+        periodStats = totalSales!.today;
+        break;
+      case "week":
+        periodStats = totalSales!.week;
+        break;
+      case "month":
+        periodStats = totalSales!.month;
+        break;
+      case "year":
+        periodStats = totalSales!.year;
+        break;
+      default:
+        return "0";
+    }
+
+    if (periodStats == null) return "0";
+
+    switch (title) {
+      case "Count":
+        return periodStats.totalSales?.toString() ?? "0";
+      case "Amount":
+        return periodStats.totalAmount?.toString() ?? "0";
+      case "Customers":
+        return periodStats.totalCustomers?.toString() ?? "0";
+      default:
+        return "0";
+    }
   }
 }
 

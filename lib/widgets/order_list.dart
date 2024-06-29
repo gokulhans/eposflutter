@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_order_list_design.dart';
-import 'package:pos_machine/components/build_round_button.dart';
+import 'package:pos_machine/helpers/amount_helper.dart';
+// import 'package:pos_machine/components/build_round_button.dart';
 // import 'package:pos_machine/components/build_title.dart';
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/resources/font_manager.dart';
@@ -31,7 +32,7 @@ class _OrderListState extends State<OrderList> {
       TextEditingController();
   final TextEditingController _transactionNumberController =
       TextEditingController();
-  late TextEditingController _payableAmountController;
+  final TextEditingController _paidAmountController = TextEditingController();
 
   String mobileNumberText = "";
   CartProvider cartProvider = CartProvider();
@@ -48,8 +49,8 @@ class _OrderListState extends State<OrderList> {
   void initState() {
     super.initState();
 
-    _payableAmountController = TextEditingController();
-    _payableAmountController.addListener(_onTextChanged);
+    // _paidAmountController = TextEditingController();
+    // _paidAmountController.addListener(_onTextChanged);
 
     String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
     debugPrint("accessToken From AuthModel $accessToken");
@@ -58,7 +59,7 @@ class _OrderListState extends State<OrderList> {
         customerId: customerId ?? 1, accessToken: accessToken ?? '');
     // customerId: 1,
     // accessToken: accessToken ?? '');
-    // _payableAmountController.text =
+    // _paidAmountController.text =
 
     getCustomersDetails();
   }
@@ -94,7 +95,7 @@ class _OrderListState extends State<OrderList> {
   }
 
   void _getBalanceAmount() {
-    debugPrint(_payableAmountController.text);
+    debugPrint(_paidAmountController.text);
     // Retrieve netTotal from the provider
     num netTotal = Provider.of<CartProvider>(context, listen: false)
             .priceSummary!
@@ -102,11 +103,10 @@ class _OrderListState extends State<OrderList> {
         0.00;
 
     // Parse the text from the controller
-    double payableAmount =
-        double.tryParse(_payableAmountController.text) ?? 0.00;
+    double paidAmount = double.tryParse(_paidAmountController.text) ?? 0.00;
 
     // Calculate the balance amount
-    double balanceAmount = netTotal - payableAmount;
+    double balanceAmount = paidAmount - netTotal;
 
     // Return the balance amount formatted to two decimal places
     setState(() {
@@ -114,25 +114,25 @@ class _OrderListState extends State<OrderList> {
     });
   }
 
-  void _onTextChanged() {
-    debugPrint("called");
-    _getBalanceAmount();
-  }
+  // void _onTextChanged() {
+  //   debugPrint("called");
+  //   _getBalanceAmount();
+  // }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Set the text of the controller based on the provider's value
-    final subTotal =
-        "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}";
-    _payableAmountController.text = "$subTotal";
+    // final subTotal =
+    //     "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}";
+    // _paidAmountController.text = "$subTotal";
   }
 
   @override
   void dispose() {
     _transactionNumberController.dispose();
-    _payableAmountController.removeListener(_onTextChanged);
-    _payableAmountController.dispose();
+    // _paidAmountController.removeListener(_onTextChanged);
+    _paidAmountController.dispose();
     super.dispose();
   }
 
@@ -1042,7 +1042,7 @@ class _OrderListState extends State<OrderList> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  height: size.height * 0.35, // 280,
+                  height: size.height * 0.40, // 280,
                   // height: size.height * 0.38, // 280,
                   margin: const EdgeInsets.only(
                       left: 10, top: 10, bottom: 10, right: 10),
@@ -1086,74 +1086,23 @@ class _OrderListState extends State<OrderList> {
                         ),
                         const Divider(thickness: 2),
                         BuildPaymentRow(
-                            amount:
-                                "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}",
-                            isTextField: true,
-                            title: "Payable",
-                            secondRowTextStyle: buildCustomStyle(
-                              FontWeightManager.bold,
-                              FontSize.s15,
-                              0.23,
-                              ColorManager.textColor,
-                            ),
-                            firstRowTextStyle: buildCustomStyle(
-                              FontWeightManager.bold,
-                              FontSize.s15,
-                              0.23,
-                              ColorManager.textColor,
-                            ),
-                            color: ColorManager.textColor,
-                            child:
-                                // SizedBox(
-                                //   height: 10,
-                                //   width: 40,
-                                //   child: TextFormField(
-                                //     textAlign: TextAlign.start,
-                                //     style: buildCustomStyle(
-                                //         FontWeight.normal, 8, 0.16, Colors.black),
-                                //     controller: _payableAmountController
-                                //       ..text =
-                                //           "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}",
-                                //     cursorHeight: 10,
-                                //     cursorWidth: 1,
-                                //     cursorColor: Colors.blue,
-                                //   decoration: const InputDecoration(
-                                //       border: InputBorder.none),
-                                // ),
-                                // ),
-                                SizedBox(
-                              height: 10,
-                              width: 100,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    const Spacer(),
-                                    ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                          maxWidth:
-                                              100), // Maximum width constraint
-                                      child: TextFormField(
-                                        controller: _payableAmountController,
-                                        textAlign: TextAlign.right,
-                                        decoration: const InputDecoration(
-                                          isDense:
-                                              true, // Reduces the height of the TextFormField
-                                          contentPadding: EdgeInsets.symmetric(
-                                              // vertical: 10,
-                                              // horizontal: 10,
-                                              ),
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )),
+                          amount:
+                              "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}",
+                          title: "Payable",
+                          secondRowTextStyle: buildCustomStyle(
+                            FontWeightManager.bold,
+                            FontSize.s15,
+                            0.23,
+                            ColorManager.textColor,
+                          ),
+                          firstRowTextStyle: buildCustomStyle(
+                            FontWeightManager.bold,
+                            FontSize.s15,
+                            0.23,
+                            ColorManager.textColor,
+                          ),
+                          color: ColorManager.textColor,
+                        ),
                         const SizedBox(height: 5),
                         BuildPaymentRow(
                           amount: "",
@@ -1170,7 +1119,7 @@ class _OrderListState extends State<OrderList> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                _getBalanceAmount();
+                                // _getBalanceAmount();
                                 setState(() {
                                   iconColor = 1;
                                 });
@@ -1292,25 +1241,36 @@ class _OrderListState extends State<OrderList> {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        // if (iconColor == 1)
-                        BuildPaymentRow(
-                          amount: _balanceAmount.toStringAsFixed(2),
-                          title: "Balance amount",
-                          secondRowTextStyle: buildCustomStyle(
-                            FontWeightManager.medium,
-                            FontSize.s12,
-                            0.18,
-                            ColorManager.textColorRed,
+                        // const SizedBox(height: 10),
+                        if (iconColor == 1)
+                          TextFormField(
+                            controller: _paidAmountController,
+                            onChanged: (value) {
+                              _getBalanceAmount();
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Enter Paid Amount Here:',
+                              border: InputBorder.none,
+                            ),
                           ),
-                          firstRowTextStyle: buildCustomStyle(
-                            FontWeightManager.bold,
-                            FontSize.s15,
-                            0.23,
-                            ColorManager.textColorRed,
+                        if (iconColor == 1)
+                          BuildPaymentRow(
+                            amount: _balanceAmount.toStringAsFixed(2),
+                            title: "Balance amount",
+                            secondRowTextStyle: buildCustomStyle(
+                              FontWeightManager.medium,
+                              FontSize.s15,
+                              0.18,
+                              ColorManager.textColorRed,
+                            ),
+                            firstRowTextStyle: buildCustomStyle(
+                              FontWeightManager.bold,
+                              FontSize.s15,
+                              0.23,
+                              ColorManager.textColorRed,
+                            ),
+                            color: ColorManager.textColorRed,
                           ),
-                          color: ColorManager.textColorRed,
-                        ),
                       ],
                     ),
                   )),
@@ -1375,6 +1335,13 @@ class _OrderListState extends State<OrderList> {
                                   .addToOrderAPI(
                                 cartIds: cartId,
                                 accessToken: accessToken ?? "",
+                                transactionId:
+                                    _transactionNumberController.text,
+                                totalPrice: Provider.of<CartProvider>(context,
+                                        listen: false)
+                                    .priceSummary!
+                                    .netTotal
+                                    .toString(),
                                 customerId: Provider.of<AuthModel>(context,
                                         listen: false)
                                     .userId!,
@@ -1470,7 +1437,7 @@ class _OrderListState extends State<OrderList> {
                               color: ColorManager.kPrimaryColor,
                             ),
                             child: Text(
-                              'Pay Rs ${_payableAmountController.text}',
+                              'Pay Rs ${AmountHelper.formatAmount(Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal)}',
                               style: buildCustomStyle(FontWeightManager.medium,
                                   FontSize.s18, 0.27, Colors.white),
                             ),

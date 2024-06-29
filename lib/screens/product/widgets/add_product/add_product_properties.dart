@@ -29,7 +29,6 @@ class _AddProductPropertiesScreenState
   Map<String, String> productPropStockApplicable = {};
   Map<String, int> productPropIds = {};
   Map<String, bool> stockApplicableMap = {};
-
   String? selectedProperty;
 
   @override

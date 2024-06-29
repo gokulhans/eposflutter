@@ -234,10 +234,13 @@ class CartProvider with ChangeNotifier {
 
   //          *********************** ADD TO ORDER API ***************************************************
 
-  Future<dynamic> addToOrderAPI(
-      {required int cartIds,
-      required String accessToken,
-      required int customerId}) async {
+  Future<dynamic> addToOrderAPI({
+    required int cartIds,
+    required String accessToken,
+    required int customerId,
+    required String transactionId,
+    required String totalPrice,
+  }) async {
     debugPrint("********************ADD TO ORDER API******************** ");
     DateTime now = DateTime.now();
 
@@ -248,8 +251,12 @@ class CartProvider with ChangeNotifier {
     final Map<String, dynamic> apiBodyData = {
       "store_id": 1,
       "customer_id": customerId,
+      "transaction_id": transactionId,
+      // "total_price": totalPrice,
     };
     // "order_date": formattedDate
+
+    debugPrint("customerId ${apiBodyData.toString()}");
 
     final url = Uri.parse(APPUrl.addToOrderUrl);
 

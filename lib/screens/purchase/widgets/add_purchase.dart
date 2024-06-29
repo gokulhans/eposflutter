@@ -51,6 +51,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   SideBarController sideBarController = Get.put(SideBarController());
   int? purchaseId;
+  
   List<String> property = [
     'Choose Unit',
     'KG',
@@ -61,17 +62,17 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
 
   // Track the selected unit
   String? selectedProperty;
-  List<String> store = [
-    'Select Store',
-    'Day Mart',
-  ];
+  // List<String> store = [
+  //   'Select Store',
+  //   'Day Mart',
+  // ];
 
-  // Track the selected unit
-  String? selectedStore;
-  List<String> supplier = [
-    'Select Supplier ',
-    'Supplier',
-  ];
+  // // Track the selected unit
+  // String? selectedStore;
+  // List<String> supplier = [
+  //   'Select Supplier ',
+  //   'Supplier',
+  // ];
 
   // Track the selected unit
   String? selectedSupplier;

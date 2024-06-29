@@ -301,7 +301,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                         padding: const EdgeInsets.all(15.0),
                                         child: Center(
                                             child: Text(
-                                          "Purchase Date",
+                                          "Purchaser Name",
                                           style: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s12,

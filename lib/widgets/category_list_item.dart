@@ -60,18 +60,27 @@ class CategoryListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  'Search Category',
-                  style: ResponsiveWidget.isMobile(context)
-                      ? buildCustomStyle(FontWeightManager.semiBold,
-                          FontSize.s12, 0.30, ColorManager.textColor)
-                      : buildCustomStyle(FontWeightManager.semiBold,
-                          FontSize.s20, 0.30, ColorManager.textColor),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        'Search Category',
+                        style: ResponsiveWidget.isMobile(context)
+                            ? buildCustomStyle(FontWeightManager.semiBold,
+                                FontSize.s12, 0.30, ColorManager.textColor)
+                            : buildCustomStyle(FontWeightManager.semiBold,
+                                FontSize.s20, 0.30, ColorManager.textColor),
+                      ),
+                    )
+                  ],
                 ),
                 const SizedBox(
                   width: 10,

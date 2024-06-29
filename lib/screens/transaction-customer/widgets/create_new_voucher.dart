@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../components/build_container_box.dart';
 import '../../../components/build_dialog_box.dart';
 import '../../../components/build_round_button.dart';
- 
+
 import '../../../components/build_title.dart';
 import '../../../controllers/sidebar_controller.dart';
 

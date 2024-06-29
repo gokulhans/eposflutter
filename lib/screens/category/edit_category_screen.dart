@@ -405,7 +405,7 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
                                               //     categoryIDController.text),
                                               categoryName:
                                                   categoryNameController.text,
-                                              slug: categoryIDController.text,
+                                              slug: categorySlugController.text,
                                               parentCategory: idController.text,
                                               categoryNameEnglish:
                                                   categoryNameEnglishController

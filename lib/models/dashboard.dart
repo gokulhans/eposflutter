@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dashBoardModel = dashBoardModelFromJson(jsonString);
-
 import 'dart:convert';
 
 DashBoardModel dashBoardModelFromJson(String str) =>
@@ -37,13 +33,11 @@ class DashBoardModel {
 
 class DashBoardModelData {
   final List<ProfileDetail>? profileDetails;
-  final Total? totalSales;
-  final Total? totalCustomers;
+  final TotalSales? totalSales;
 
   DashBoardModelData({
     this.profileDetails,
     this.totalSales,
-    this.totalCustomers,
   });
 
   factory DashBoardModelData.fromJson(Map<String, dynamic> json) =>
@@ -54,10 +48,7 @@ class DashBoardModelData {
                 json["profile_details"]!.map((x) => ProfileDetail.fromJson(x))),
         totalSales: json["total_sales"] == null
             ? null
-            : Total.fromJson(json["total_sales"]),
-        totalCustomers: json["total_customers"] == null
-            ? null
-            : Total.fromJson(json["total_customers"]),
+            : TotalSales.fromJson(json["total_sales"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -65,7 +56,6 @@ class DashBoardModelData {
             ? []
             : List<dynamic>.from(profileDetails!.map((x) => x.toJson())),
         "total_sales": totalSales?.toJson(),
-        "total_customers": totalCustomers?.toJson(),
       };
 }
 
@@ -125,26 +115,64 @@ class ProfileDetail {
       };
 }
 
-class Total {
-  final int? today;
-  final int? week;
-  final int? month;
+class TotalSales {
+  final PeriodStats? today;
+  final PeriodStats? week;
+  final PeriodStats? month;
+  final PeriodStats? year;
+  final int? count;
+  final int? total;
 
-  Total({
+  TotalSales({
     this.today,
     this.week,
     this.month,
+    this.year,
+    this.count,
+    this.total,
   });
 
-  factory Total.fromJson(Map<String, dynamic> json) => Total(
-        today: json["today"],
-        week: json["week"],
-        month: json["month"],
+  factory TotalSales.fromJson(Map<String, dynamic> json) => TotalSales(
+        today:
+            json["today"] == null ? null : PeriodStats.fromJson(json["today"]),
+        week: json["week"] == null ? null : PeriodStats.fromJson(json["week"]),
+        month:
+            json["month"] == null ? null : PeriodStats.fromJson(json["month"]),
+        year: json["year"] == null ? null : PeriodStats.fromJson(json["year"]),
+        count: json["count"],
+        total: json["total"],
       );
 
   Map<String, dynamic> toJson() => {
-        "today": today,
-        "week": week,
-        "month": month,
+        "today": today?.toJson(),
+        "week": week?.toJson(),
+        "month": month?.toJson(),
+        "year": year?.toJson(),
+        "count": count,
+        "total": total,
+      };
+}
+
+class PeriodStats {
+  final int? totalSales;
+  final int? totalCustomers;
+  final int? totalAmount;
+
+  PeriodStats({
+    this.totalSales,
+    this.totalCustomers,
+    this.totalAmount,
+  });
+
+  factory PeriodStats.fromJson(Map<String, dynamic> json) => PeriodStats(
+        totalSales: json["total_sales"],
+        totalCustomers: json["total_customers"],
+        totalAmount: json["total_amount"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "total_sales": totalSales,
+        "total_customers": totalCustomers,
+        "total_amount": totalAmount,
       };
 }

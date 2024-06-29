@@ -10,13 +10,18 @@ class SharedPreferenceProvider {
     debugPrint('inside shared ,$accessToken');
   }
 
-  saveAccessTokenandCustomerId(String accessToken, int customerId) async {
+  saveAccessTokenandCustomerId(
+    String accessToken,
+    int customerId,
+    String customerName,
+  ) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     debugPrint('inside shared ');
 
     prefs.setString('access_token', accessToken);
     prefs.setInt('customerId', customerId);
-    debugPrint('inside shared ,$accessToken');
+    prefs.setString('customerName', customerName);
+    debugPrint('inside shared ,$customerName');
   }
 
   removeToken() async {
@@ -32,6 +37,7 @@ class SharedPreferenceProvider {
 
     prefs.remove('access_token');
     prefs.remove('customerId');
+    prefs.remove('customerName');
   }
 
   Future<String?> getToken() async {
@@ -50,5 +56,11 @@ class SharedPreferenceProvider {
     int? customerId = prefs.getInt('customerId');
     return customerId;
     // return '101|LbzEubzMNqBffc10NqHnnbDu1pWcTOhplh2D9Kfo';
+  }
+
+  Future<String> getCustomerName() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? customerName = prefs.getString('customerName');
+    return customerName ?? 'Default Name'; // Return a default value if null
   }
 }

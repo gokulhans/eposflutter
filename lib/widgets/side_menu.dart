@@ -437,10 +437,19 @@ class SideMenu extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  'Ajay Antony',
-                  style: buildCustomStyle(FontWeightManager.semiBold,
-                      FontSize.s14, 0.21, ColorManager.textColor),
+                FutureBuilder<String>(
+                  future: SharedPreferenceProvider().getCustomerName(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Text(
+                        snapshot.data ?? 'Default Name',
+                        style: buildCustomStyle(FontWeightManager.semiBold,
+                            FontSize.s14, 0.21, ColorManager.textColor),
+                      );
+                    } else {
+                      return const CircularProgressIndicator(); // Or any loading widget
+                    }
+                  },
                 ),
                 const SizedBox(
                   height: 10,

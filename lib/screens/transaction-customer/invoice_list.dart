@@ -98,33 +98,33 @@ class _InvoiceListcreenState extends State<InvoiceListcreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 45,
-                        width: 180, //size.width * 0.5,
-                        child: TextFormField(
-                          onChanged: ((value) => setState(() {
-                                searchTextController.text = value;
-                              })),
-                          cursorColor: ColorManager.kPrimaryColor,
-                          cursorHeight: 13,
-                          controller: searchTextController,
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s10, 0.18, ColorManager.textColor),
-                          decoration: decoration.copyWith(
-                              hintText: "Search    ",
-                              hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor),
-                              // prefixIcon: const Icon(
-                              //   Icons.search,
-                              //   color: Colors.black,
-                              //   size: 35,
-                              // ),
-                              prefixIconColor: Colors.black),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 45,
+                      //   width: 180, //size.width * 0.5,
+                      //   child: TextFormField(
+                      //     onChanged: ((value) => setState(() {
+                      //           searchTextController.text = value;
+                      //         })),
+                      //     cursorColor: ColorManager.kPrimaryColor,
+                      //     cursorHeight: 13,
+                      //     controller: searchTextController,
+                      //     style: buildCustomStyle(FontWeightManager.medium,
+                      //         FontSize.s10, 0.18, ColorManager.textColor),
+                      //     decoration: decoration.copyWith(
+                      //         hintText: "Search    ",
+                      //         hintStyle: buildCustomStyle(
+                      //             FontWeightManager.medium,
+                      //             FontSize.s10,
+                      //             0.18,
+                      //             ColorManager.textColor),
+                      //         // prefixIcon: const Icon(
+                      //         //   Icons.search,
+                      //         //   color: Colors.black,
+                      //         //   size: 35,
+                      //         // ),
+                      //         prefixIconColor: Colors.black),
+                      //   ),
+                      // ),
                       const SizedBox(
                         width: 10,
                       ),

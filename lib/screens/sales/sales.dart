@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pos_machine/components/build_container_box.dart';
+import 'package:pos_machine/helpers/date_helper.dart';
 import 'package:pos_machine/models/add_to_cart.dart';
 import 'package:pos_machine/providers/sales_provider.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class SalesScreen extends StatelessWidget {
     final dateController =
         TextEditingController(text: formattedDate); //"6,April,2023");
     final dateFormatController = TextEditingController();
-    Size size = MediaQuery.of(context).size;  
+    Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Container(
           margin:
@@ -311,7 +312,7 @@ class SalesScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(15.0),
                                         child: Center(
                                             child: Text(
-                                          "Order ID",
+                                          "Order #",
                                           style: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s12,
@@ -443,7 +444,8 @@ class SalesScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(20.0),
                                         child: Center(
                                           child: Text(
-                                            "${order.orderDate}",
+                                            DateHelper.formatYearMonthDay(
+                                                order.orderDate!),
                                             style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s9,

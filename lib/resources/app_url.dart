@@ -79,4 +79,6 @@ class APPUrl {
       '$baseURL/api/transaction/transaction-details';
   static const String listAllTransaction =
       '$baseURL/api/transaction/list-transaction';
+  static const String listStates = '$baseURL/api/location/get-states';
+  static const String listDistricts = '$baseURL/api/location/get-district';
 }

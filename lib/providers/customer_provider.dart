@@ -58,6 +58,7 @@ class CustomerProvider {
       'state': state,
       'country': country,
     };
+    debugPrint("add customer apiBodyData ${apiBodyData.toString()}");
     final url = Uri.parse(APPUrl.addCustomerUrl);
     try {
       final response = await http.post(url,

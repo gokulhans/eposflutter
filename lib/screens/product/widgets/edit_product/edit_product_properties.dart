@@ -274,7 +274,8 @@ class _EditProductPropertiesScreenState
                                   categoryProvider.propValues![index];
                               final masterValue = property['master_value'];
                               final propsCode = property['props_code'];
-                              debugPrint(propsCode);
+                              debugPrint(
+                                  "propsCode ${productPropData[propsCode].toString()}");
                               if (masterValue == "NULL") {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,9 +299,10 @@ class _EditProductPropertiesScreenState
                                       height: size.height * .07,
                                       width: size.width / 3,
                                       child: TextFormField(
-                                        initialValue:
-                                            productPropData[propsCode]?.first ??
-                                                '',
+                                        initialValue: productPropData[propsCode]
+                                                    ?[0]
+                                                .toString() ??
+                                            '',
                                         onChanged: (value) {
                                           setState(() {
                                             apiBodyData['$propsCode'] = value;
@@ -382,9 +384,9 @@ class _EditProductPropertiesScreenState
                                                     item, item))
                                             .toList(),
                                         // error
-                                        initialValue:
-                                            productPropData[propsCode]!
-                                                .cast<Object?>(),
+                                        initialValue: productPropData[propsCode]
+                                                ?.cast<String>() ??
+                                            [],
                                         title: Text("Choose $propsCode"),
                                         selectedColor:
                                             ColorManager.kPrimaryColor,
@@ -420,11 +422,12 @@ class _EditProductPropertiesScreenState
                                           onTap: (value) {
                                             setState(() {
                                               apiBodyData['$propsCode']
-                                                  .remove(value);
+                                                  ?.remove(value);
                                               productPropData[propsCode]
                                                   ?.remove(value);
                                               if (apiBodyData['$propsCode']
-                                                  .isEmpty) {
+                                                      ?.isEmpty ??
+                                                  true) {
                                                 apiBodyData
                                                     .remove('$propsCode');
                                                 productPropData

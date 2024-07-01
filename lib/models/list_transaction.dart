@@ -61,29 +61,30 @@ class ListTransaction {
   final String? accountName;
   final User? user;
   final Account? account;
+  final String? particulars;
 
-  ListTransaction({
-    this.id,
-    this.companyId,
-    this.type,
-    this.paymentMethod,
-    this.accountId,
-    this.amount,
-    this.currency,
-    this.userId,
-    this.orderId,
-    this.transactionComment,
-    this.reference,
-    this.status,
-    this.createdBy,
-    this.verifiedBy,
-    this.createdAt,
-    this.updatedAt,
-    this.userName,
-    this.accountName,
-    this.user,
-    this.account,
-  });
+  ListTransaction(
+      {this.id,
+      this.companyId,
+      this.type,
+      this.paymentMethod,
+      this.accountId,
+      this.amount,
+      this.currency,
+      this.userId,
+      this.orderId,
+      this.transactionComment,
+      this.reference,
+      this.status,
+      this.createdBy,
+      this.verifiedBy,
+      this.createdAt,
+      this.updatedAt,
+      this.userName,
+      this.accountName,
+      this.user,
+      this.account,
+      this.particulars});
 
   factory ListTransaction.fromJson(Map<String, dynamic> json) =>
       ListTransaction(
@@ -112,6 +113,7 @@ class ListTransaction {
         user: json["user"] == null ? null : User.fromJson(json["user"]),
         account:
             json["account"] == null ? null : Account.fromJson(json["account"]),
+        particulars: json["particulars"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -135,6 +137,7 @@ class ListTransaction {
         "account_name": accountName,
         "user": user?.toJson(),
         "account": account?.toJson(),
+        "particulars": particulars,
       };
 }
 

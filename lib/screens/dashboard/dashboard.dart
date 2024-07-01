@@ -199,7 +199,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: 240,
+                    height: 260,
                     child: Row(
                       children: [
                         Expanded(
@@ -218,7 +218,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               BuildBoxShadowContainer(
                                   margin: const EdgeInsets.all(15),
                                   padding: const EdgeInsets.all(15),
-                                  height: 180,
+                                  height: 200,
                                   // width: 220,
                                   circleRadius: 7,
                                   child: Column(
@@ -259,10 +259,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       Expanded(
                                         child: LineChart(
                                           LineChartData(
-                                            gridData:
-                                                const FlGridData(show: false),
-                                            titlesData:
-                                                const FlTitlesData(show: false),
+                                            gridData: FlGridData(show: false),
+                                            titlesData: FlTitlesData(
+                                              leftTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                      showTitles: false)),
+                                              topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                      showTitles: false)),
+                                              rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                      showTitles: false)),
+                                              bottomTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                  showTitles: true,
+                                                  getTitlesWidget:
+                                                      (value, meta) {
+                                                    const titles = [
+                                                      'Mon',
+                                                      'Tue',
+                                                      'Wed',
+                                                      'Thu',
+                                                      'Fri',
+                                                      'Sat',
+                                                      'Sun'
+                                                    ];
+                                                    if (value.toInt() <
+                                                        titles.length) {
+                                                      return Text(titles[
+                                                          value.toInt()]);
+                                                    }
+                                                    return const Text('');
+                                                  },
+                                                ),
+                                              ),
+                                            ),
                                             borderData:
                                                 FlBorderData(show: false),
                                             minX: 0,
@@ -272,20 +303,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             lineBarsData: [
                                               LineChartBarData(
                                                 spots: [
-                                                  const FlSpot(0, 3),
-                                                  const FlSpot(1, 1),
-                                                  const FlSpot(2, 4),
-                                                  const FlSpot(3, 2),
-                                                  const FlSpot(4, 5),
-                                                  const FlSpot(5, 1),
+                                                  FlSpot(0, 3),
+                                                  FlSpot(1, 1),
+                                                  FlSpot(2, 4),
+                                                  FlSpot(3, 2),
+                                                  FlSpot(4, 5),
+                                                  FlSpot(5, 1),
+                                                  FlSpot(6, 4),
                                                 ],
                                                 isCurved: true,
                                                 color:
                                                     ColorManager.kPrimaryColor,
                                                 barWidth: 3,
                                                 isStrokeCapRound: true,
-                                                dotData: const FlDotData(
-                                                    show: false),
+                                                dotData: FlDotData(show: false),
                                                 belowBarData:
                                                     BarAreaData(show: false),
                                               ),
@@ -313,7 +344,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               BuildBoxShadowContainer(
                                   margin: const EdgeInsets.all(15),
                                   padding: const EdgeInsets.all(15),
-                                  height: 180,
+                                  height: 200,
                                   // width: 220,
                                   circleRadius: 7,
                                   child: Column(
@@ -352,49 +383,123 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         ],
                                       ),
                                       Expanded(
-                                        child: PieChart(
-                                          PieChartData(
-                                            sectionsSpace: 0,
-                                            centerSpaceRadius: 40,
-                                            sections: [
-                                              PieChartSectionData(
-                                                color:
-                                                    ColorManager.kPrimaryColor,
-                                                value: 40,
-                                                title: '40%',
-                                                radius: 30,
-                                                titleStyle: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
+                                        child: BarChart(
+                                          BarChartData(
+                                            alignment:
+                                                BarChartAlignment.spaceAround,
+                                            maxY: 20,
+                                            barTouchData: BarTouchData(
+                                              enabled: false,
+                                              touchTooltipData:
+                                                  BarTouchTooltipData(
+                                                // getTooltipColor:
+                                                //     Colors.transparent,
+                                                tooltipPadding: EdgeInsets.zero,
+                                                tooltipMargin: 8,
+                                                getTooltipItem: (
+                                                  BarChartGroupData group,
+                                                  int groupIndex,
+                                                  BarChartRodData rod,
+                                                  int rodIndex,
+                                                ) {
+                                                  return BarTooltipItem(
+                                                    rod.toY.round().toString(),
+                                                    const TextStyle(
+                                                      color: ColorManager
+                                                          .kPrimaryColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            titlesData: FlTitlesData(
+                                              show: true,
+                                              bottomTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                  showTitles: true,
+                                                  reservedSize: 30,
+                                                  getTitlesWidget: getTitles,
                                                 ),
                                               ),
-                                              PieChartSectionData(
-                                                color: ColorManager.kMagentha,
-                                                value: 30,
-                                                title: '30%',
-                                                radius: 30,
-                                                titleStyle: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                ),
+                                              leftTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false),
                                               ),
-                                              PieChartSectionData(
-                                                color: ColorManager.kOrange,
-                                                value: 30,
-                                                title: '30%',
-                                                radius: 30,
-                                                titleStyle: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                ),
+                                              topTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false),
+                                              ),
+                                              rightTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false),
+                                              ),
+                                            ),
+                                            borderData: FlBorderData(
+                                              show: false,
+                                            ),
+                                            barGroups: [
+                                              BarChartGroupData(
+                                                x: 0,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                      toY: 8,
+                                                      color: ColorManager
+                                                          .kPrimaryColor,
+                                                      width: 16)
+                                                ],
+                                                showingTooltipIndicators: [0],
+                                              ),
+                                              BarChartGroupData(
+                                                x: 1,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                      toY: 10,
+                                                      color: ColorManager
+                                                          .kPrimaryColor,
+                                                      width: 16)
+                                                ],
+                                                showingTooltipIndicators: [0],
+                                              ),
+                                              BarChartGroupData(
+                                                x: 2,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                      toY: 14,
+                                                      color: ColorManager
+                                                          .kPrimaryColor,
+                                                      width: 16)
+                                                ],
+                                                showingTooltipIndicators: [0],
+                                              ),
+                                              BarChartGroupData(
+                                                x: 3,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                      toY: 15,
+                                                      color: ColorManager
+                                                          .kPrimaryColor,
+                                                      width: 16)
+                                                ],
+                                                showingTooltipIndicators: [0],
+                                              ),
+                                              BarChartGroupData(
+                                                x: 4,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                      toY: 13,
+                                                      color: ColorManager
+                                                          .kPrimaryColor,
+                                                      width: 16)
+                                                ],
+                                                showingTooltipIndicators: [0],
                                               ),
                                             ],
+                                            gridData: FlGridData(show: false),
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   )),
                             ],
@@ -576,6 +681,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
       default:
         return "0";
     }
+  }
+
+  Widget getTitles(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+      fontSize: 8,
+    );
+    Widget text;
+    switch (value.toInt()) {
+      case 0:
+        text = const Text('M', style: style);
+        break;
+      case 1:
+        text = const Text('T', style: style);
+        break;
+      case 2:
+        text = const Text('W', style: style);
+        break;
+      case 3:
+        text = const Text('T', style: style);
+        break;
+      case 4:
+        text = const Text('F', style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4.0,
+      child: text,
+    );
   }
 }
 

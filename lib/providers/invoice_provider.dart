@@ -205,7 +205,7 @@ class InvoiceProvider extends ChangeNotifier {
             'comment': comment,
             'particulars': particular
           };
-    debugPrint(apiBodyData.toString());
+    debugPrint("voucher and invoice $apiBodyData");
     final url = Uri.parse(APPUrl.addInvoiceorVoucher);
     try {
       final response = await http.post(url, body: apiBodyData, headers: {

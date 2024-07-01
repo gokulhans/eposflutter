@@ -51,14 +51,14 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   SideBarController sideBarController = Get.put(SideBarController());
   int? purchaseId;
-  
-  List<String> property = [
-    'Choose Unit',
-    'KG',
-    'PK',
-    "DZ",
-    "LT",
-  ];
+
+  // List<String> property = [
+  //   'Choose Unit',
+  //   'KG',
+  //   'PK',
+  //   "DZ",
+  //   "LT",
+  // ];
 
   // Track the selected unit
   String? selectedProperty;
@@ -1232,12 +1232,14 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                         offsetValue: const Offset(1, 1),
                                         child: Table(
                                           columnWidths: const {
-                                            0: FractionColumnWidth(0.08),
-                                            1: FractionColumnWidth(0.01),
+                                            0: FractionColumnWidth(0.01),
+                                            1: FractionColumnWidth(0.08),
                                             2: FractionColumnWidth(0.02),
                                             3: FractionColumnWidth(0.06),
                                             4: FractionColumnWidth(0.06),
-                                            5: FractionColumnWidth(0.05),
+                                            5: FractionColumnWidth(0.06),
+                                            6: FractionColumnWidth(0.06),
+                                            7: FractionColumnWidth(0.05),
                                           },
                                           border: TableBorder.symmetric(
                                               outside: const BorderSide(
@@ -1256,6 +1258,28 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                     color: ColorManager
                                                         .tableBGColor),
                                                 children: [
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15.0),
+                                                        child: Center(
+                                                            child: Text(
+                                                          "No",
+                                                          style:
+                                                              buildCustomStyle(
+                                                            FontWeightManager
+                                                                .medium,
+                                                            FontSize.s12,
+                                                            0.18,
+                                                            ColorManager
+                                                                .kPrimaryColor,
+                                                          ),
+                                                        )),
+                                                      )),
                                                   TableCell(
                                                       verticalAlignment:
                                                           TableCellVerticalAlignment
@@ -1289,6 +1313,50 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                         child: Center(
                                                             child: Text(
                                                           "Quantity",
+                                                          style:
+                                                              buildCustomStyle(
+                                                            FontWeightManager
+                                                                .medium,
+                                                            FontSize.s12,
+                                                            0.18,
+                                                            ColorManager
+                                                                .kPrimaryColor,
+                                                          ),
+                                                        )),
+                                                      )),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15.0),
+                                                        child: Center(
+                                                            child: Text(
+                                                          "Supplier Name",
+                                                          style:
+                                                              buildCustomStyle(
+                                                            FontWeightManager
+                                                                .medium,
+                                                            FontSize.s12,
+                                                            0.18,
+                                                            ColorManager
+                                                                .kPrimaryColor,
+                                                          ),
+                                                        )),
+                                                      )),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15.0),
+                                                        child: Center(
+                                                            child: Text(
+                                                          "Store Name",
                                                           style:
                                                               buildCustomStyle(
                                                             FontWeightManager
@@ -1370,7 +1438,13 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
 
                                             // Map your order data to table rows here
                                             ...purchaseItemList!
-                                                .map((products) {
+                                                .toList()
+                                                .asMap()
+                                                .entries
+                                                .map((entry) {
+                                              int index = entry.key;
+                                              var products = entry.value;
+
                                               return TableRow(
                                                 children: [
                                                   TableCell(
@@ -1383,7 +1457,74 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                                 .all(15.0),
                                                         child: Center(
                                                           child: Text(
+                                                            (index + 1)
+                                                                .toString(),
+                                                            style:
+                                                                buildCustomStyle(
+                                                              FontWeightManager
+                                                                  .medium,
+                                                              FontSize.s9,
+                                                              0.13,
+                                                              Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15.0),
+                                                        child: Center(
+                                                          child: Text(
                                                             "${products.name}",
+                                                            style:
+                                                                buildCustomStyle(
+                                                              FontWeightManager
+                                                                  .medium,
+                                                              FontSize.s9,
+                                                              0.13,
+                                                              Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15.0),
+                                                        child: Center(
+                                                          child: Text(
+                                                            "${products.quantity}",
+                                                            style:
+                                                                buildCustomStyle(
+                                                              FontWeightManager
+                                                                  .medium,
+                                                              FontSize.s9,
+                                                              0.13,
+                                                              Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15.0),
+                                                        child: Center(
+                                                          child: Text(
+                                                            "${products.quantity}",
                                                             style:
                                                                 buildCustomStyle(
                                                               FontWeightManager

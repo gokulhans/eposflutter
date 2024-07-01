@@ -35,6 +35,11 @@ class CategoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetPropValues() {
+    propValues = null;
+    notifyListeners();
+  }
+
   setParentCategory(String value) {
     parentCategory = value;
     notifyListeners();

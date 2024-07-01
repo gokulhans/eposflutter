@@ -823,7 +823,7 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                     thickness: 0.5,
                                   ),
                                   SizedBox(
-                                    height: size.height * 0.5,
+                                    height: size.height * 0.3,
                                     child: Consumer<CategoryProvider>(
                                       builder:
                                           (context, categoryProvider, child) {
@@ -881,6 +881,11 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                       height: size.height * .07,
                                                       width: size.width / 3,
                                                       child: TextFormField(
+                                                        initialValue:
+                                                            productPropData[
+                                                                        propsCode]
+                                                                    ?.first ??
+                                                                '',
                                                         onChanged: (value) {
                                                           setState(() {
                                                             apiBodyData[

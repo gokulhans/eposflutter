@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_detail_row.dart';
 
 import 'package:provider/provider.dart';
 
@@ -116,231 +117,29 @@ class ViewVoucherWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Purchase Date: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.purchaseDate,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Store: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null ? "" : store,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    BuildDetailRow(
+                      title1: "Purchase Date",
+                      content1: voucherDetails?.purchaseDate ?? "",
+                      title2: "Store",
+                      content2: store,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Voucher Number: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.voucherNumber ?? "",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Amount: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "${voucherDetails == null ? "" : voucherDetails.amountTotal}",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    BuildDetailRow(
+                      title1: "Voucher Number",
+                      content1: voucherDetails?.voucherNumber ?? "",
+                      title2: "Amount",
+                      content2: voucherDetails?.amountTotal?.toString() ?? "",
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Tax: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.taxAmount ?? "",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Currency: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.currency,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    BuildDetailRow(
+                      title1: "Tax",
+                      content1: voucherDetails?.taxAmount ?? "",
+                      title2: "Currency",
+                      content2: voucherDetails?.currency ?? "",
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Supplier: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        voucherDetails == null ? "" : supplier,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child:
-                              Container(), // Empty container to maintain row structure
-                        ),
-                      ],
+                    BuildDetailRow(
+                      title1: "Supplier",
+                      content1: supplier,
+                      title2: "",
+                      content2: "",
                     ),
                     BuildBoxShadowContainer(
                         height: size.height / 2.5, //120,
@@ -571,7 +370,7 @@ class ViewVoucherWidget extends StatelessWidget {
                         boxColor: Colors.white,
                         textColor: ColorManager.kPrimaryColor,
                         fct: () async {
-                          sideBarController.index.value = 19;
+                          sideBarController.index.value = 26;
                         },
                         height: 50,
                         width: size.width * 0.19,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
 import 'package:pos_machine/providers/customer_provider.dart';
+import 'package:pos_machine/providers/location_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/build_container_box.dart';
@@ -13,22 +14,42 @@ import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
 
-class AddCustomersScreen extends StatelessWidget {
+class AddCustomersScreen extends StatefulWidget {
   const AddCustomersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final firstNameTextController = TextEditingController();
-    final lastNameTextController = TextEditingController();
-    final emailTextController = TextEditingController();
-    final phoneNumberController = TextEditingController();
-    final addressTextController = TextEditingController();
-    final countryTextController = TextEditingController();
-    final stateTextController = TextEditingController();
-    final cityTextController = TextEditingController();
-    final pincodeTextController = TextEditingController();
-    Size size = MediaQuery.of(context).size;
+  State<AddCustomersScreen> createState() => _AddCustomersScreenState();
+}
 
+class _AddCustomersScreenState extends State<AddCustomersScreen> {
+  final firstNameTextController = TextEditingController();
+  final lastNameTextController = TextEditingController();
+  final emailTextController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final addressTextController = TextEditingController();
+  final countryTextController = TextEditingController();
+  final pincodeTextController = TextEditingController();
+
+  String? selectedStateId;
+  String? selectedDistrictId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final locationProvider =
+          Provider.of<LocationProvider>(context, listen: false);
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+      locationProvider.listAllStates(accessToken!);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    final locationProvider = Provider.of<LocationProvider>(context);
+    String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
     return SafeArea(
       child: Container(
           margin:
@@ -51,7 +72,7 @@ class AddCustomersScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Customers',
+                    'Add New Customer',
                     style: buildCustomStyle(FontWeightManager.semiBold,
                         FontSize.s20, 0.30, ColorManager.textColor),
                   ),
@@ -235,6 +256,7 @@ class AddCustomersScreen extends StatelessWidget {
                               ),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 buildColumnWidgetForTextFields(
                                     controller: countryTextController,
@@ -248,32 +270,101 @@ class AddCustomersScreen extends StatelessWidget {
                                     title: "Country",
                                     onchanged: (value) {},
                                     hintText: ""),
-                                buildColumnWidgetForTextFields(
-                                    controller: stateTextController,
-                                    height: size.height * .07,
-                                    width: size.width / 3.05,
-                                    size: size,
-                                    isLeft: true,
-                                    readOnly: false,
-                                    title: "State",
-                                    onchanged: (value) {},
-                                    hintText: ""),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    BuildTextTile(
+                                      title: "State",
+                                      textStyle: buildCustomStyle(
+                                        FontWeightManager.regular,
+                                        FontSize.s14,
+                                        0.27,
+                                        Colors.black.withOpacity(0.6),
+                                      ),
+                                    ),
+                                    BuildBoxShadowContainer(
+                                      circleRadius: 7,
+                                      alignment: Alignment.centerLeft,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 0),
+                                      padding: const EdgeInsets.only(left: 15),
+                                      height: size.height * .07,
+                                      width: size.width / 3,
+                                      child: DropdownButton<String>(
+                                        isExpanded: true,
+                                        value: selectedStateId,
+                                        hint: Text("Select State"),
+                                        items: locationProvider.stateList
+                                            .map((state) {
+                                          return DropdownMenuItem<String>(
+                                            value: state.key,
+                                            child: Text(state.value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) async {
+                                          setState(() {
+                                            selectedStateId = newValue;
+                                            selectedDistrictId =
+                                                null; // Reset district when state changes
+                                          });
+                                          if (newValue != null) {
+                                            await locationProvider
+                                                .listAllDistricts(
+                                              stateId: newValue,
+                                              accessToken: accessToken!,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                buildColumnWidgetForTextFields(
-                                    controller: cityTextController,
-                                    height: size.height * .07,
-                                    width: size.width / 3.05,
-                                    size: size,
-                                    isLeft: false,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                    readOnly: false,
-                                    title: "City",
-                                    onchanged: (value) {},
-                                    hintText: ""),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    BuildTextTile(
+                                      title: "District",
+                                      textStyle: buildCustomStyle(
+                                        FontWeightManager.regular,
+                                        FontSize.s14,
+                                        0.27,
+                                        Colors.black.withOpacity(0.6),
+                                      ),
+                                    ),
+                                    BuildBoxShadowContainer(
+                                      circleRadius: 7,
+                                      alignment: Alignment.centerLeft,
+                                      margin: const EdgeInsets.only(left: 20),
+                                      padding: const EdgeInsets.only(left: 15),
+                                      height: size.height * .07,
+                                      width: size.width / 3,
+                                      child: DropdownButton<String>(
+                                        isExpanded: true,
+                                        value: selectedDistrictId,
+                                        hint: Text("Select District"),
+                                        items: locationProvider.districtList
+                                            .map((district) {
+                                          return DropdownMenuItem<String>(
+                                            value: district.key,
+                                            child: Text(district.value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            selectedDistrictId = newValue;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 buildColumnWidgetForTextFields(
                                     controller: pincodeTextController,
                                     height: size.height * .07,
@@ -286,24 +377,17 @@ class AddCustomersScreen extends StatelessWidget {
                                     hintText: ""),
                               ],
                             ),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 30),
                             Padding(
                               padding: const EdgeInsets.only(left: 10.0),
-                              child: CustomRoundButtonWithIcon(
-                                title: "Add New Customer",
+                              child: CustomRoundButton(
+                                title: "Submit",
                                 fct: () async {
                                   debugPrint("Add New Customer");
                                   debugPrint(phoneNumberController.text
                                       .replaceAll("-", ""));
                                   if (firstNameTextController.text.isEmpty ||
-                                      lastNameTextController.text.isEmpty ||
-                                      emailTextController.text.isEmpty ||
-                                      phoneNumberController.text.isEmpty ||
-                                      addressTextController.text.isEmpty ||
-                                      countryTextController.text.isEmpty ||
-                                      pincodeTextController.text.isEmpty ||
-                                      stateTextController.text.isEmpty ||
-                                      cityTextController.text.isEmpty) {
+                                      phoneNumberController.text.isEmpty) {
                                     showScaffold(
                                       context: context,
                                       message:
@@ -336,8 +420,16 @@ class AddCustomersScreen extends StatelessWidget {
                                             emailTextController.text,
                                             addressTextController.text,
                                             pincodeTextController.text,
-                                            cityTextController.text,
-                                            stateTextController.text,
+                                            locationProvider.stateList
+                                                .firstWhere((state) =>
+                                                    state.key ==
+                                                    selectedStateId)
+                                                .value,
+                                            locationProvider.districtList
+                                                .firstWhere((district) =>
+                                                    district.key ==
+                                                    selectedDistrictId)
+                                                .value,
                                             countryTextController.text,
                                             context)
                                         .then((value) {
@@ -350,13 +442,13 @@ class AddCustomersScreen extends StatelessWidget {
                                         Navigator.pop(context);
                                         emailTextController.clear();
                                         pincodeTextController.clear();
-                                        stateTextController.clear();
                                         phoneNumberController.clear();
                                         lastNameTextController.clear();
                                         firstNameTextController.clear();
                                         addressTextController.clear();
                                         countryTextController.clear();
-                                        cityTextController.clear();
+                                        selectedDistrictId = null;
+                                        selectedStateId = null;
                                       } else {
                                         Map<String, dynamic> errorResponse =
                                             value['errors'];
@@ -380,12 +472,7 @@ class AddCustomersScreen extends StatelessWidget {
                                 },
                                 height: 50,
                                 width: size.width * 0.19,
-                                icon: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                ),
                                 fontSize: FontSize.s12,
-                                size: size,
                               ),
                             ),
                             const SizedBox(height: 25),

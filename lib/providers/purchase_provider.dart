@@ -152,7 +152,7 @@ class PurchaseProvider extends ChangeNotifier {
       } else {}
     } finally {}
   }
-  
+
   //          *********************** LIST PURCHASES  API ***************************************************
 
   Future<void> listPurchase(

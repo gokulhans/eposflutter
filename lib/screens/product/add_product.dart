@@ -258,6 +258,10 @@ class AddProductScreen extends StatelessWidget {
                                                     color: Colors.white,
                                                   ),
                                                   onPressed: () async {
+                                                    Provider.of<CategoryProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .resetPropValues();
                                                     gridSelectionProvider
                                                         .setProductIDForAdding(
                                                             products.productId);

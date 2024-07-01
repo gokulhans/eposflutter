@@ -38,10 +38,11 @@ class LocationProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> listAllDistricts(String accessToken) async {
+  Future<void> listAllDistricts(
+      {required String accessToken, required String stateId}) async {
     debugPrint("LIST ALL DISTRICTS");
 
-    final url = Uri.parse("${APPUrl.listDistricts}?state_id=1");
+    final url = Uri.parse("${APPUrl.listDistricts}?state_id=$stateId");
     try {
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',

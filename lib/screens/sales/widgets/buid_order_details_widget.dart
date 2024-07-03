@@ -64,31 +64,31 @@ class OrderDetailWidget extends StatelessWidget {
                     const BuildProfilePicture()
                   ],
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    color: ColorManager.kPrimaryWithOpacity10,
-                  ),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Note\n',
-                      style: buildCustomStyle(FontWeightManager.medium,
-                          FontSize.s15, 0.23, ColorManager.kPrimaryColor),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Waiting for friends.',
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s12, 0.18, Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Container(
+                //   margin: const EdgeInsets.only(top: 10),
+                //   width: MediaQuery.of(context).size.width,
+                //   padding: const EdgeInsets.all(20),
+                //   decoration: const BoxDecoration(
+                //     shape: BoxShape.rectangle,
+                //     color: ColorManager.kPrimaryWithOpacity10,
+                //   ),
+                //   child: RichText(
+                //     text: TextSpan(
+                //       text: 'Note\n',
+                //       style: buildCustomStyle(FontWeightManager.medium,
+                //           FontSize.s15, 0.23, ColorManager.kPrimaryColor),
+                //       children: <TextSpan>[
+                //         TextSpan(
+                //           text: 'Waiting for friends.',
+                //           style: buildCustomStyle(FontWeightManager.medium,
+                //               FontSize.s12, 0.18, Colors.black),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 SizedBox(
-                  height: 200,
+                  height: 300,
                   child: ListView.builder(
                       padding: const EdgeInsets.all(20),
                       itemCount: cartItem!.length,
@@ -143,10 +143,10 @@ class OrderDetailWidget extends StatelessWidget {
                             ],
                           ),
 
-                          trailing: WebsafeSvg.asset(
-                            ImageAssets.oderlistCloseIcon,
-                            fit: BoxFit.fill,
-                          ),
+                          // trailing: WebsafeSvg.asset(
+                          //   ImageAssets.oderlistCloseIcon,
+                          //   fit: BoxFit.fill,
+                          // ),
                           //   ],
                         );
                       }),

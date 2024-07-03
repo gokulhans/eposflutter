@@ -103,11 +103,13 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
           child: Padding(
             padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
             child: isInitLoading
-                ? Platform.isIOS
-                    ? SizedBox(
-                        height: size.height,
-                        child: const CircularProgressIndicator.adaptive())
-                    : const Center(child: CircularProgressIndicator.adaptive())
+                ?
+                // ? Platform.isIOS
+                //     ? SizedBox(
+                //         height: size.height,
+                //         child: const CircularProgressIndicator.adaptive())
+                //     :
+                const Center(child: CircularProgressIndicator.adaptive())
                 : orderDetailsModelData == null
                     ? ListView(
                         children: [
@@ -115,7 +117,7 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Order Details - $orderNumber',
+                                'Order Details - # $orderNumber',
                                 style: ResponsiveWidget.isMobile(context)
                                     ? buildCustomStyle(
                                         FontWeightManager.semiBold,
@@ -154,7 +156,7 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Order Details - $orderNumber', //(${orderDetailsModelData!.orderStatus ?? ""})
+                                'Order Details - # $orderNumber', //(${orderDetailsModelData!.orderStatus ?? ""})
                                 style: ResponsiveWidget.isMobile(context)
                                     ? buildCustomStyle(
                                         FontWeightManager.semiBold,

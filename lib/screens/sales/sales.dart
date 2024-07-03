@@ -290,6 +290,7 @@ class SalesScreen extends StatelessWidget {
                             3: FractionColumnWidth(0.06),
                             4: FractionColumnWidth(0.06),
                             5: FractionColumnWidth(0.05),
+                            6: FractionColumnWidth(0.01),
                           },
                           border: TableBorder.symmetric(
                               outside: const BorderSide(
@@ -393,6 +394,22 @@ class SalesScreen extends StatelessWidget {
                                         child: Center(
                                             child: Text(
                                           "Customer Details",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Action",
                                           style: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s12,
@@ -521,6 +538,37 @@ class SalesScreen extends StatelessWidget {
                                               0.13,
                                               Colors.black,
                                             ),
+                                          ),
+                                        ),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                          child: Row(
+                                            children: [
+                                              BuildBoxShadowContainer(
+                                                  margin: const EdgeInsets.only(
+                                                      left: 5, right: 5),
+                                                  circleRadius: 5,
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.visibility,
+                                                      size: 18,
+                                                      color: ColorManager
+                                                          .kPrimaryColor
+                                                          .withOpacity(0.9),
+                                                    ),
+                                                    onPressed: () async {
+                                                      orderProvider.setOrderId(
+                                                          "${order.ordersId ?? "0"}");
+                                                      sideBarController
+                                                          .index.value = 11;
+                                                    },
+                                                  )),
+                                            ],
                                           ),
                                         ),
                                       )),

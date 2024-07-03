@@ -26,11 +26,14 @@ class ViewPurchaseWidget extends StatelessWidget {
         Provider.of<GridSelectionProvider>(context);
     PurchaseProvider purchaseProvider = Provider.of<PurchaseProvider>(context);
 
-    ListPurchaseModelData? purchaseDetails =
+    final ListPurchaseModelData? purchaseDetails =
         purchaseProvider.getListPurchaseModelDataDetails;
+
     VoucherDetail? voucherDetails = purchaseProvider.getVoucherDetails;
     List<PurchaseItem>? listPurchaseItems =
         purchaseProvider.getlistPurchaseItemView;
+
+    debugPrint("purchaseDetails: ${purchaseDetails?.purchaserId.toString()}");
 
     String store = purchaseProvider.storeName(
             voucherDetails == null ? 1 : voucherDetails.storeId ?? 1) ??
@@ -131,19 +134,21 @@ class ViewPurchaseWidget extends StatelessWidget {
                       title1: "Purchase Voucher Date",
                       content1: voucherDetails?.purchaseDate ?? "",
                       title2: "Purchaser Name",
-                      content2: "Sales Executive",
+                      content2:
+                          "Sales Executive", // You might want to replace this with actual data if available
                     ),
                     BuildDetailRow(
                       title1: "Number Of Items",
-                      content1: filteredItems?.length.toString() ?? "",
+                      content1: filteredItems?.length.toString() ?? "0",
                       title2: "Total Amount",
-                      content2: voucherDetails?.amountTotal.toString() ?? "",
+                      content2: purchaseDetails!.amountTotal.toString(),
                     ),
                     BuildDetailRow(
                       title1: "Status",
-                      content1: _getStatus(voucherDetails?.status),
+                      content1: _getStatus(purchaseDetails.status.toString()),
                       title2: "Currency",
-                      content2: voucherDetails?.currency ?? "",
+                      content2: purchaseDetails.currency ??
+                          "Default Currency", // Replace with default currency if not available
                     ),
                     BuildBoxShadowContainer(
                         height: size.height / 2.5, //120,

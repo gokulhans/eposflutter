@@ -21,16 +21,16 @@ class ViewProductPropertiesScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     GetProduct? getProduct = gridSelectionProvider.getProductDetails;
-
-    List<Widget> buildProductProperties(Map<String, String>? productProps) {
+    List<Widget> buildProductProperties(List<ProductProp>? productProps) {
       if (productProps == null || productProps.isEmpty) {
-        return [Text("No properties available")];
+        return [const Text("No properties available")];
       }
 
-      return productProps.entries.map((entry) {
+      return productProps.map((prop) {
         return ListTile(
-          title: Text(entry.key),
-          subtitle: Text(entry.value),
+          title: Text("${prop.label}"),
+          subtitle: Text(prop.masterValue.toString()),
+          trailing: Text("Stock Applicable: ${prop.stockApplicable}"),
         );
       }).toList();
     }

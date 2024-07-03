@@ -122,13 +122,13 @@ class GridSelectionProvider extends ChangeNotifier {
   }
   //          *********************** LIST ALL PRODUCTS  API ***************************************************
 
-  Future<void> listAllProducts({required int categoryId}) async {
+  Future<void> listAllProducts({int? categoryId}) async {
     debugPrint("LIST ALL PRODUCTS categoryId $categoryId ");
     final Map<String, dynamic> apiBodyData = {
       'category_id': categoryId == 0 ? null : categoryId,
     };
     isLoading = true;
-    selectedCategoryId = categoryId;
+    // selectedCategoryId = categoryId;
     notifyListeners();
     productList = [];
     final url = Uri.parse(APPUrl.getProcductUrl);
@@ -157,13 +157,13 @@ class GridSelectionProvider extends ChangeNotifier {
   }
   //          *********************** LIST ALL PRODUCTS  API ***************************************************
 
-  Future<void> listAllProductsAPI({required int categoryId}) async {
+  Future<void> listAllProductsAPI({int? categoryId}) async {
     debugPrint("LIST ALL PRODUCTS categoryId $categoryId ");
     final Map<String, dynamic> apiBodyData = {
       'category_id': categoryId == 0 ? null : categoryId,
     };
     isLoading = true;
-    selectedCategoryId = categoryId;
+    // selectedCategoryId = categoryId;
     notifyListeners();
     selectedProductListAPI = [];
     final url = Uri.parse(APPUrl.getProcductUrl);
@@ -594,22 +594,26 @@ class GridSelectionProvider extends ChangeNotifier {
   }
   //          *********************** ADD TO STOCK API ***************************************************
 
-  Future<dynamic> addProductStockAPI(
-      {required String accessToken,
-      required String productId,
-      required String storeId,
-      required String quantity,
-      required String purchaseRate,
-      required String retailPrice,
-      required String wholesalePrice,
-      required String wholesaleMinUnit,
-      required String expiryDate,
-      required String batchNumber,
-      required String unit}) async {
+  Future<dynamic> addProductStockAPI({
+    required String accessToken,
+    required String productId,
+    required String storeId,
+    required String quantity,
+    required String purchaseRate,
+    required String retailPrice,
+    required String wholesalePrice,
+    required String wholesaleMinUnit,
+    required String expiryDate,
+    required String batchNumber,
+    required String unit,
+    required List<Map<String, dynamic>> productProperties,
+  }) async {
     final Map<String, dynamic> error = {
       'status': "failed",
       'message': "Something went wrong, Please try Again!"
     };
+
+    debugPrint("productProperties ${jsonEncode(productProperties).toString()}");
 
     final Map<String, dynamic> apiBodyData = {
       'product_id': productId,
@@ -621,7 +625,8 @@ class GridSelectionProvider extends ChangeNotifier {
       'wholesale_min_unit': wholesaleMinUnit,
       'expiry_date': expiryDate,
       'unit': unit,
-      'batch_number': batchNumber
+      'batch_number': batchNumber,
+      'product_properties': jsonEncode(productProperties),
     };
     debugPrint(apiBodyData.toString());
     final url = Uri.parse(APPUrl.addToStock);
@@ -637,6 +642,9 @@ class GridSelectionProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         debugPrint(json.decode(response.body).toString());
         debugPrint(json.decode(response.body).toString());
+        listAllProducts();
+        listAllProductsAPI();
+        notifyListeners();
         return json.decode(response.body);
       } else {
         return error;

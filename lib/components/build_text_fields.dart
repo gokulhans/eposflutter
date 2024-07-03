@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pos_machine/components/build_calendar_selection.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_title.dart';
 import 'package:web_date_picker/web_date_picker.dart';
@@ -315,22 +317,24 @@ class BuildTextFieldColumn3 extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Container(
-                      margin: isLeft
-                          ? const EdgeInsets.only(left: 8)
-                          : const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 0),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: WebDatePicker(
-                          dateformat: "dd/MM/yyyy",
-                          height: size.height * .06,
-                          width: size.width / 4.3,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                          onChange: (value) {
-                            controller.text = value.toString();
+                  : BuildBoxShadowContainer(
+                      circleRadius: 7,
+                      alignment: Alignment.centerLeft,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 0),
+                      height: size.height * .07,
+                      width: size.width / 4.5,
+                      child: Container(
+                        height: size.height * .06,
+                        width: size.width / 4.3,
+                        margin: isLeft
+                            ? const EdgeInsets.only(left: 8)
+                            : const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 0),
+                        child: CalendarPickerTableCell(
+                          onDateSelected: (date) {
+                            controller.text =
+                                DateFormat('dd/MM/yyyy').format(date);
                           },
                         ),
                       ),
@@ -427,6 +431,15 @@ class BuildTextFieldColumn3 extends StatelessWidget {
               ),
             ],
           );
+  }
+}
+
+DateTime parseDate(String date) {
+  try {
+    return DateFormat("dd/MM/yyyy").parse(date);
+  } catch (e) {
+    print("Error parsing date: $e");
+    return DateTime.now();
   }
 }
 

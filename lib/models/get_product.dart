@@ -52,7 +52,8 @@ class GetProduct {
   final List<Attachment>? attachment;
   bool isSelected = false;
   final Names? names;
-  final Map<String, String>? productProps;
+  final List<ProductProp>? productProps; // Changed from Map<String, String>?
+
   // final List<dynamic>? propValues;
   // final List<dynamic>? attachement;
 
@@ -97,11 +98,9 @@ class GetProduct {
                 json["attachment"]!.map((x) => Attachment.fromJson(x))),
         names: json["names"] == null ? null : Names.fromJson(json["names"]),
         productProps: json["product_props"] == null
-            ? {}
-            : Map<String, String>.from(json["product_props"]), // Updated field
-        // attachment: json["attachement"] == null
-        //     ? []
-        //     : List<dynamic>.from(json["attachement"]!.map((x) => x)),
+            ? []
+            : List<ProductProp>.from(
+                json["product_props"]!.map((x) => ProductProp.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -128,8 +127,8 @@ class GetProduct {
         //     : List<dynamic>.from(attachement!.map((x) => x)),
         "names": names?.toJson(),
         "product_props": productProps == null
-            ? {}
-            : Map<String, String>.from(productProps!), // Updated field
+            ? []
+            : List<dynamic>.from(productProps!.map((x) => x.toJson())),
       };
 }
 
@@ -251,5 +250,49 @@ class Names {
         "en": en,
         "hi": hi,
         "ar": ar,
+      };
+}
+
+class ProductProp {
+  final int? id;
+  final int? categoryId;
+  final String? propsCode;
+  final String? label;
+  final String? masterValue;
+  final String? type;
+  final int? propsId;
+  final String? stockApplicable;
+
+  ProductProp({
+    this.id,
+    this.categoryId,
+    this.propsCode,
+    this.label,
+    this.masterValue,
+    this.type,
+    this.propsId,
+    this.stockApplicable,
+  });
+
+  factory ProductProp.fromJson(Map<String, dynamic> json) => ProductProp(
+        id: json["id"],
+        categoryId: json["category_id"],
+        propsCode: json["props_code"],
+        label: json["label"],
+        masterValue: json["master_value"],
+        type: json["type"],
+        propsId: json["props_id"],
+        stockApplicable: json["stock_applicable"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "category_id": categoryId,
+        "props_code": propsCode,
+        "label": label,
+        "master_value": masterValue,
+        "type": type,
+        "props_id": propsId,
+        "stock_applicable": stockApplicable,
       };
 }

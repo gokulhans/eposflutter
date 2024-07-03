@@ -217,20 +217,35 @@ class _EditProductPropertiesScreenState
   }
 
   void loadExistingProperties() {
-    // Assuming you have a method in GridSelectionProvider to get existing product properties
     GridSelectionProvider gridSelectionProvider =
         Provider.of<GridSelectionProvider>(context, listen: false);
     GetProduct? productDetails = gridSelectionProvider.getProductDetails;
 
     if (productDetails?.productProps != null) {
-      productDetails!.productProps!.forEach((key, value) {
-        productPropData[key] = value.split(',').toList();
-        apiBodyData[key] = value.split(',').toList();
-        // Initialize stock applicable map if needed
-        stockApplicableMap[key] =
-            false; // You might need to adjust this based on your data
-        productPropStockApplicable[key] = 'N'; // Adjust this based on your data
-      });
+      for (var prop in productDetails!.productProps!) {
+        if (prop.propsCode != null && prop.masterValue != null) {
+          debugPrint("propdada${prop.toString()}");
+          String key = prop.propsCode!;
+          String value = prop.masterValue!;
+
+          // Populate productPropData
+          productPropData[key] = value.split(',').toList();
+
+          // Populate apiBodyData
+          apiBodyData[key] = value.split(',');
+
+          // Populate productPropStockApplicable
+          productPropStockApplicable[key] = prop.stockApplicable ?? 'N';
+
+          // Populate productPropIds
+          if (prop.propsId != null) {
+            productPropIds[key] = prop.propsId!;
+          }
+
+          // Populate stockApplicableMap
+          stockApplicableMap[key] = prop.stockApplicable == 'Y';
+        }
+      }
     }
   }
 
@@ -273,15 +288,17 @@ class _EditProductPropertiesScreenState
                               final property =
                                   categoryProvider.propValues![index];
                               final masterValue = property['master_value'];
+                              final propType = property['prop_type'];
                               final propsCode = property['props_code'];
+                              final propsLabel = property['label'];
                               debugPrint(
                                   "propsCode ${productPropData[propsCode].toString()}");
-                              if (masterValue == "NULL") {
+                              if (propType == "TXT") {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     BuildTextTile(
-                                      title: propsCode,
+                                      title: propsLabel,
                                       isStarRed: true,
                                       isTextField: true,
                                       textStyle: buildCustomStyle(
@@ -315,7 +332,7 @@ class _EditProductPropertiesScreenState
                                         cursorColor: ColorManager.kPrimaryColor,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          hintText: 'Enter $propsCode',
+                                          hintText: 'Enter $propsLabel',
                                           hintStyle: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s12,
@@ -360,7 +377,7 @@ class _EditProductPropertiesScreenState
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     BuildTextTile(
-                                      title: propsCode,
+                                      title: propsLabel,
                                       isStarRed: true,
                                       isTextField: true,
                                       textStyle: buildCustomStyle(
@@ -387,7 +404,7 @@ class _EditProductPropertiesScreenState
                                         initialValue: productPropData[propsCode]
                                                 ?.cast<String>() ??
                                             [],
-                                        title: Text("Choose $propsCode"),
+                                        title: Text("Choose $propsLabel"),
                                         selectedColor:
                                             ColorManager.kPrimaryColor,
                                         decoration: BoxDecoration(

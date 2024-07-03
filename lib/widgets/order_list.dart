@@ -526,360 +526,224 @@ class _OrderListState extends State<OrderList> {
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Theme(
-                                    data: ThemeData(
-                                        dividerColor: Colors.transparent),
-                                    child: ExpansionTile(
-                                      maintainState: true,
-                                      childrenPadding: const EdgeInsets.only(
-                                        bottom: 10,
-                                      ),
-                                      collapsedBackgroundColor: index % 2 == 0
-                                          ? Colors.grey.withOpacity(0.1)
-                                          : null,
-                                      backgroundColor: index % 2 == 0
-                                          ? Colors.grey.withOpacity(0.1)
-                                          : null,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(3)),
-                                      tilePadding: const EdgeInsets.only(
-                                          right: 10, left: 5),
-                                      key: keyTile,
-                                      // leading: Text(
-                                      //   '${index + 1}',
-                                      //   style: buildCustomStyle(FontWeightManager.regular,
-                                      //       FontSize.s10, 0.21, ColorManager.textColor),
-                                      // ),
-                                      trailing: GestureDetector(
-                                        onTap: () {
-                                          String? accessToken =
-                                              Provider.of<AuthModel>(context,
-                                                      listen: false)
-                                                  .token;
-                                          debugPrint(
-                                              "accessToken From AuthModel $accessToken");
-                                          Provider.of<CartProvider>(context,
-                                                  listen: false)
-                                              .removeFromCartAPI(
-                                                  accessToken:
-                                                      accessToken ?? "",
-                                                  customerId:
-                                                      Provider.of<AuthModel>(
-                                                              context,
-                                                              listen: false)
-                                                          .userId!,
-                                                  productId:
-                                                      cartItem[index].id ?? 1,
-                                                  remove: "true");
-                                        },
-                                        child: WebsafeSvg.asset(
-                                          ImageAssets.oderlistCloseIcon,
-                                          fit: BoxFit.none,
+                                      data: ThemeData(
+                                          dividerColor: Colors.transparent),
+                                      child: ExpansionTile(
+                                        maintainState: true,
+                                        childrenPadding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        collapsedBackgroundColor: index % 2 == 0
+                                            ? Colors.grey.withOpacity(0.1)
+                                            : null,
+                                        backgroundColor: index % 2 == 0
+                                            ? Colors.grey.withOpacity(0.1)
+                                            : null,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(3)),
+                                        tilePadding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        key: ValueKey(cartItem[index].id),
+                                        trailing: GestureDetector(
+                                          onTap: () {
+                                            String? accessToken =
+                                                Provider.of<AuthModel>(context,
+                                                        listen: false)
+                                                    .token;
+                                            Provider.of<CartProvider>(context,
+                                                    listen: false)
+                                                .removeFromCartAPI(
+                                              accessToken: accessToken ?? "",
+                                              customerId:
+                                                  Provider.of<AuthModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .userId!,
+                                              productId:
+                                                  cartItem[index].id ?? 1,
+                                              remove: "true",
+                                            );
+                                          },
+                                          child: WebsafeSvg.asset(
+                                            ImageAssets.oderlistCloseIcon,
+                                            fit: BoxFit.none,
+                                            width: 10, // Adjust icon size
+                                          ),
                                         ),
-                                      ), //const SizedBox(),
-                                      // initiallyExpanded: expanded,
-                                      // leading: expanded
-                                      //     ? GestureDetector(
-                                      //         onTap: () {
-                                      //           // shrinkTile();
-                                      //         },
-                                      //         child: const Icon(
-                                      //           Icons.keyboard_arrow_down,
-                                      //         ),
-                                      //       )
-                                      //     : GestureDetector(
-                                      //         onTap: () {
-                                      //           //  expandTile();
-                                      //         },
-                                      //         child: const Icon(
-                                      //           Icons.keyboard_arrow_right,
-                                      //         ),
-                                      //       ),
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      iconColor: ColorManager.textColor,
-                                      collapsedIconColor:
-                                          ColorManager.textColor,
-                                      title: ListTile(
-                                        //horizontalTitleGap: 0,
-                                        minLeadingWidth: 0,
-                                        minVerticalPadding: 0,
-                                        contentPadding: EdgeInsets.zero,
-                                        visualDensity: const VisualDensity(
-                                            horizontal: 0, vertical: 0),
-                                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        // children: [
-                                        //const SizedBox(width: 5),
-                                        leading: Text(
-                                          '${index + 1}',
-                                          style: buildCustomStyle(
-                                              FontWeightManager.regular,
-                                              FontSize.s10,
-                                              0.21,
-                                              ColorManager.textColor),
-                                        ),
-                                        //  const SizedBox(width: 10),
-                                        // subtitle: Text(
-                                        //   '\$25.00',
-                                        //   style: buildCustomStyle(FontWeightManager.regular,
-                                        //       FontSize.s10, 0.21, ColorManager.textColor),
-                                        // ),
-                                        title: Row(
-                                          children: [
-                                            SizedBox(
-                                              width:
-                                                  110, // Set your desired fixed width here
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  text:
-                                                      '${cartItem[index].productName}\n',
-                                                  style: buildCustomStyle(
-                                                      FontWeightManager.regular,
-                                                      FontSize.s10,
-                                                      0.21,
-                                                      ColorManager.textColor),
-                                                  children: <TextSpan>[
-                                                    TextSpan(
-                                                      text:
-                                                          '${cartItem[index].productUnit}',
-                                                      style: buildCustomStyle(
-                                                          FontWeightManager
-                                                              .medium,
-                                                          FontSize.s8,
-                                                          0.21,
-                                                          ColorManager
-                                                              .textColor),
-                                                    ),
-                                                  ],
-                                                ),
-                                                overflow: TextOverflow
-                                                    .ellipsis, // Handle overflow by ellipsis
-                                                maxLines:
-                                                    4, // Limit the number of lines to 2
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        iconColor: ColorManager.textColor,
+                                        collapsedIconColor:
+                                            ColorManager.textColor,
+                                        title: LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            // Calculate responsive sizes
+                                            double fontSize =
+                                                constraints.maxWidth < 600
+                                                    ? 12
+                                                    : 14;
+                                            double iconSize =
+                                                constraints.maxWidth < 600
+                                                    ? 20
+                                                    : 24;
+
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  height: 25,
-                                                  child: IconButton(
-                                                    onPressed: () {
-                                                      String? accessToken =
-                                                          Provider.of<AuthModel>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .token;
-                                                      debugPrint(
-                                                          "accessToken From AuthModel $accessToken");
-                                                      Provider.of<CartProvider>(
-                                                              context,
-                                                              listen: false)
-                                                          .removeFromCartAPI(
-                                                        accessToken:
-                                                            accessToken ?? "",
-                                                        customerId: Provider.of<
-                                                                    AuthModel>(
-                                                                context,
-                                                                listen: false)
-                                                            .userId!,
-                                                        productId:
-                                                            cartItem[index]
-                                                                    .id ??
-                                                                1,
-                                                        remove: '',
-                                                      );
-                                                    },
-                                                    icon: Icon(
-                                                      Icons
-                                                          .remove_circle_outline,
-                                                      color: ColorManager
-                                                          .kPrimaryColor
-                                                          .withOpacity(0.7),
-                                                    ),
-                                                  ),
-                                                ),
-                                                // Container(
-                                                //     alignment: Alignment.center,
-                                                //     padding: EdgeInsets.all(8),
-                                                //     decoration: BoxDecoration(
-                                                //       shape: BoxShape.circle,
-                                                //       color: ColorManager
-                                                //           .kPrimaryColor,
-                                                //       // borderRadius:
-                                                //       //     BorderRadius.circular(7),
-                                                //       // border: Border.all(
-                                                //       //     width: 0.4,
-                                                //       //     color: Colors.black),
-                                                //     ),
-                                                //     // height: 25,
-                                                //     width: 30,
-                                                //     child: Icon(
-                                                //       Icons.remove,
-                                                //       color: Colors.white,
-                                                //       size: 14,
-                                                //     )),
-                                                Column(
+                                                Row(
                                                   children: [
-                                                    Text(
-                                                      'Quantity',
-                                                      style: buildCustomStyle(
-                                                          FontWeightManager
-                                                              .regular,
-                                                          FontSize.s10,
-                                                          0.21,
-                                                          ColorManager
-                                                              .textColor),
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            '${index + 1}. ${cartItem[index].productName}',
+                                                            style: buildCustomStyle(
+                                                                FontWeightManager
+                                                                    .regular,
+                                                                fontSize,
+                                                                0.21,
+                                                                ColorManager
+                                                                    .textColor),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                          ),
+                                                          Text(
+                                                            '${cartItem[index].productUnit}',
+                                                            style: buildCustomStyle(
+                                                                FontWeightManager
+                                                                    .medium,
+                                                                fontSize - 2,
+                                                                0.21,
+                                                                ColorManager
+                                                                    .textColor),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    SizedBox(
-                                                      height: 25,
-                                                      width: 50,
-                                                      child: TextField(
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        cursorWidth: 1,
-                                                        readOnly: true,
-                                                        cursorColor:
-                                                            ColorManager
-                                                                .kPrimaryColor,
-                                                        decoration:
-                                                            decorationBorder
-                                                                .copyWith(
-                                                          contentPadding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      16.0),
-                                                          hintStyle:
-                                                              buildCustomStyle(
-                                                                  FontWeightManager
-                                                                      .regular,
-                                                                  FontSize.s10,
-                                                                  0.10,
-                                                                  ColorManager
-                                                                      .textColor),
-                                                          hintText:
-                                                              "${cartItem[index].quantity}",
-                                                          // label: Text(
-                                                          //     "${cartItem[index].quantity}"),
-                                                          labelStyle:
-                                                              buildCustomStyle(
-                                                                  FontWeightManager
-                                                                      .regular,
-                                                                  FontSize.s10,
-                                                                  0.10,
-                                                                  ColorManager
-                                                                      .textColor),
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Center(
+                                                        child:
+                                                            CompactQuantityControl(
+                                                          quantity:
+                                                              cartItem[index]
+                                                                  .quantity!,
+                                                          onIncrement: () {
+                                                            String?
+                                                                accessToken =
+                                                                Provider.of<AuthModel>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .token;
+                                                            Provider.of<CartProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .addToCartAPI(
+                                                              accessToken:
+                                                                  accessToken ??
+                                                                      "",
+                                                              customerId: Provider.of<
+                                                                          AuthModel>(
+                                                                      context,
+                                                                      listen:
+                                                                          false)
+                                                                  .userId!,
+                                                              productId: cartItem[
+                                                                          index]
+                                                                      .productId ??
+                                                                  1,
+                                                              quantity: 1,
+                                                            );
+                                                          },
+                                                          onDecrement: () {
+                                                            String?
+                                                                accessToken =
+                                                                Provider.of<AuthModel>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .token;
+                                                            Provider.of<CartProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .removeFromCartAPI(
+                                                              accessToken:
+                                                                  accessToken ??
+                                                                      "",
+                                                              customerId: Provider.of<
+                                                                          AuthModel>(
+                                                                      context,
+                                                                      listen:
+                                                                          false)
+                                                                  .userId!,
+                                                              productId:
+                                                                  cartItem[index]
+                                                                          .id ??
+                                                                      1,
+                                                              remove: '',
+                                                            );
+                                                          },
                                                         ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: Text(
+                                                        '${cartItem[index].currency} ${cartItem[index].unitPrice}',
+                                                        style: buildCustomStyle(
+                                                            FontWeightManager
+                                                                .regular,
+                                                            fontSize,
+                                                            0.21,
+                                                            ColorManager
+                                                                .textColor),
+                                                        textAlign:
+                                                            TextAlign.end,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                                //   const SizedBox(width: 10),
-                                                SizedBox(
-                                                  height: 25,
-                                                  child: IconButton(
-                                                      onPressed: () {
-                                                        String? accessToken =
-                                                            Provider.of<AuthModel>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .token;
-                                                        debugPrint(
-                                                            "accessToken From AuthModel $accessToken");
-                                                        Provider.of<CartProvider>(
-                                                                context,
-                                                                listen: false)
-                                                            .addToCartAPI(
-                                                                accessToken:
-                                                                    accessToken ??
-                                                                        "",
-                                                                customerId: Provider.of<
-                                                                            AuthModel>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .userId!,
-                                                                productId: cartItem[
-                                                                            index]
-                                                                        .productId ??
-                                                                    1,
-                                                                quantity: 1);
-                                                      },
-                                                      icon: Icon(
-                                                        Icons
-                                                            .add_circle_outline,
-                                                        color: ColorManager
-                                                            .kPrimaryColor
-                                                            .withOpacity(0.7),
-                                                      )),
-                                                ),
-                                                // Column(
-                                                //   children: [
-                                                //     Text(
-                                                //       'Discount(%)',
-                                                //       style: buildCustomStyle(
-                                                //           FontWeightManager
-                                                //               .regular,
-                                                //           FontSize.s10,
-                                                //           0.21,
-                                                //           ColorManager.textColor),
-                                                //     ),
-                                                //     SizedBox(
-                                                //       height: 25,
-                                                //       width: 100,
-                                                //       child: TextField(
-                                                //         cursorWidth: 1,
-                                                //         // controller: _searchTextController,
-                                                //         cursorColor: ColorManager
-                                                //             .kPrimaryColor,
-                                                //         decoration:
-                                                //             decorationBorder
-                                                //                 .copyWith(
-                                                //           label: const Text("0"),
-                                                //           labelStyle:
-                                                //               buildCustomStyle(
-                                                //                   FontWeightManager
-                                                //                       .regular,
-                                                //                   FontSize.s10,
-                                                //                   0.10,
-                                                //                   ColorManager
-                                                //                       .textColor),
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //   ],
-                                                // ),
                                               ],
+                                            );
+                                          },
+                                        ),
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                return Container(
+                                                  width: constraints.maxWidth,
+                                                  child: Text(
+                                                    cartItem[index]
+                                                        .productName!,
+                                                    textAlign: TextAlign.start,
+                                                    maxLines: 4,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: buildCustomStyle(
+                                                      FontWeightManager.regular,
+                                                      12,
+                                                      0.21,
+                                                      ColorManager.textColor,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                          ],
-                                        ),
-                                        // Text(
-                                        //   '150 g',
-                                        //   style: buildCustomStyle(FontWeightManager.medium,
-                                        //       FontSize.s8, 0.21, ColorManager.textColor),
-                                        // ),
-
-                                        //  const SizedBox(width: 20),
-                                        trailing: Text(
-                                          '${cartItem[index].currency} ${cartItem[index].unitPrice}',
-                                          style: buildCustomStyle(
-                                              FontWeightManager.regular,
-                                              FontSize.s10,
-                                              0.21,
-                                              ColorManager.textColor),
-                                        ),
-                                        //  const SizedBox(width: 20),
-                                        // trailing: WebsafeSvg.asset(
-                                        //   ImageAssets.oderlistCloseIcon,
-                                        //   fit: BoxFit.none,
-                                        // ),
-                                        //   ],
-                                      ),
-                                    ),
-                                  );
+                                          ),
+                                        ],
+                                      ));
                                 });
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
@@ -1473,7 +1337,7 @@ class _OrderListState extends State<OrderList> {
 //         if (snapshot.hasData) {
 //           debugPrint("Inside Order List Consumer");
 //           List<ListCartModelData>? cartItems = snapshot.data;
-//           return Text('Error: ${snapshot.error}'); 
+//           return Text('Error: ${snapshot.error}');
 //           // ... (rest of your code)
 //         } else if (snapshot.hasError) {
 //           return Text('Error: ${snapshot.error}');
@@ -1484,34 +1348,34 @@ class _OrderListState extends State<OrderList> {
 //     );
 //   }
 // }
- // UniqueKey keyTile1 = UniqueKey();
-  // void expandTile() {
-  //   setState(() {
-  //     expanded = true;
-  //     keyTile = UniqueKey();
-  //   });
-  // }
+// UniqueKey keyTile1 = UniqueKey();
+// void expandTile() {
+//   setState(() {
+//     expanded = true;
+//     keyTile = UniqueKey();
+//   });
+// }
 
-  // void shrinkTile() {
-  //   setState(() {
-  //     expanded = false;
-  //     keyTile = UniqueKey();
-  //   });
-  // }
+// void shrinkTile() {
+//   setState(() {
+//     expanded = false;
+//     keyTile = UniqueKey();
+//   });
+// }
 
-  // void expandTile1() {
-  //   setState(() {
-  //     expanded1 = true;
-  //     keyTile1 = UniqueKey();
-  //   });
-  // }
+// void expandTile1() {
+//   setState(() {
+//     expanded1 = true;
+//     keyTile1 = UniqueKey();
+//   });
+// }
 
-  // void shrinkTile1() {
-  //   setState(() {
-  //     expanded1 = false;
-  //     keyTile1 = UniqueKey();
-  //   });
-  // }
+// void shrinkTile1() {
+//   setState(() {
+//     expanded1 = false;
+//     keyTile1 = UniqueKey();
+//   });
+// }
 // @override
 // void initState() {
 //   super.initState();
@@ -1550,141 +1414,194 @@ class _OrderListState extends State<OrderList> {
 //     );
 //   }
 // }
- // const SizedBox(height: 10),
-                    // Theme(
-                    //   data: ThemeData(dividerColor: Colors.transparent),
-                    //   child: ExpansionTile(
-                    //     shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(3)),
-                    //     childrenPadding: const EdgeInsets.only(bottom: 10),
-                    //     tilePadding: EdgeInsets.zero,
-                    //     key: keyTile1,
-                    //     trailing: const SizedBox(),
-                    //     initiallyExpanded: expanded1,
-                    //     leading: expanded1
-                    //         ? GestureDetector(
-                    //             onTap: () {
-                    //               shrinkTile1();
-                    //             },
-                    //             child: const Icon(
-                    //               Icons.keyboard_arrow_down,
-                    //             ),
-                    //           )
-                    //         : GestureDetector(
-                    //             onTap: () {
-                    //               expandTile1();
-                    //             },
-                    //             child: const Icon(
-                    //               Icons.keyboard_arrow_right,
-                    //             ),
-                    //           ),
-                    //     iconColor: ColorManager.textColor,
-                    //     collapsedIconColor: ColorManager.textColor,
-                    //     title: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //       children: [
-                    //         // const SizedBox(width: 5),
-                    //         Text(
-                    //           '2',
-                    //           style: buildCustomStyle(FontWeightManager.regular,
-                    //               FontSize.s10, 0.21, ColorManager.textColor),
-                    //         ),
-                    //         //  const SizedBox(width: 10),
-                    //         Column(
-                    //           mainAxisSize: MainAxisSize.min,
-                    //           children: [
-                    //             Text(
-                    //               'MIGHTY ZINGER BOX',
-                    //               style: buildCustomStyle(FontWeightManager.regular,
-                    //                   FontSize.s10, 0.21, ColorManager.textColor),
-                    //             ),
-                    //             Text(
-                    //               '150 g',
-                    //               style: buildCustomStyle(FontWeightManager.medium,
-                    //                   FontSize.s8, 0.21, ColorManager.textColor),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         const SizedBox(width: 20),
-                    //         Text(
-                    //           '\$25.00',
-                    //           style: buildCustomStyle(FontWeightManager.regular,
-                    //               FontSize.s10, 0.21, ColorManager.textColor),
-                    //         ),
-                    //         const SizedBox(width: 15),
-                    //         WebsafeSvg.asset(
-                    //           ImageAssets.oderlistCloseIcon,
-                    //           fit: BoxFit.none,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //     children: <Widget>[
-                    //       Padding(
-                    //         padding: const EdgeInsets.only(left: 10, right: 10),
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           children: [
-                    //             Column(
-                    //               children: [
-                    //                 Text(
-                    //                   'Quantity',
-                    //                   style: buildCustomStyle(
-                    //                       FontWeightManager.regular,
-                    //                       FontSize.s10,
-                    //                       0.21,
-                    //                       ColorManager.textColor),
-                    //                 ),
-                    //                 SizedBox(
-                    //                   height: 25,
-                    //                   width: 100,
-                    //                   child: TextField(
-                    //                     cursorWidth: 1,
-                    //                     // controller: _searchTextController,
-                    //                     cursorColor: ColorManager.kPrimaryColor,
-                    //                     decoration: decorationBorder.copyWith(
-                    //                       labelStyle: buildCustomStyle(
-                    //                           FontWeightManager.regular,
-                    //                           FontSize.s10,
-                    //                           0.10,
-                    //                           ColorManager.textColor),
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             const SizedBox(width: 10),
-                    //             Column(
-                    //               children: [
-                    //                 Text(
-                    //                   'Discount(%)',
-                    //                   style: buildCustomStyle(
-                    //                       FontWeightManager.regular,
-                    //                       FontSize.s10,
-                    //                       0.21,
-                    //                       ColorManager.textColor),
-                    //                 ),
-                    //                 SizedBox(
-                    //                   height: 25,
-                    //                   width: 100,
-                    //                   child: TextField(
-                    //                     cursorWidth: 1,
-                    //                     // controller: _searchTextController,
-                    //                     cursorColor: ColorManager.kPrimaryColor,
-                    //                     decoration: decorationBorder.copyWith(
-                    //                       labelStyle: buildCustomStyle(
-                    //                           FontWeightManager.regular,
-                    //                           FontSize.s10,
-                    //                           0.10,
-                    //                           ColorManager.textColor),
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    //      ),
-                    //   ],
+// const SizedBox(height: 10),
+// Theme(
+//   data: ThemeData(dividerColor: Colors.transparent),
+//   child: ExpansionTile(
+//     shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(3)),
+//     childrenPadding: const EdgeInsets.only(bottom: 10),
+//     tilePadding: EdgeInsets.zero,
+//     key: keyTile1,
+//     trailing: const SizedBox(),
+//     initiallyExpanded: expanded1,
+//     leading: expanded1
+//         ? GestureDetector(
+//             onTap: () {
+//               shrinkTile1();
+//             },
+//             child: const Icon(
+//               Icons.keyboard_arrow_down,
+//             ),
+//           )
+//         : GestureDetector(
+//             onTap: () {
+//               expandTile1();
+//             },
+//             child: const Icon(
+//               Icons.keyboard_arrow_right,
+//             ),
+//           ),
+//     iconColor: ColorManager.textColor,
+//     collapsedIconColor: ColorManager.textColor,
+//     title: Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         // const SizedBox(width: 5),
+//         Text(
+//           '2',
+//           style: buildCustomStyle(FontWeightManager.regular,
+//               FontSize.s10, 0.21, ColorManager.textColor),
+//         ),
+//         //  const SizedBox(width: 10),
+//         Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             Text(
+//               'MIGHTY ZINGER BOX',
+//               style: buildCustomStyle(FontWeightManager.regular,
+//                   FontSize.s10, 0.21, ColorManager.textColor),
+//             ),
+//             Text(
+//               '150 g',
+//               style: buildCustomStyle(FontWeightManager.medium,
+//                   FontSize.s8, 0.21, ColorManager.textColor),
+//             ),
+//           ],
+//         ),
+//         const SizedBox(width: 20),
+//         Text(
+//           '\$25.00',
+//           style: buildCustomStyle(FontWeightManager.regular,
+//               FontSize.s10, 0.21, ColorManager.textColor),
+//         ),
+//         const SizedBox(width: 15),
+//         WebsafeSvg.asset(
+//           ImageAssets.oderlistCloseIcon,
+//           fit: BoxFit.none,
+//         ),
+//       ],
+//     ),
+//     children: <Widget>[
+//       Padding(
+//         padding: const EdgeInsets.only(left: 10, right: 10),
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Column(
+//               children: [
+//                 Text(
+//                   'Quantity',
+//                   style: buildCustomStyle(
+//                       FontWeightManager.regular,
+//                       FontSize.s10,
+//                       0.21,
+//                       ColorManager.textColor),
+//                 ),
+//                 SizedBox(
+//                   height: 25,
+//                   width: 100,
+//                   child: TextField(
+//                     cursorWidth: 1,
+//                     // controller: _searchTextController,
+//                     cursorColor: ColorManager.kPrimaryColor,
+//                     decoration: decorationBorder.copyWith(
+//                       labelStyle: buildCustomStyle(
+//                           FontWeightManager.regular,
+//                           FontSize.s10,
+//                           0.10,
+//                           ColorManager.textColor),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             const SizedBox(width: 10),
+//             Column(
+//               children: [
+//                 Text(
+//                   'Discount(%)',
+//                   style: buildCustomStyle(
+//                       FontWeightManager.regular,
+//                       FontSize.s10,
+//                       0.21,
+//                       ColorManager.textColor),
+//                 ),
+//                 SizedBox(
+//                   height: 25,
+//                   width: 100,
+//                   child: TextField(
+//                     cursorWidth: 1,
+//                     // controller: _searchTextController,
+//                     cursorColor: ColorManager.kPrimaryColor,
+//                     decoration: decorationBorder.copyWith(
+//                       labelStyle: buildCustomStyle(
+//                           FontWeightManager.regular,
+//                           FontSize.s10,
+//                           0.10,
+//                           ColorManager.textColor),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     ],
+//   ),
+//      ),
+//   ],
+
+class CompactQuantityControl extends StatelessWidget {
+  final int quantity;
+  final Function() onIncrement;
+  final Function() onDecrement;
+
+  const CompactQuantityControl({
+    Key? key,
+    required this.quantity,
+    required this.onIncrement,
+    required this.onDecrement,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: ColorManager.kPrimaryColor),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: onDecrement,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Icon(Icons.remove,
+                  size: 16, color: ColorManager.kPrimaryColor),
+            ),
+          ),
+          Container(
+            constraints: BoxConstraints(minWidth: 24),
+            alignment: Alignment.center,
+            child: Text(
+              quantity.toString(),
+              style: buildCustomStyle(
+                  FontWeightManager.regular, 12, 0.10, ColorManager.textColor),
+            ),
+          ),
+          InkWell(
+            onTap: onIncrement,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child:
+                  Icon(Icons.add, size: 16, color: ColorManager.kPrimaryColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

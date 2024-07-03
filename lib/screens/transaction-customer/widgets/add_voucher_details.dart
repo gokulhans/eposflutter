@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pos_machine/components/build_calendar_selection.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:pos_machine/models/get_product.dart';
+import 'package:pos_machine/providers/auth_model.dart';
 
 import 'package:provider/provider.dart';
 
@@ -34,6 +39,9 @@ class AddVoucherDetailsWidget extends StatelessWidget {
     String supplier = purchaseProvider.supplierName(
             voucherDetails == null ? 1 : voucherDetails.supplierId ?? 1) ??
         '';
+
+    Map<String, String>? unitList = purchaseProvider.getUnitList;
+
     // Filter listPurchaseItems based on purchaseId in voucherDetails
     List<PurchaseItem>? filteredItems = listPurchaseItems?.where((item) {
       return item.purchaseId == voucherDetails?.purchaseId;
@@ -106,643 +114,764 @@ class AddVoucherDetailsWidget extends StatelessWidget {
               ),
             ),
             BuildBoxShadowContainer(
-                height: size.height, //120,
-                margin: const EdgeInsets.only(
-                    top: 0, bottom: 10, left: 10, right: 10),
-                padding: const EdgeInsets.only(
-                    top: 10, bottom: 10, left: 10, right: 10),
-                circleRadius: 7,
-                offsetValue: const Offset(1, 1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Purchase Date: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.purchaseDate,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+              height: size.height, //120,
+              margin: const EdgeInsets.only(
+                  top: 0, bottom: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 10, left: 10, right: 10),
+              circleRadius: 7,
+              offsetValue: const Offset(1, 1),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Purchase Date: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text: voucherDetails == null
+                                      ? ""
+                                      : voucherDetails.purchaseDate,
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.semiBold,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Store: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null ? "" : store,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Store: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text: voucherDetails == null ? "" : store,
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.semiBold,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Voucher Number: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.voucherNumber ?? "",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Voucher Number: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text: voucherDetails == null
+                                      ? ""
+                                      : voucherDetails.voucherNumber ?? "",
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.semiBold,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Amount: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        "${voucherDetails == null ? "" : voucherDetails.amountTotal}",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Amount: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text:
+                                      "${voucherDetails == null ? "" : voucherDetails.amountTotal}",
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Tax: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.taxAmount ?? "",
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Tax: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text: voucherDetails == null
+                                      ? ""
+                                      : voucherDetails.taxAmount ?? "",
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.semiBold,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Currency: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text: voucherDetails == null
-                                        ? ""
-                                        : voucherDetails.currency,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Currency: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text: voucherDetails == null
+                                      ? ""
+                                      : voucherDetails.currency,
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.semiBold,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 8.0, top: 10),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Supplier: ",
-                                    style: buildCustomStyle(
-                                        FontWeightManager.bold,
-                                        FontSize.s15,
-                                        0.30,
-                                        ColorManager.textColor),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        voucherDetails == null ? "" : supplier,
-                                    // style: buildCustomStyle(
-                                    //     FontWeightManager.semiBold,
-                                    //     FontSize.s15,
-                                    //     0.30,
-                                    //     ColorManager.textColor),
-                                  ),
-                                ],
-                              ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, top: 10),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Supplier: ",
+                                  style: buildCustomStyle(
+                                      FontWeightManager.bold,
+                                      FontSize.s15,
+                                      0.30,
+                                      ColorManager.textColor),
+                                ),
+                                TextSpan(
+                                  text: voucherDetails == null ? "" : supplier,
+                                  // style: buildCustomStyle(
+                                  //     FontWeightManager.semiBold,
+                                  //     FontSize.s15,
+                                  //     0.30,
+                                  //     ColorManager.textColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Expanded(
-                          child:
-                              Container(), // Empty container to maintain row structure
-                        ),
-                      ],
-                    ),
-                    BuildBoxShadowContainer(
-                        height: size.height / 2.5, //120,
-                        width: size.width,
-                        margin: const EdgeInsets.only(top: 20),
-                        circleRadius: 7,
-                        offsetValue: const Offset(1, 1),
-                        child: SingleChildScrollView(
-                          child: Table(
-                            columnWidths: const {
-                              0: FractionColumnWidth(0.08),
-                              1: FractionColumnWidth(0.01),
-                              2: FractionColumnWidth(0.02),
-                              3: FractionColumnWidth(0.06),
-                              4: FractionColumnWidth(0.06),
-                              5: FractionColumnWidth(0.05),
-                              6: FractionColumnWidth(0.05),
-                              7: FractionColumnWidth(0.05),
-                              8: FractionColumnWidth(0.05),
-                            },
-                            border: TableBorder.symmetric(
-                                outside: const BorderSide(
-                                    color: ColorManager.tableBOrderColor,
-                                    width: 0.3),
-                                inside: const BorderSide(
-                                    color: ColorManager.tableBOrderColor,
-                                    width: 0.8)),
-                            defaultVerticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            children: [
-                              TableRow(
-                                  decoration: const BoxDecoration(
-                                      color: ColorManager.tableBGColor),
-                                  children: [
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Product Name",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Quantity",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Unit",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Purchase Rate",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Retail Price",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Wholesale Price",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Expiry Date",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Batch Number",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                              child: Text(
-                                            "Action",
-                                            style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.18,
-                                              ColorManager.kPrimaryColor,
-                                            ),
-                                          )),
-                                        )),
-                                  ]),
-
-                              // Map your order data to table rows here
-                              ...filteredItems!.map((products) {
-                                String productName = gridSelectionProvider
-                                        .productName(products.productId ?? 0) ??
-                                    "";
-                                return TableRow(
-                                  children: [
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
+                      ),
+                      Expanded(
+                        child:
+                            Container(), // Empty container to maintain row structure
+                      ),
+                    ],
+                  ),
+                  BuildBoxShadowContainer(
+                      height: size.height / 2.5, //120,
+                      width: size.width,
+                      margin: const EdgeInsets.only(top: 20),
+                      circleRadius: 7,
+                      offsetValue: const Offset(1, 1),
+                      child: SingleChildScrollView(
+                        child: Table(
+                          columnWidths: const {
+                            0: FractionColumnWidth(0.05),
+                            1: FractionColumnWidth(0.01),
+                            2: FractionColumnWidth(0.03),
+                            3: FractionColumnWidth(0.05),
+                            4: FractionColumnWidth(0.05),
+                            5: FractionColumnWidth(0.05),
+                            6: FractionColumnWidth(0.07),
+                            7: FractionColumnWidth(0.02),
+                            8: FractionColumnWidth(0.01),
+                          },
+                          border: TableBorder.symmetric(
+                              outside: const BorderSide(
+                                  color: ColorManager.tableBOrderColor,
+                                  width: 0.3),
+                              inside: const BorderSide(
+                                  color: ColorManager.tableBOrderColor,
+                                  width: 0.8)),
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            TableRow(
+                                decoration: const BoxDecoration(
+                                    color: ColorManager.tableBGColor),
+                                children: [
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
                                             child: Text(
-                                              productName,
+                                          "Product Name",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Quantity",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Unit",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Purchase Rate",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Retail Price",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Wholesale Price",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Expiry Date",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Batch No",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Action",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                ]),
+
+                            // Map your order data to table rows here
+                            ...filteredItems!.map((products) {
+                              String productName = gridSelectionProvider
+                                      .productName(products.productId ?? 0) ??
+                                  "";
+
+                              // Controllers for form fields
+                              TextEditingController quantityController =
+                                  TextEditingController(
+                                      text:
+                                          products.quantity?.toString() ?? '');
+                              TextEditingController purchaseRateController =
+                                  TextEditingController();
+                              TextEditingController retailPriceController =
+                                  TextEditingController();
+                              TextEditingController wholesalePriceController =
+                                  TextEditingController();
+                              TextEditingController wholesaleMinUnitController =
+                                  TextEditingController();
+                              TextEditingController batchNumberController =
+                                  TextEditingController();
+
+                              String selectedUnit =
+                                  products.unit ?? unitList?.keys.first ?? '';
+                              DateTime? selectedDate;
+
+                              return TableRow(
+                                children: [
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                          child: Text(
+                                            productName,
+                                            textAlign: TextAlign.start,
+                                            softWrap: true,
+                                            maxLines: 4,
+                                            style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s9,
+                                              0.13,
+                                              Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: TextFormField(
+                                          controller: quantityController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                            ),
+                                            hintStyle:
+                                                TextStyle(fontSize: 10.0),
+                                            hintText: 'Quantity',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: BuildBoxShadowContainer(
+                                          circleRadius: 7,
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.all(5),
+                                          height: size.height * .07,
+                                          child:
+                                              DropdownButtonFormField<String>(
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                            value: products.unit ??
+                                                unitList?.keys.first,
+                                            hint: Text(
+                                              'Choose Product Unit',
                                               style: buildCustomStyle(
                                                 FontWeightManager.medium,
-                                                FontSize.s9,
-                                                0.13,
-                                                Colors.black,
+                                                FontSize.s12,
+                                                0.27,
+                                                ColorManager.textColor
+                                                    .withOpacity(.5),
                                               ),
                                             ),
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: 'Quantity',
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: 'Unit',
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: 'Purchase Rate',
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: 'Retail Price',
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Center(
-                                                child: TextFormField(
-                                                  decoration: InputDecoration(
-                                                    hintText: 'Wholesale Price',
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color:
+                                                    ColorManager.kPrimaryColor),
+                                            iconSize: 24,
+                                            isExpanded: true,
+                                            isDense: true,
+                                            onChanged: (String? newValue) {
+                                              // Handle unit change
+                                            },
+                                            items:
+                                                unitList!.entries.map((entry) {
+                                              return DropdownMenuItem<String>(
+                                                value: entry.key,
+                                                child: Text(
+                                                  entry.value,
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.27,
+                                                    ColorManager.textColor
+                                                        .withOpacity(.5),
                                                   ),
                                                 ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: TextFormField(
+                                          controller: purchaseRateController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                            ),
+                                            hintStyle:
+                                                TextStyle(fontSize: 10.0),
+                                            hintText: 'Purchase Rate',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: TextFormField(
+                                          controller: retailPriceController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                            ),
+                                            hintStyle:
+                                                TextStyle(fontSize: 10.0),
+                                            hintText: 'Retail Price',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          TextFormField(
+                                            controller:
+                                                wholesalePriceController,
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0)),
                                               ),
-                                              Center(
-                                                child: TextFormField(
-                                                  decoration: InputDecoration(
-                                                    hintText: 'Min Unit',
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: TextFormField(),
-                                          ),
-                                        )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: TextFormField(),
-                                          ),
-                                        )),
-                                    // TableCell(
-                                    //     verticalAlignment:
-                                    //         TableCellVerticalAlignment.middle,
-                                    //     child: Padding(
-                                    //       padding: const EdgeInsets.all(15.0),
-                                    //       child: Center(
-                                    //         child: Text(
-                                    //           "${products.quantity}",
-                                    //           style: buildCustomStyle(
-                                    //             FontWeightManager.medium,
-                                    //             FontSize.s9,
-                                    //             0.13,
-                                    //             Colors.black,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     )),
-                                    // TableCell(
-                                    //     verticalAlignment:
-                                    //         TableCellVerticalAlignment.middle,
-                                    //     child: Padding(
-                                    //       padding: const EdgeInsets.all(15.0),
-                                    //       child: Center(
-                                    //         child: Text(
-                                    //           "${products.unit}",
-                                    //           style: buildCustomStyle(
-                                    //             FontWeightManager.medium,
-                                    //             FontSize.s9,
-                                    //             0.13,
-                                    //             Colors.black,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     )),
-                                    // TableCell(
-                                    //     verticalAlignment:
-                                    //         TableCellVerticalAlignment.middle,
-                                    //     child: Padding(
-                                    //       padding: const EdgeInsets.all(15.0),
-                                    //       child: Center(
-                                    //         child: Text(
-                                    //           "${products.unitPrice}",
-                                    //           style: buildCustomStyle(
-                                    //             FontWeightManager.medium,
-                                    //             FontSize.s9,
-                                    //             0.13,
-                                    //             Colors.black,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     )),
-                                    TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Center(
-                                            child: Row(
-                                              children: [
-                                                BuildBoxShadowContainer(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            left: 5, right: 5),
-                                                    circleRadius: 5,
-                                                    color: ColorManager
-                                                        .kPrimaryColor
-                                                        .withOpacity(0.9),
-                                                    child: IconButton(
-                                                      icon: const Icon(
-                                                        Icons.edit,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                      onPressed: () async {},
-                                                    )),
-                                              ],
+                                              hintStyle:
+                                                  TextStyle(fontSize: 10.0),
+                                              hintText: 'Wholesale Price',
                                             ),
                                           ),
-                                        )),
-                                  ],
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        )),
-                    const SizedBox(height: 50),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: CustomRoundButton(
-                        title: "Back",
-                        boxColor: Colors.white,
-                        textColor: ColorManager.kPrimaryColor,
-                        fct: () async {
-                          sideBarController.index.value = 19;
-                        },
-                        height: 50,
-                        width: size.width * 0.19,
-                        fontSize: FontSize.s12,
-                      ),
+                                          const SizedBox(height: 5),
+                                          TextFormField(
+                                            controller:
+                                                wholesaleMinUnitController,
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0)),
+                                              ),
+                                              hintStyle:
+                                                  TextStyle(fontSize: 10.0),
+                                              hintText: 'Min Unit',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: CalendarPickerTableCell(
+                                          onDateSelected: (DateTime date) {
+                                            selectedDate = date;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: TextFormField(
+                                          controller: batchNumberController,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                            ),
+                                            hintStyle:
+                                                TextStyle(fontSize: 10.0),
+                                            hintText: 'Batch Number',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: BuildBoxShadowContainer(
+                                          margin: const EdgeInsets.only(
+                                              left: 5, right: 5),
+                                          circleRadius: 5,
+                                          color: ColorManager.kPrimaryColor
+                                              .withOpacity(0.9),
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.add,
+                                              size: 18,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () async {
+                                              // Call the API
+                                              String? accessToken =
+                                                  Provider.of<AuthModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .token;
+                                              var result = await purchaseProvider
+                                                  .addPurchaseProductStockAPI(
+                                                accessToken: accessToken ??
+                                                    "", // Replace with actual access token
+                                                purchaseItemId:
+                                                    products.id.toString(),
+                                                quantity:
+                                                    quantityController.text,
+                                                purchaseRate:
+                                                    purchaseRateController.text,
+                                                retailPrice:
+                                                    retailPriceController.text,
+                                                wholesalePrice:
+                                                    wholesalePriceController
+                                                        .text,
+                                                wholesaleMinUnit:
+                                                    wholesaleMinUnitController
+                                                        .text,
+                                                expiryDate: selectedDate != null
+                                                    ? DateFormat('dd/MM/yyyy')
+                                                        .format(selectedDate!)
+                                                    : '',
+                                                batchNumber:
+                                                    batchNumberController.text,
+                                                unit: selectedUnit,
+                                              );
+
+                                              // Handle the API response
+                                              if (result['status'] ==
+                                                  'success') {
+                                                // Show success message
+                                                showScaffoldError(
+                                                  context: context,
+                                                  message:
+                                                      'Product stock updated successfully',
+                                                );
+                                              } else {
+                                                // Show error message
+                                                showScaffoldError(
+                                                  context: context,
+                                                  message:
+                                                      'Failed to update product stock: ${result['message']}',
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          ],
+                        ),
+                      )),
+                  const SizedBox(height: 50),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: CustomRoundButton(
+                      title: "Back",
+                      boxColor: Colors.white,
+                      textColor: ColorManager.kPrimaryColor,
+                      fct: () async {
+                        sideBarController.index.value = 19;
+                      },
+                      height: 50,
+                      width: size.width * 0.19,
+                      fontSize: FontSize.s12,
                     ),
-                  ],
-                )),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

@@ -185,6 +185,11 @@ class PurchaseProvider extends ChangeNotifier {
 // List<VoucherDetail>? voucherDetails = data!.expand((e) => e.voucherDetails ?? []).toList();
 //         List<VoucherDetail>? voucherDetails = data!.map((e) => e.voucherDetails).toList();
 
+        if (data != null && data.isNotEmpty) {
+          ListPurchaseModelDataDetails =
+              data.first; // Set the first purchase detail
+        }
+
         voucherDetailsList = voucherDetails;
         List<PurchaseItem>? listPurchaseitem = purchaseItems;
         purchaseItemListAllPurchase = listPurchaseitem;
@@ -256,6 +261,57 @@ class PurchaseProvider extends ChangeNotifier {
     } finally {
       // _isLoading = false;
       // notifyListeners();
+    }
+  }
+
+  Future<dynamic> addPurchaseProductStockAPI({
+    required String accessToken,
+    required String purchaseItemId,
+    required String quantity,
+    required String purchaseRate,
+    required String retailPrice,
+    required String wholesalePrice,
+    required String wholesaleMinUnit,
+    required String expiryDate,
+    required String batchNumber,
+    required String unit,
+  }) async {
+    final Map<String, dynamic> error = {
+      'status': "failed",
+      'message': "Something went wrong, Please try Again!"
+    };
+
+    final Map<String, dynamic> apiBodyData = {
+      'purchase_item_id': purchaseItemId,
+      'quantity': quantity,
+      'purchase_rate': purchaseRate,
+      'retail_price': retailPrice,
+      'wholesale_price': wholesalePrice,
+      'wholesale_min_unit': wholesaleMinUnit,
+      'expiry_date': expiryDate,
+      'unit': unit,
+      'batch_number': batchNumber
+    };
+    debugPrint(apiBodyData.toString());
+    final url = Uri.parse(APPUrl.addPurchaseStock);
+    try {
+      final response = await http.post(url,
+          body: json.encode(apiBodyData),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json'
+          });
+
+      debugPrint('inside ${response.statusCode}');
+      if (response.statusCode == 200) {
+        debugPrint(json.decode(response.body).toString());
+        return json.decode(response.body);
+      } else {
+        return error;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      return error;
     }
   }
   //          *********************** ADD PURCHASE  API ***************************************************

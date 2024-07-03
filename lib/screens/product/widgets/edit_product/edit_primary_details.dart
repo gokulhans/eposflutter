@@ -26,7 +26,7 @@ class EditProductPageScreen extends StatefulWidget {
   State<EditProductPageScreen> createState() => _EditProductPageScreenState();
 }
 
-class _EditProductPageScreenState extends State<EditProductPageScreen> { 
+class _EditProductPageScreenState extends State<EditProductPageScreen> {
   @override
   Widget build(BuildContext context) {
     GridSelectionProvider gridSelectionProvider =
@@ -608,7 +608,6 @@ class _EditProductPageScreenState extends State<EditProductPageScreen> {
                                                   .adaptive(),
                                             );
                                           });
-
                                       String? accessToken =
                                           Provider.of<AuthModel>(context,
                                                   listen: false)

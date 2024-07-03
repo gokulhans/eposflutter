@@ -57,6 +57,7 @@ class APPUrl {
   static const String finishPurchaseOrder =
       '$baseURL/api/purchases/add-purchase-order';
   static const String addToStock = '$baseURL/api/product/add-stock';
+  static const String addPurchaseStock = '$baseURL/api/purchases/add-stock';
   static const String listStock = '$baseURL/api/product/list-stocks';
   static const String detailsOfStock = '$baseURL/api/product/stock-details';
   static const String listPurchaseItems =

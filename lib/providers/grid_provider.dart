@@ -8,8 +8,11 @@ import '../resources/app_url.dart';
 import 'package:http/http.dart' as http;
 
 class GridSelectionProvider extends ChangeNotifier {
-  List<int> selectedIndices = [];
   List<GetProduct>? productList = [];
+  List<GetProduct>? mainProductList = [];
+  List<GetProduct>? filteredProductList = [];
+  List<GetProduct>? categoryProductList = [];
+  List<int> selectedIndices = [];
   GetProduct? productDetails;
   GetProduct? get getProductDetails => productDetails;
   List<GetProduct> selectedProductList = [];
@@ -22,6 +25,7 @@ class GridSelectionProvider extends ChangeNotifier {
   int? get getProductId => productId;
   List<GetProduct>? get getProducts => productList;
   List<GetProduct>? get getSelectedProductList => selectedProductList;
+  List<GetProduct>? get getCategoryProductList => categoryProductList;
   List<GetProduct>? get getSelectedProductListAPI => selectedProductListAPI;
   List<ListStockModelData>? listStockModelDataList = [];
   List<ListStockModelData>? get getListStockModelDataList =>
@@ -52,13 +56,30 @@ class GridSelectionProvider extends ChangeNotifier {
 
   List<GetProduct> get selectedProductsUpOnCategory {
     if (selectedCategoryId == 0) {
-      return productList!;
+      return mainProductList!;
     } else {
-      return productList = productList!
+      categoryProductList = mainProductList!
           .where((product) => product.categoryId == getselectedCategoryId)
           .toList();
+      notifyListeners();
+      return categoryProductList!;
     }
-    // notifyListeners();
+  }
+
+  List<GetProduct> searchProducts(String query) {
+    if (query.isEmpty) {
+      return filteredProductList!;
+    } else {
+      return filteredProductList!
+          .where((product) =>
+              product.productName!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+  }
+
+  void updateFilteredProducts(List<GetProduct> filtered) {
+    productList = filtered;
+    notifyListeners();
   }
 
   void callProductDetails(int productId) {
@@ -145,6 +166,9 @@ class GridSelectionProvider extends ChangeNotifier {
         GetProductModel getProductModel = GetProductModel.fromJson(jsonData);
 
         productList = getProductModel.product;
+        filteredProductList = getProductModel.product;
+        mainProductList = getProductModel.product;
+        categoryProductList = getProductModel.product;
         // selectedCategoryId =
         //     productList!.isEmpty ? 0 : productList![0].categoryId ?? 0;
         notifyListeners();

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_round_button.dart';
 import 'package:pos_machine/models/order_details.dart';
 
 import 'package:pos_machine/providers/sales_provider.dart';
@@ -195,6 +196,27 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
                                 cart: cart,
                                 cartItem: cartItems,
                                 customerDetails: customerDetails,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: CustomRoundButton(
+                                  title: "Back",
+                                  boxColor: Colors.white,
+                                  textColor: ColorManager.kPrimaryColor,
+                                  fct: () async {
+                                    sideBarController.index.value = 2;
+                                  },
+                                  height: 50,
+                                  width: size.width * 0.19,
+                                  fontSize: FontSize.s12,
+                                ),
                               ),
                             ],
                           ),

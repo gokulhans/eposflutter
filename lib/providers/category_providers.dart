@@ -10,6 +10,7 @@ import '../resources/app_url.dart';
 class CategoryProvider extends ChangeNotifier {
   bool isLoading = false;
   List<Category>? categoryList = [];
+  List<Category>? filteredcategoryList = [];
   List<Category>? categoryListWithoutQuery = [];
   String categoryText = '';
   ViewCategory? viewCategory;
@@ -61,6 +62,10 @@ class CategoryProvider extends ChangeNotifier {
   int get selectedCategoryIndex => _selectedCategoryIndex;
 
   List<Category>? get category => categoryList;
+  List<Category>? get filteredcategory => filteredcategoryList!
+      .where((category) => category.categoryId != 0)
+      .toList();
+
   Category categoryDemo = Category(
     categoryId: 0,
     categorySlug: "ALL",
@@ -98,7 +103,8 @@ class CategoryProvider extends ChangeNotifier {
         CategoryListModel categoryListModel =
             CategoryListModel.fromJson(jsonData);
 
-        categoryList = categoryListWithoutQuery = categoryListModel.category;
+        categoryList = categoryListWithoutQuery =
+            filteredcategoryList = categoryListModel.category;
         categoryList!.insert(0, categoryDemo);
         // debugPrint('List Category Name in Category Provider');
         // for (var v in categoryList ?? []) {
@@ -215,10 +221,28 @@ class CategoryProvider extends ChangeNotifier {
     }
   }
 
+  List<Category> searchCategoryPageCategories(String query) {
+    debugPrint("searchCategoryPageCategories $query");
+    if (query.isNotEmpty) {
+      return categoryListWithoutQuery!
+          .where((category) => category.categoryName!
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    } else {
+      return categoryListWithoutQuery!;
+    }
+  }
+
   //          *********************** FUNCTION FOR UPDATE BY CATEGORY  ***************************************************
   // Add this method to update the filtered categories
   void updateFilteredCategories(List<Category> filteredCategories) {
     categoryList = filteredCategories;
+    notifyListeners();
+  }
+
+  void updateCategoryPageFilteredCategories(List<Category> filteredCategories) {
+    filteredcategoryList = filteredCategories;
     notifyListeners();
   }
 

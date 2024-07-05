@@ -357,6 +357,8 @@ class _OrderListState extends State<OrderList> {
                                       ),
                                       child: ListView.builder(
                                         padding: const EdgeInsets.all(8.0),
+                                        shrinkWrap: true,
+                                        physics: const BouncingScrollPhysics(),
                                         itemCount: options.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
@@ -487,7 +489,7 @@ class _OrderListState extends State<OrderList> {
                 const SizedBox(height: 10),
 
                 SizedBox(
-                  height: size.height * 0.35, // 150,
+                  height: size.height * 0.28, // 150,
 
                   //                Consumer<CartProvider>(
 //         builder: (context, cartProvider, child) {
@@ -1090,33 +1092,35 @@ class _OrderListState extends State<OrderList> {
                             ),
                             // TextFormField for transaction number
                             if (iconColor == 2 ||
+                                iconColor == 3 ||
                                 iconColor ==
-                                    3) // Assuming 1 is for Cash and 3 is for UPI
+                                    1) // Assuming 1 is for Cash and 3 is for UPI
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 10),
-                                  child: TextFormField(
-                                    controller: _transactionNumberController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Transaction Reference No:',
-                                    ),
-                                  ),
+                                  child: iconColor != 1
+                                      ? TextFormField(
+                                          controller:
+                                              _transactionNumberController,
+                                          decoration: const InputDecoration(
+                                            hintText:
+                                                'Transaction Reference No:',
+                                          ),
+                                        )
+                                      : TextFormField(
+                                          controller: _paidAmountController,
+                                          onChanged: (value) {
+                                            _getBalanceAmount();
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText: 'Enter Paid Amount Here:',
+                                          ),
+                                        ),
                                 ),
                               ),
                           ],
                         ),
-                        // const SizedBox(height: 10),
-                        if (iconColor == 1)
-                          TextFormField(
-                            controller: _paidAmountController,
-                            onChanged: (value) {
-                              _getBalanceAmount();
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Enter Paid Amount Here:',
-                              border: InputBorder.none,
-                            ),
-                          ),
+                        const SizedBox(height: 10),
                         if (iconColor == 1)
                           BuildPaymentRow(
                             amount: _balanceAmount.toStringAsFixed(2),
@@ -1163,23 +1167,6 @@ class _OrderListState extends State<OrderList> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            WebsafeSvg.asset(
-                              ImageAssets.printIcon,
-                              color: Colors.white,
-                              fit: BoxFit.none,
-                            ),
-                            Text(
-                              'Print',
-                              style: buildCustomStyle(FontWeightManager.medium,
-                                  FontSize.s10, 0.16, Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
                       Expanded(
                         flex: 3,
                         child: GestureDetector(
@@ -1288,9 +1275,9 @@ class _OrderListState extends State<OrderList> {
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(0.0),
-                                  bottomRight: Radius.circular(13.0),
+                                  bottomLeft: Radius.circular(13.0),
                                   topLeft: Radius.circular(0.0),
-                                  bottomLeft: Radius.circular(0.0)),
+                                  bottomRight: Radius.circular(0.0)),
                               boxShadow: [
                                 BoxShadow(
                                   color: ColorManager.boxShadowColor,
@@ -1301,11 +1288,28 @@ class _OrderListState extends State<OrderList> {
                               color: ColorManager.kPrimaryColor,
                             ),
                             child: Text(
-                              'Pay Rs ${AmountHelper.formatAmount(Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal)}',
+                              'Save Sales ${AmountHelper.formatAmount(Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal)}',
                               style: buildCustomStyle(FontWeightManager.medium,
                                   FontSize.s18, 0.27, Colors.white),
                             ),
                           ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            WebsafeSvg.asset(
+                              ImageAssets.printIcon,
+                              color: Colors.white,
+                              fit: BoxFit.none,
+                            ),
+                            Text(
+                              'Print',
+                              style: buildCustomStyle(FontWeightManager.medium,
+                                  FontSize.s10, 0.16, Colors.white),
+                            ),
+                          ],
                         ),
                       ),
                     ]),

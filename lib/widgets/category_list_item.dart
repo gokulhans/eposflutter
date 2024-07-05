@@ -41,8 +41,8 @@ class CategoryListItem extends StatelessWidget {
     final categoryProvider = Provider.of<CategoryProvider>(context);
     final productProvider =
         Provider.of<GridSelectionProvider>(context, listen: false);
-    List<GetProduct> p = Provider.of<GridSelectionProvider>(context)
-        .selectedProductsUpOnCategory;
+    // List<GetProduct> p = Provider.of<GridSelectionProvider>(context)
+    //     .selectedProductsUpOnCategory;
 //  String? accessToken =
 //           Provider.of<AuthModel>(context, listen: false).token;
     int? customerId = Provider.of<AuthModel>(context, listen: false).userId;
@@ -105,10 +105,10 @@ class CategoryListItem extends StatelessWidget {
                         ImageAssets.categorySearchIcon,
                         fit: BoxFit.none,
                       ),
-                      suffixIcon: WebsafeSvg.asset(
-                        ImageAssets.barcodeIcon,
-                        fit: BoxFit.none,
-                      ),
+                      // suffixIcon: WebsafeSvg.asset(
+                      //   ImageAssets.barcodeIcon,
+                      //   fit: BoxFit.none,
+                      // ),
                       labelStyle: buildCustomStyle(FontWeightManager.regular,
                           FontSize.s10, 0.10, ColorManager.textColor),
                       hintText: 'Search category',
@@ -236,27 +236,69 @@ class CategoryListItem extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text:
-                    '${Provider.of<CategoryProvider>(context, listen: true).getCategoryText} \t',
-                style: buildCustomStyle(FontWeightManager.semiBold,
-                    FontSize.s15, 0.23, Colors.black),
-                children: <TextSpan>[
-                  TextSpan(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
                     text:
-                        '(${Provider.of<GridSelectionProvider>(context, listen: true).productList!.length}) items',
-                    //  text: '(${categoryProvider.categoryCount}) items',
-                    style: buildCustomStyle(FontWeightManager.regular,
-                        FontSize.s10, 0.12, Colors.black),
+                        '${Provider.of<CategoryProvider>(context, listen: true).getCategoryText} \t',
+                    style: buildCustomStyle(FontWeightManager.semiBold,
+                        FontSize.s15, 0.23, Colors.black),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text:
+                            '(${Provider.of<GridSelectionProvider>(context, listen: true).productList!.length}) items',
+                        //  text: '(${categoryProvider.categoryCount}) items',
+                        style: buildCustomStyle(FontWeightManager.regular,
+                            FontSize.s10, 0.12, Colors.black),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 100,
+                    child: TextField(
+                      cursorWidth: 1,
+                      //  controller: searchTextController,
+                      cursorColor: ColorManager.kPrimaryColor,
+                      onChanged: (query) {
+                        debugPrint(query);
+                        final filteredProducts =
+                            productProvider.searchProducts(query);
+
+                        productProvider
+                            .updateFilteredProducts(filteredProducts);
+                      },
+                      decoration: decoration.copyWith(
+                        prefixIcon: WebsafeSvg.asset(
+                          ImageAssets.categorySearchIcon,
+                          fit: BoxFit.none,
+                        ),
+                        // suffixIcon: WebsafeSvg.asset(
+                        //   ImageAssets.barcodeIcon,
+                        //   fit: BoxFit.none,
+                        // ),
+                        labelStyle: buildCustomStyle(FontWeightManager.regular,
+                            FontSize.s10, 0.10, ColorManager.textColor),
+                        hintText: 'Search Product',
+                        hintStyle: buildCustomStyle(FontWeightManager.regular,
+                            FontSize.s10, 0.13, ColorManager.textColor1),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
             SizedBox(
               height: size.height,
               child: Consumer<GridSelectionProvider>(
@@ -287,10 +329,10 @@ class CategoryListItem extends StatelessWidget {
                                 : 0.7,
                         crossAxisSpacing: 1.0,
                         mainAxisSpacing: 1.0),
-                    itemCount:
-                        p.length, //selectionProvider.getProducts!.length,
+                    itemCount: selectionProvider.productList!
+                        .length, //selectionProvider.getProducts!.length,
                     itemBuilder: (ctx, index, isSelected) {
-                      final product = p[index];
+                      final product = selectionProvider.productList![index];
                       // selectionProvider.productList![index];
                       //   final isSelected = product.isSelected;
                       final isSelected = selectionProvider.selectedProductList
@@ -302,7 +344,7 @@ class CategoryListItem extends StatelessWidget {
                       debugPrint("${selectionProvider.productList!.length}");
                       // if (selectionProvider.isLoading ||
                       //     selectionProvider.productList!.isEmpty) {
-                      if (p.isEmpty) {
+                      if (selectionProvider.productList!.isEmpty) {
                         return const BuildProductDummy();
                       } else {
                         String? file = "";
@@ -386,7 +428,7 @@ class CategoryListItem extends StatelessWidget {
                                   //         productId: p[index].productId ?? 1,
                                   //         quantity: 1);
                                   debugPrint(
-                                      "product id ${p[index].productId}");
+                                      "product id ${selectionProvider.productList![index].productId}");
                                 },
                                 child: CategoryListItemWidget(
                                   file: file ?? "",

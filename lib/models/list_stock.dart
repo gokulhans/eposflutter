@@ -38,7 +38,8 @@ class ListStockModel {
       };
 }
 
-class ListStockModelData {
+class 
+ListStockModelData {
   final int? id;
   final int? productId;
   final int? storeId;

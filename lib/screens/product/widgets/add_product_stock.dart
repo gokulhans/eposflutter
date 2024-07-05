@@ -116,7 +116,7 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
     // Access the category list
 
     List<GetProduct>? productList =
-        gridSelectionProvider.getSelectedProductListAPI;
+        gridSelectionProvider.getCategoryProductList;
 
     String? parentCategory;
     // Access the category list
@@ -291,6 +291,19 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                   parentCategory =
                                                       "${selectedCategory.categoryId ?? 0}";
                                                   debugPrint(parentCategory);
+
+                                                  gridSelectionProvider
+                                                      .updateCategory(
+                                                          selectedCategory
+                                                                  .categoryId ??
+                                                              0);
+
+                                                  setState(() {
+                                                    productList =
+                                                        gridSelectionProvider
+                                                            .selectedProductsUpOnCategory;
+                                                  });
+
                                                   await categoryProvider
                                                       .setParentCategory(
                                                           "${selectedCategory.categoryId ?? 0}");

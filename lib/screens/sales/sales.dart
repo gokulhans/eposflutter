@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pos_machine/components/build_container_box.dart';
+import 'package:pos_machine/helpers/amount_helper.dart';
 import 'package:pos_machine/helpers/date_helper.dart';
 import 'package:pos_machine/models/add_to_cart.dart';
+import 'package:pos_machine/models/get_store.dart';
+import 'package:pos_machine/providers/purchase_provider.dart';
 import 'package:pos_machine/providers/sales_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -60,30 +63,30 @@ class SalesScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // SizedBox(
-                        //   height: 45,
-                        //   width: 150, //size.width * 0.5,
-                        //   child: TextField(
-                        //     cursorColor: ColorManager.kPrimaryColor,
-                        //     cursorHeight: 13,
-                        //     controller: searchTextController,
-                        //     style: buildCustomStyle(FontWeightManager.medium,
-                        //         FontSize.s10, 0.18, ColorManager.textColor),
-                        //     decoration: decoration.copyWith(
-                        //         hintText: "Search Order",
-                        //         hintStyle: buildCustomStyle(
-                        //             FontWeightManager.medium,
-                        //             FontSize.s10,
-                        //             0.18,
-                        //             ColorManager.textColor),
-                        //         // prefixIcon: const Icon(
-                        //         //   Icons.search,
-                        //         //   color: Colors.black,
-                        //         //   size: 35,
-                        //         // ),
-                        //         prefixIconColor: Colors.black),
-                        //   ),
-                        // ),
+                        SizedBox(
+                          height: 45,
+                          width: 150, //size.width * 0.5,
+                          child: TextField(
+                            cursorColor: ColorManager.kPrimaryColor,
+                            cursorHeight: 13,
+                            controller: searchTextController,
+                            style: buildCustomStyle(FontWeightManager.medium,
+                                FontSize.s10, 0.18, ColorManager.textColor),
+                            decoration: decoration.copyWith(
+                                hintText: "Search Order",
+                                hintStyle: buildCustomStyle(
+                                    FontWeightManager.medium,
+                                    FontSize.s10,
+                                    0.18,
+                                    ColorManager.textColor),
+                                // prefixIcon: const Icon(
+                                //   Icons.search,
+                                //   color: Colors.black,
+                                //   size: 35,
+                                // ),
+                                prefixIconColor: Colors.black),
+                          ),
+                        ),
                         BuildBoxShadowContainer(
                           margin: const EdgeInsets.all(15),
                           // padding: const EdgeInsets.all(15),
@@ -202,7 +205,7 @@ class SalesScreen extends StatelessWidget {
                                         orderNumberSelect: true,
                                       )
                                     : salesProvider.fetchOrders(
-                                        accessToken: accessToken ?? '',
+                                        accessToken: accessToken ?? "",
                                         storeId: 1,
                                         orderNumber: searchTextController.text,
                                         orderNumberSelect: true,
@@ -286,11 +289,13 @@ class SalesScreen extends StatelessWidget {
                           columnWidths: const {
                             0: FractionColumnWidth(0.01),
                             1: FractionColumnWidth(0.01),
-                            2: FractionColumnWidth(0.1),
-                            3: FractionColumnWidth(0.06),
-                            4: FractionColumnWidth(0.06),
-                            5: FractionColumnWidth(0.05),
-                            6: FractionColumnWidth(0.01),
+                            2: FractionColumnWidth(0.01),
+                            3: FractionColumnWidth(0.1),
+                            4: FractionColumnWidth(0.01),
+                            5: FractionColumnWidth(0.06),
+                            6: FractionColumnWidth(0.06),
+                            7: FractionColumnWidth(0.05),
+                            8: FractionColumnWidth(0.01),
                           },
                           border: TableBorder.symmetric(
                               outside: const BorderSide(
@@ -306,6 +311,22 @@ class SalesScreen extends StatelessWidget {
                                 decoration: const BoxDecoration(
                                     color: ColorManager.tableBGColor),
                                 children: [
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "No",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
                                   TableCell(
                                       verticalAlignment:
                                           TableCellVerticalAlignment.middle,
@@ -361,7 +382,24 @@ class SalesScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(15.0),
                                         child: Center(
                                             child: Text(
-                                          "Offers Applied",
+                                          "Offer",
+                                          // "Offers Applied",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.18,
+                                            ColorManager.kPrimaryColor,
+                                          ),
+                                        )),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Center(
+                                            child: Text(
+                                          "Store Name",
                                           style: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s12,
@@ -421,11 +459,31 @@ class SalesScreen extends StatelessWidget {
                                 ]),
 
                             // Map your order data to table rows here
-                            ...orders.map((order) {
+                            ...orders.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              ListOrderModelData order = entry.value;
                               PriceSummary priceSummary =
                                   order.priceSummary ?? PriceSummary();
+
                               return TableRow(
                                 children: [
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Center(
+                                          child: Text(
+                                            "${index + 1}",
+                                            style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s9,
+                                              0.13,
+                                              Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
                                   TableCell(
                                       verticalAlignment:
                                           TableCellVerticalAlignment.middle,
@@ -497,7 +555,8 @@ class SalesScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(20.0),
                                         child: Center(
                                           child: Text(
-                                            "0% offer applied",
+                                            "0% ",
+                                            // "0% offer applied",
                                             style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s9,
@@ -514,7 +573,28 @@ class SalesScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(20.0),
                                         child: Center(
                                           child: Text(
-                                            "Rs ${priceSummary.netPayable}.00",
+                                            Provider.of<PurchaseProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .getStoreNameFromId(
+                                                    order.storeId ?? 0),
+                                            style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s9,
+                                              0.13,
+                                              ColorManager.kPrimaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                  TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Center(
+                                          child: Text(
+                                            "Rs ${AmountHelper.formatAmount(priceSummary.netPayable ?? 0.0)}",
                                             style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s9,

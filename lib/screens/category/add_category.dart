@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_machine/providers/category_providers.dart';
+import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:websafe_svg/websafe_svg.dart';
 
 import '../../components/build_container_box.dart';
 import '../../components/build_round_button.dart';
@@ -17,6 +19,7 @@ class AddCategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SideBarController sideBarController = Get.put(SideBarController());
+    final categoryProvider = Provider.of<CategoryProvider>(context);
     final searchTextController = TextEditingController();
 
     return SafeArea(
@@ -48,33 +51,41 @@ class AddCategoryScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // SizedBox(
-                    //   height: 45,
-                    //   width: 180, //size.width * 0.5,
-                    //   child: TextField(
-                    //     onChanged: (value) {
-                    //       //  filterCategories(value, categoryProvider.categoryList);
-                    //     },
-                    //     cursorColor: ColorManager.kPrimaryColor,
-                    //     cursorHeight: 13,
-                    //     controller: searchTextController,
-                    //     style: buildCustomStyle(FontWeightManager.medium,
-                    //         FontSize.s10, 0.18, ColorManager.textColor),
-                    //     decoration: decoration.copyWith(
-                    //         hintText: "Search    ",
-                    //         hintStyle: buildCustomStyle(
-                    //             FontWeightManager.medium,
-                    //             FontSize.s10,
-                    //             0.18,
-                    //             ColorManager.textColor),
-                    //         // prefixIcon: const Icon(
-                    //         //   Icons.search,
-                    //         //   color: Colors.black,
-                    //         //   size: 35,
-                    //         // ),
-                    //         prefixIconColor: Colors.black),
-                    //   ),
-                    // ),
+                    SizedBox(
+                      height: 45,
+                      width: 180, //size.width * 0.5,
+                      child: TextField(
+                        cursorWidth: 1,
+                        //  controller: searchTextController,
+                        cursorColor: ColorManager.kPrimaryColor,
+                        onChanged: (query) {
+                          debugPrint(query);
+                          final filteredCategories = categoryProvider
+                              .searchCategoryPageCategories(query);
+
+                          categoryProvider.updateCategoryPageFilteredCategories(
+                              filteredCategories);
+                        },
+                        decoration: decoration.copyWith(
+                          prefixIcon: WebsafeSvg.asset(
+                            ImageAssets.categorySearchIcon,
+                            fit: BoxFit.none,
+                          ),
+                          // suffixIcon: WebsafeSvg.asset(
+                          //   ImageAssets.barcodeIcon,
+                          //   fit: BoxFit.none,
+                          // ),
+                          labelStyle: buildCustomStyle(
+                              FontWeightManager.regular,
+                              FontSize.s10,
+                              0.10,
+                              ColorManager.textColor),
+                          hintText: 'Search category',
+                          hintStyle: buildCustomStyle(FontWeightManager.regular,
+                              FontSize.s10, 0.13, ColorManager.textColor1),
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
@@ -98,18 +109,22 @@ class AddCategoryScreen extends StatelessWidget {
                 offsetValue: const Offset(1, 1),
                 child: Consumer<CategoryProvider>(
                   builder: (context, categoryProvider, child) {
-                    final List<Category>? categorys = categoryProvider.category;
+                    final List<Category>? categorys =
+                        categoryProvider.filteredcategory;
+
+                    debugPrint("filteredcategoryList ${categorys!.length}");
 
                     // List<Category>? categorys = categoryProvider.category;
 
                     return Table(
                       columnWidths: const {
                         0: FractionColumnWidth(0.01),
-                        1: FractionColumnWidth(0.01),
-                        2: FractionColumnWidth(0.1),
-                        3: FractionColumnWidth(0.06),
-                        4: FractionColumnWidth(0.06),
-                        5: FractionColumnWidth(0.05),
+                        1: FractionColumnWidth(0.09),
+                        2: FractionColumnWidth(0.09),
+                        3: FractionColumnWidth(0.01),
+                        // 4: FractionColumnWidth(0.06),
+                        // 5: FractionColumnWidth(0.06),
+                        // 6: FractionColumnWidth(0.05),
                       },
                       border: TableBorder.symmetric(
                           outside: const BorderSide(
@@ -124,6 +139,22 @@ class AddCategoryScreen extends StatelessWidget {
                             decoration: const BoxDecoration(
                                 color: ColorManager.tableBGColor),
                             children: [
+                              TableCell(
+                                  verticalAlignment:
+                                      TableCellVerticalAlignment.middle,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Center(
+                                        child: Text(
+                                      "No",
+                                      style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s12,
+                                        0.18,
+                                        ColorManager.kPrimaryColor,
+                                      ),
+                                    )),
+                                  )),
                               TableCell(
                                   verticalAlignment:
                                       TableCellVerticalAlignment.middle,
@@ -175,9 +206,28 @@ class AddCategoryScreen extends StatelessWidget {
                             ]),
 
                         // Map your order data to table rows here
-                        ...(categorys!).skip(1).map((category) {
+                        ...(categorys).asMap().entries.map((entry) {
+                          int index = entry.key;
+                          Category category = entry.value;
                           return TableRow(
                             children: [
+                              TableCell(
+                                  verticalAlignment:
+                                      TableCellVerticalAlignment.middle,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Center(
+                                      child: Text(
+                                        "${index + 1}",
+                                        style: buildCustomStyle(
+                                          FontWeightManager.medium,
+                                          FontSize.s9,
+                                          0.13,
+                                          Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  )),
                               TableCell(
                                   verticalAlignment:
                                       TableCellVerticalAlignment.middle,

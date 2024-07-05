@@ -41,6 +41,19 @@ class PurchaseProvider extends ChangeNotifier {
     status: "Y",
   );
 
+  String getStoreNameFromId(int storeId) {
+    if (storeList == null || storeList!.isEmpty) {
+      return "Unknown";
+    }
+
+    var store = storeList!.firstWhere(
+      (e) => e.id == storeId,
+      orElse: () => GetStoreModelData(id: 0, name: "Unknown"),
+    );
+
+    return store.name ?? "Unknown";
+  }
+
   void callVoucherDetails({required int voucherId, required int purchaseId}) {
     debugPrint("voucherId $voucherId purchaseId $purchaseId");
     List<PurchaseItem> purchaseItemList = purchaseItemListAllPurchase!;

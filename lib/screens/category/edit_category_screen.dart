@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:pos_machine/models/product_list_file.dart';
+import 'package:pos_machine/providers/grid_provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -26,6 +28,30 @@ class EditCategoryPageScreen extends StatefulWidget {
 }
 
 class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
+  final imageTitleController = TextEditingController();
+  final imageAltController = TextEditingController();
+  int? selectedImageIndex;
+  late TextEditingController imageFilePathController;
+  final iconTitleController = TextEditingController();
+  final iconAltController = TextEditingController();
+  int? selectedIconIndex;
+  late TextEditingController iconFilePathController;
+  List<GetProductListFileModelData>? imageFiles = [];
+  GetProductListFileModelData? selctedImageFile;
+
+  void getData() {
+    String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
+    Provider.of<GridSelectionProvider>(context, listen: false)
+        .getProductListFilesAPI(accessToken: accessToken ?? "")
+        .then((value) {
+      if (value["status"] == "success") {
+        GetProductListFileModel getProductListFileModel =
+            GetProductListFileModel.fromJson(value);
+        imageFiles = getProductListFileModel.data;
+      } else {}
+    });
+  }
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController categoryNameEnglishController;
   late TextEditingController categoryNameController;
@@ -39,6 +65,9 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
   @override
   void initState() {
     super.initState();
+
+    getData();
+
     sideBarController = Get.put(SideBarController());
     idController = TextEditingController(text: "0");
 
@@ -49,6 +78,8 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
     categoryNameHindiController = TextEditingController();
     categorySlugController = TextEditingController();
     categoryIDController = TextEditingController();
+    imageFilePathController = TextEditingController();
+    iconFilePathController = TextEditingController();
 
     // Use Future.microtask to ensure widget tree is built
     Future.microtask(() {
@@ -67,6 +98,10 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
           .replaceAll(RegExp(r'[^a-z0-9-]'),
               ''); // Remove non-alphanumeric characters except hyphens
       categoryIDController.text = viewCategory.id?.toString() ?? '';
+      imageFilePathController.text = viewCategory.categoryImage.toString();
+      iconFilePathController.text = viewCategory.categoryIcon.toString();
+      // selectedIconIndex = int.parse(viewCategory.categoryIcon!);
+      // selectedImageIndex = int.parse(viewCategory.categoryImage!);
 
       if (viewCategory.parentId != null) {
         String parentCategory = viewCategory.parentId.toString();
@@ -93,6 +128,9 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
     categorySlugController.dispose();
     idController.dispose();
     categoryIDController.dispose();
+    idController.clear();
+    imageFilePathController.clear();
+    iconFilePathController.clear();
     super.dispose();
   }
 
@@ -103,6 +141,9 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
     categoryNameEnglishController.clear();
     categoryNameHindiController.clear();
     categorySlugController.clear();
+    idController.clear();
+    imageFilePathController.clear();
+    iconFilePathController.clear();
   }
 
   @override
@@ -340,6 +381,107 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
                                       readOnly: false),
                                 ],
                               ),
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: size.width / 3,
+                                        child: BuildTextTile(
+                                          title: "Category Image : ",
+                                          textStyle: buildCustomStyle(
+                                            FontWeightManager.regular,
+                                            FontSize.s14,
+                                            0.27,
+                                            Colors.black.withOpacity(0.6),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: CustomRoundButton(
+                                          title: "Select Image",
+                                          fct: () async {
+                                            showDialogFunctionForCategoryImageDetails(
+                                                context,
+                                                imageFiles ?? [],
+                                                size);
+                                          },
+                                          height: 40,
+                                          width: size.width * 0.1,
+                                          fontSize: FontSize.s12,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 20.0, left: 20.0),
+                                        child: BuildBoxShadowContainer(
+                                            margin: const EdgeInsets.only(
+                                                left: 5, right: 5),
+                                            circleRadius: 5,
+                                            height: 100,
+                                            width: 150,
+                                            child: Image.network(
+                                              imageFilePathController.text,
+                                              fit: BoxFit.cover,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        width: size.width / 3,
+                                        child: BuildTextTile(
+                                          title: "Category Icon : ",
+                                          textStyle: buildCustomStyle(
+                                            FontWeightManager.regular,
+                                            FontSize.s14,
+                                            0.27,
+                                            Colors.black.withOpacity(0.6),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: CustomRoundButton(
+                                          title: "Select Icon",
+                                          fct: () async {
+                                            showDialogFunctionForCategoryIconDetails(
+                                                context,
+                                                imageFiles ?? [],
+                                                size);
+                                          },
+                                          height: 40,
+                                          width: size.width * 0.1,
+                                          fontSize: FontSize.s12,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: BuildBoxShadowContainer(
+                                            margin: const EdgeInsets.only(
+                                                left: 5, right: 5),
+                                            circleRadius: 5,
+                                            height: 100,
+                                            width: 150,
+                                            child: Image.network(
+                                              iconFilePathController.text,
+                                              fit: BoxFit.cover,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                               const SizedBox(height: 25),
                               Row(
                                 children: [
@@ -416,6 +558,10 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
                                               categoryNameArabic:
                                                   categoryNameArabicController
                                                       .text,
+                                              imagePath:
+                                                  imageFilePathController.text,
+                                              iconPath:
+                                                  iconFilePathController.text,
                                               accessToken: accessToken ?? "",
                                             )
                                                 .then((value) {
@@ -479,5 +625,624 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
             ),
           )),
     );
+  }
+
+  showDialogFunctionForCategoryImageDetails(BuildContext context,
+      final List<GetProductListFileModelData>? attachment, Size size) {
+    debugPrint("showDialogFunctionForProductDetailsAnimated");
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: "",
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: SizedBox(
+                //  padding: const EdgeInsets.all(120.0),
+                height: 600,
+                width: 700,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: BuildBoxShadowContainer(
+                      circleRadius: 10,
+                      padding: const EdgeInsets.all(12),
+                      //  height: 380,
+                      border: Border.all(
+                          color: ColorManager.kPrimaryColor.withOpacity(0.7)),
+                      // width: 250, //MediaQuery.of(context).size.width * 0.7,
+                      child: SingleChildScrollView(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Select Image",
+                                      style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s14,
+                                        0.18,
+                                        ColorManager.kPrimaryColor,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          BuildBoxShadowContainer(
+                                            width: 15,
+                                            height: 15,
+                                            circleRadius: 10,
+                                            color: ColorManager.kPrimaryColor,
+                                            child: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.close_rounded,
+                                                  size: 10,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                // height: 450,
+                                width: 700,
+                                child: Table(
+                                  columnWidths: const {
+                                    0: FractionColumnWidth(0.01),
+                                    1: FractionColumnWidth(0.01),
+                                    2: FractionColumnWidth(0.1),
+                                    3: FractionColumnWidth(0.06),
+                                    4: FractionColumnWidth(0.06),
+                                    5: FractionColumnWidth(0.05),
+                                  },
+                                  border: TableBorder.symmetric(
+                                      outside: const BorderSide(
+                                          color: ColorManager.tableBOrderColor,
+                                          width: 0.3),
+                                      inside: const BorderSide(
+                                          color: ColorManager.tableBOrderColor,
+                                          width: 0.8)),
+                                  defaultVerticalAlignment:
+                                      TableCellVerticalAlignment.middle,
+                                  children: [
+                                    TableRow(
+                                        decoration: const BoxDecoration(
+                                            color: ColorManager.tableBGColor),
+                                        children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  "Select",
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.18,
+                                                    ColorManager.kPrimaryColor,
+                                                  ),
+                                                )),
+                                              )),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  "Image Title",
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.18,
+                                                    ColorManager.kPrimaryColor,
+                                                  ),
+                                                )),
+                                              )),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  "Preview",
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.18,
+                                                    ColorManager.kPrimaryColor,
+                                                  ),
+                                                )),
+                                              )),
+                                        ]),
+
+                                    // // Map your order data to table rows here
+                                    // ...imageFiles!.map((image) {
+                                    if (attachment != null)
+                                      ...attachment
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                        final index = entry.key;
+                                        final image = entry.value;
+                                        return TableRow(
+                                          children: [
+                                            TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      15.0),
+                                                  child: Center(
+                                                    child: Radio<int>(
+                                                      value: index,
+                                                      groupValue:
+                                                          selectedImageIndex,
+                                                      onChanged: (int? value) {
+                                                        // Set the selected image index
+                                                        setState(() {
+                                                          selectedImageIndex =
+                                                              value ?? 0;
+                                                        });
+
+                                                        debugPrint(
+                                                            "showDialog $index $selectedImageIndex");
+                                                        imageFilePathController
+                                                                .text =
+                                                            image.id.toString();
+                                                        imageAltController
+                                                                .text =
+                                                            image.alt ?? "";
+                                                        imageTitleController
+                                                                .text =
+                                                            image.title ?? "";
+                                                        // Perform any other action if needed
+                                                      },
+                                                    ),
+                                                  ),
+                                                )),
+                                            TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      15.0),
+                                                  child: Center(
+                                                    child: Text(
+                                                      "${image.title}",
+                                                      style: buildCustomStyle(
+                                                        FontWeightManager
+                                                            .medium,
+                                                        FontSize.s9,
+                                                        0.13,
+                                                        Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )),
+                                            TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      15.0),
+                                                  child: Center(
+                                                    child:
+                                                        BuildBoxShadowContainer(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left: 5,
+                                                                    right: 5),
+                                                            circleRadius: 5,
+                                                            child:
+                                                                Image.network(
+                                                              image.s3Url ?? "",
+                                                              fit: BoxFit.cover,
+                                                            )),
+                                                  ),
+                                                )),
+                                          ],
+                                        );
+                                      }).toList(),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12.0),
+                                child: Row(
+                                  children: [
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(left: 10.0),
+                                    //   child: CustomRoundButton(
+                                    //     title: "Create New Image",
+                                    //     fct: () async {},
+                                    //     height: 50,
+                                    //     width: size.width * 0.19,
+                                    //     fontSize: FontSize.s12,
+                                    //   ),
+                                    // ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: CustomRoundButton(
+                                        title: "Cancel",
+                                        boxColor: Colors.white,
+                                        textColor: ColorManager.kPrimaryColor,
+                                        fct: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        height: 50,
+                                        width: size.width * 0.19,
+                                        fontSize: FontSize.s12,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: CustomRoundButton(
+                                        title: "Choose",
+                                        boxColor: Colors.white,
+                                        textColor: ColorManager.kPrimaryColor,
+                                        fct: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        height: 50,
+                                        width: size.width * 0.19,
+                                        fontSize: FontSize.s12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  showDialogFunctionForCategoryIconDetails(BuildContext context,
+      final List<GetProductListFileModelData>? attachment, Size size) {
+    debugPrint("showDialogFunctionForCategoryIconDetails");
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: "",
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Center(
+              child: SizedBox(
+                //  padding: const EdgeInsets.all(120.0),
+                height: 600,
+                width: 700,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: BuildBoxShadowContainer(
+                      circleRadius: 10,
+                      padding: const EdgeInsets.all(12),
+                      //  height: 380,
+                      border: Border.all(
+                          color: ColorManager.kPrimaryColor.withOpacity(0.7)),
+                      // width: 250, //MediaQuery.of(context).size.width * 0.7,
+                      child: SingleChildScrollView(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Select Image",
+                                      style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s14,
+                                        0.18,
+                                        ColorManager.kPrimaryColor,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          BuildBoxShadowContainer(
+                                            width: 15,
+                                            height: 15,
+                                            circleRadius: 10,
+                                            color: ColorManager.kPrimaryColor,
+                                            child: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.close_rounded,
+                                                  size: 10,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                // height: 450,
+                                width: 700,
+                                child: Table(
+                                  columnWidths: const {
+                                    0: FractionColumnWidth(0.01),
+                                    1: FractionColumnWidth(0.01),
+                                    2: FractionColumnWidth(0.1),
+                                    3: FractionColumnWidth(0.06),
+                                    4: FractionColumnWidth(0.06),
+                                    5: FractionColumnWidth(0.05),
+                                  },
+                                  border: TableBorder.symmetric(
+                                      outside: const BorderSide(
+                                          color: ColorManager.tableBOrderColor,
+                                          width: 0.3),
+                                      inside: const BorderSide(
+                                          color: ColorManager.tableBOrderColor,
+                                          width: 0.8)),
+                                  defaultVerticalAlignment:
+                                      TableCellVerticalAlignment.middle,
+                                  children: [
+                                    TableRow(
+                                        decoration: const BoxDecoration(
+                                            color: ColorManager.tableBGColor),
+                                        children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  "Select",
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.18,
+                                                    ColorManager.kPrimaryColor,
+                                                  ),
+                                                )),
+                                              )),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  "Image Title",
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.18,
+                                                    ColorManager.kPrimaryColor,
+                                                  ),
+                                                )),
+                                              )),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  "Preview",
+                                                  style: buildCustomStyle(
+                                                    FontWeightManager.medium,
+                                                    FontSize.s12,
+                                                    0.18,
+                                                    ColorManager.kPrimaryColor,
+                                                  ),
+                                                )),
+                                              )),
+                                        ]),
+
+                                    // // Map your order data to table rows here
+                                    // ...imageFiles!.map((image) {
+                                    if (attachment != null)
+                                      ...attachment
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                        final index = entry.key;
+                                        final image = entry.value;
+                                        return TableRow(
+                                          children: [
+                                            TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      15.0),
+                                                  child: Center(
+                                                    child: Radio<int>(
+                                                      value: index,
+                                                      groupValue:
+                                                          selectedIconIndex,
+                                                      onChanged: (int? value) {
+                                                        // Set the selected image index
+                                                        setState(() {
+                                                          selectedIconIndex =
+                                                              value ?? 0;
+                                                        });
+
+                                                        debugPrint(
+                                                            "showDialog $index $selectedIconIndex");
+                                                        iconFilePathController
+                                                                .text =
+                                                            image.id.toString();
+                                                        iconAltController.text =
+                                                            image.alt ?? "";
+                                                        iconTitleController
+                                                                .text =
+                                                            image.title ?? "";
+                                                        // Perform any other action if needed
+                                                      },
+                                                    ),
+                                                  ),
+                                                )),
+                                            TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      15.0),
+                                                  child: Center(
+                                                    child: Text(
+                                                      "${image.title}",
+                                                      style: buildCustomStyle(
+                                                        FontWeightManager
+                                                            .medium,
+                                                        FontSize.s9,
+                                                        0.13,
+                                                        Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )),
+                                            TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      15.0),
+                                                  child: Center(
+                                                    child:
+                                                        BuildBoxShadowContainer(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left: 5,
+                                                                    right: 5),
+                                                            circleRadius: 5,
+                                                            child:
+                                                                Image.network(
+                                                              image.s3Url ?? "",
+                                                              fit: BoxFit.cover,
+                                                            )),
+                                                  ),
+                                                )),
+                                          ],
+                                        );
+                                      }).toList(),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12.0),
+                                child: Row(
+                                  children: [
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(left: 10.0),
+                                    //   child: CustomRoundButton(
+                                    //     title: "Create New Image",
+                                    //     fct: () async {},
+                                    //     height: 50,
+                                    //     width: size.width * 0.19,
+                                    //     fontSize: FontSize.s12,
+                                    //   ),
+                                    // ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: CustomRoundButton(
+                                        title: "Cancel",
+                                        boxColor: Colors.white,
+                                        textColor: ColorManager.kPrimaryColor,
+                                        fct: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        height: 50,
+                                        width: size.width * 0.19,
+                                        fontSize: FontSize.s12,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 10.0),
+                                      child: CustomRoundButton(
+                                        title: "Choose",
+                                        boxColor: Colors.white,
+                                        textColor: ColorManager.kPrimaryColor,
+                                        fct: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        height: 50,
+                                        width: size.width * 0.19,
+                                        fontSize: FontSize.s12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                ),
+              ),
+            );
+          });
+        });
   }
 }

@@ -353,7 +353,6 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                           fct: () async {
                                             showDialogFunctionForCategoryImageDetails(
                                                 context,
-                                                0,
                                                 imageFiles ?? [],
                                                 size);
                                           },
@@ -390,7 +389,6 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                           fct: () async {
                                             showDialogFunctionForCategoryIconDetails(
                                                 context,
-                                                0,
                                                 imageFiles ?? [],
                                                 size);
                                           },
@@ -549,7 +547,7 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
     );
   }
 
-  showDialogFunctionForCategoryImageDetails(BuildContext context, int productId,
+  showDialogFunctionForCategoryImageDetails(BuildContext context,
       final List<GetProductListFileModelData>? attachment, Size size) {
     debugPrint("showDialogFunctionForProductDetailsAnimated");
     return showDialog(
@@ -859,7 +857,7 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
         });
   }
 
-  showDialogFunctionForCategoryIconDetails(BuildContext context, int productId,
+  showDialogFunctionForCategoryIconDetails(BuildContext context,
       final List<GetProductListFileModelData>? attachment, Size size) {
     debugPrint("showDialogFunctionForCategoryIconDetails");
     return showDialog(

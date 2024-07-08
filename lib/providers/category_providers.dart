@@ -154,6 +154,8 @@ class CategoryProvider extends ChangeNotifier {
       required String categoryNameEnglish,
       required String categoryNameHindi,
       required String categoryNameArabic,
+      required String imagePath,
+      required String iconPath,
       required String accessToken}) async {
     debugPrint("ADD CATEGORY  API parentCategory $parentCategory ");
     debugPrint("ADD CATEGORY  API categoryName $categoryName ");
@@ -169,8 +171,8 @@ class CategoryProvider extends ChangeNotifier {
       'category_lang_name[en]': categoryNameEnglish,
       'category_lang_name[hi]': categoryNameHindi,
       'category_lang_name[ar]': categoryNameArabic,
-      'category_image': "1",
-      'category_icon': "1"
+      'category_image': imagePath,
+      'category_icon': iconPath
     };
     debugPrint(apiBodyData.toString());
     final url = Uri.parse(APPUrl.addCategoryUrl);

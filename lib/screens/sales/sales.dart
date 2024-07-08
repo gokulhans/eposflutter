@@ -288,14 +288,14 @@ class SalesScreen extends StatelessWidget {
                         return Table(
                           columnWidths: const {
                             0: FractionColumnWidth(0.01),
-                            1: FractionColumnWidth(0.01),
-                            2: FractionColumnWidth(0.01),
-                            3: FractionColumnWidth(0.1),
+                            1: FractionColumnWidth(0.03),
+                            2: FractionColumnWidth(0.03),
+                            3: FractionColumnWidth(0.01),
                             4: FractionColumnWidth(0.01),
                             5: FractionColumnWidth(0.06),
-                            6: FractionColumnWidth(0.06),
-                            7: FractionColumnWidth(0.05),
-                            8: FractionColumnWidth(0.01),
+                            6: FractionColumnWidth(0.03),
+                            7: FractionColumnWidth(0.03),
+                            8: FractionColumnWidth(0.02),
                           },
                           border: TableBorder.symmetric(
                               outside: const BorderSide(

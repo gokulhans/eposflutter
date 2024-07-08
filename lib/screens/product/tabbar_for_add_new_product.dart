@@ -99,7 +99,7 @@ class _TabBarForAddNewProductState extends State<TabBarForAddNewProduct>
                       child: TabBarView(
                         key: UniqueKey(),
                         controller: tabController,
-                        children: [
+                        children: [                                                                                   
                           AddProductPageScreen(
                             navigateToScreen: navigateToScreen,
                           ),

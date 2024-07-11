@@ -131,11 +131,10 @@ class ViewPurchaseWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BuildDetailRow(
-                      title1: "Purchase Voucher Date",
-                      content1: voucherDetails?.purchaseDate ?? "",
-                      title2: "Purchaser Name",
-                      content2:
-                          "Sales Executive", // You might want to replace this with actual data if available
+                      title1: "Purchaser Name",
+                      content1: "Sales Executive",
+                      title2: "Purchaser Date",
+                      content2: voucherDetails?.purchaseDate ?? "",
                     ),
                     BuildDetailRow(
                       title1: "Number Of Items",
@@ -159,12 +158,13 @@ class ViewPurchaseWidget extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: Table(
                             columnWidths: const {
-                              0: FractionColumnWidth(0.08),
-                              1: FractionColumnWidth(0.01),
-                              2: FractionColumnWidth(0.02),
-                              3: FractionColumnWidth(0.06),
-                              4: FractionColumnWidth(0.06),
-                              5: FractionColumnWidth(0.05),
+                              0: FractionColumnWidth(0.01),
+                              1: FractionColumnWidth(0.04),
+                              2: FractionColumnWidth(0.01),
+                              3: FractionColumnWidth(0.01),
+                              4: FractionColumnWidth(0.03),
+                              5: FractionColumnWidth(0.03),
+                              6: FractionColumnWidth(0.03),
                             },
                             border: TableBorder.symmetric(
                                 outside: const BorderSide(
@@ -187,7 +187,23 @@ class ViewPurchaseWidget extends StatelessWidget {
                                           padding: const EdgeInsets.all(15.0),
                                           child: Center(
                                               child: Text(
-                                            "Product Name",
+                                            "No",
+                                            style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s12,
+                                              0.18,
+                                              ColorManager.kPrimaryColor,
+                                            ),
+                                          )),
+                                        )),
+                                    TableCell(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Center(
+                                              child: Text(
+                                            "Name",
                                             style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s12,
@@ -251,7 +267,7 @@ class ViewPurchaseWidget extends StatelessWidget {
                                           padding: const EdgeInsets.all(15.0),
                                           child: Center(
                                               child: Text(
-                                            "Action",
+                                            "Store",
                                             style: buildCustomStyle(
                                               FontWeightManager.medium,
                                               FontSize.s12,
@@ -260,15 +276,74 @@ class ViewPurchaseWidget extends StatelessWidget {
                                             ),
                                           )),
                                         )),
+                                    TableCell(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Center(
+                                              child: Text(
+                                            "Supplier",
+                                            style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s12,
+                                              0.18,
+                                              ColorManager.kPrimaryColor,
+                                            ),
+                                          )),
+                                        )),
+                                    // TableCell(
+                                    //     verticalAlignment:
+                                    //         TableCellVerticalAlignment.middle,
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.all(15.0),
+                                    //       child: Center(
+                                    //           child: Text(
+                                    //         "Action",
+                                    //         style: buildCustomStyle(
+                                    //           FontWeightManager.medium,
+                                    //           FontSize.s12,
+                                    //           0.18,
+                                    //           ColorManager.kPrimaryColor,
+                                    //         ),
+                                    //       )),
+                                    //     )),
                                   ]),
 
                               // Map your order data to table rows here
-                              ...filteredItems!.map((products) {
+                              ...filteredItems!.asMap().entries.map((entry) {
+                                final products = entry.value;
+                                final index = entry.key;
                                 String productName = gridSelectionProvider
                                         .productName(products.productId ?? 0) ??
                                     "";
+
+                                String storeName = purchaseProvider
+                                        .storeName(products.storeId ?? 1) ??
+                                    '';
+                                String supplierName =
+                                    purchaseProvider.supplierName(
+                                            products.supplierId ?? 1) ??
+                                        '';
                                 return TableRow(
                                   children: [
+                                    TableCell(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Center(
+                                            child: Text(
+                                              "${index + 1}",
+                                              style: buildCustomStyle(
+                                                FontWeightManager.medium,
+                                                FontSize.s9,
+                                                0.13,
+                                                Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        )),
                                     TableCell(
                                         verticalAlignment:
                                             TableCellVerticalAlignment.middle,
@@ -343,28 +418,62 @@ class ViewPurchaseWidget extends StatelessWidget {
                                         child: Padding(
                                           padding: const EdgeInsets.all(15.0),
                                           child: Center(
-                                            child: Row(
-                                              children: [
-                                                BuildBoxShadowContainer(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            left: 5, right: 5),
-                                                    circleRadius: 5,
-                                                    color: ColorManager
-                                                        .kPrimaryColor
-                                                        .withOpacity(0.9),
-                                                    child: IconButton(
-                                                      icon: const Icon(
-                                                        Icons.edit,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                      onPressed: () async {},
-                                                    )),
-                                              ],
+                                            child: Text(
+                                              storeName,
+                                              style: buildCustomStyle(
+                                                FontWeightManager.medium,
+                                                FontSize.s9,
+                                                0.13,
+                                                Colors.black,
+                                              ),
                                             ),
                                           ),
                                         )),
+                                    TableCell(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Center(
+                                            child: Text(
+                                              supplierName,
+                                              style: buildCustomStyle(
+                                                FontWeightManager.medium,
+                                                FontSize.s9,
+                                                0.13,
+                                                Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        )),
+                                    // TableCell(
+                                    //     verticalAlignment:
+                                    //         TableCellVerticalAlignment.middle,
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.all(15.0),
+                                    //       child: Center(
+                                    //         child: Row(
+                                    //           children: [
+                                    //             BuildBoxShadowContainer(
+                                    //                 margin:
+                                    //                     const EdgeInsets.only(
+                                    //                         left: 5, right: 5),
+                                    //                 circleRadius: 5,
+                                    //                 color: ColorManager
+                                    //                     .kPrimaryColor
+                                    //                     .withOpacity(0.9),
+                                    //                 child: IconButton(
+                                    //                   icon: const Icon(
+                                    //                     Icons.edit,
+                                    //                     size: 18,
+                                    //                     color: Colors.white,
+                                    //                   ),
+                                    //                   onPressed: () async {},
+                                    //                 )),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     )),
                                   ],
                                 );
                               }).toList(),

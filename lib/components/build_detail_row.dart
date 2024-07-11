@@ -21,12 +21,20 @@ class BuildDetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: _buildDetailItem(title1, content1),
-        ),
-        Expanded(
-          child: _buildDetailItem(title2, content2),
-        ),
+        title1 != ""
+            ? Expanded(
+                child: _buildDetailItem(title1, content1),
+              )
+            : Expanded(
+                child: Container(),
+              ),
+        title2 != ""
+            ? Expanded(
+                child: _buildDetailItem(title2, content2),
+              )
+            : Expanded(
+                child: Container(),
+              ),
       ],
     );
   }

@@ -40,7 +40,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     PurchaseProvider purchaseProvider =
         Provider.of<PurchaseProvider>(context, listen: false);
     await purchaseProvider
-        .listPurchase(accessToken ?? '', "1", "1")
+        .listPurchase(accessToken ?? '', "", "")
         .then((value) async {});
     voucherDetailsList = purchaseProvider.getVoucherDetailsList;
     setState(() {

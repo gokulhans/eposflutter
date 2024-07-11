@@ -28,8 +28,9 @@ class GridSelectionProvider extends ChangeNotifier {
   List<GetProduct>? get getCategoryProductList => categoryProductList;
   List<GetProduct>? get getSelectedProductListAPI => selectedProductListAPI;
   List<ListStockModelData>? listStockModelDataList = [];
+  List<ListStockModelData>? filteredStockList = [];
   List<ListStockModelData>? get getListStockModelDataList =>
-      listStockModelDataList;
+      filteredStockList ?? listStockModelDataList;
   ListStockModelData? viewStockModelData;
 
   ListStockModelData? get getViewStockModelData => viewStockModelData;
@@ -45,6 +46,7 @@ class GridSelectionProvider extends ChangeNotifier {
     listAllProducts(categoryId: 0);
     listAllProductsAPI(categoryId: 0);
   }
+
   void toggleSelection(int index) {
     if (selectedIndices.contains(index)) {
       selectedIndices.remove(index);
@@ -64,6 +66,22 @@ class GridSelectionProvider extends ChangeNotifier {
       notifyListeners();
       return categoryProductList!;
     }
+  }
+
+  void searchStocks(String query) {
+    if (query.isEmpty) {
+      filteredStockList = listStockModelDataList;
+    } else {
+      filteredStockList = listStockModelDataList?.where((stock) {
+        final productNameLower = stock.productName?.toLowerCase() ?? '';
+        final storeNameLower = stock.storeName?.toLowerCase() ?? '';
+        final queryLower = query.toLowerCase();
+
+        return productNameLower.contains(queryLower) ||
+            storeNameLower.contains(queryLower);
+      }).toList();
+    }
+    notifyListeners();
   }
 
   List<GetProduct> searchProducts(String query) {
@@ -692,6 +710,7 @@ class GridSelectionProvider extends ChangeNotifier {
         ListStockModel listStockModel =
             ListStockModel.fromJson(json.decode(response.body));
         listStockModelDataList = listStockModel.data;
+        filteredStockList = listStockModelDataList;
         notifyListeners();
       } else {
         // return error;

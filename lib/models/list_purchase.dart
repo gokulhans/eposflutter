@@ -282,6 +282,8 @@ class PurchaseItem {
   final int? purchaseId;
   final int? voucherId;
   final int? productId;
+  final int? storeId;
+  final int? supplierId;
   final int? quantity;
   final int? unitPrice;
   final String? unit;
@@ -297,6 +299,8 @@ class PurchaseItem {
     this.purchaseId,
     this.voucherId,
     this.productId,
+    this.storeId,
+    this.supplierId,
     this.quantity,
     this.unitPrice,
     this.unit,
@@ -313,6 +317,8 @@ class PurchaseItem {
         purchaseId: json["purchase_id"],
         voucherId: json["voucher_id"],
         productId: json["product_id"],
+        storeId: json["store_id"],
+        supplierId: json["supplier_id"],
         quantity: json["quantity"],
         unitPrice: json["unit_price"],
         unit: json["unit"],
@@ -333,6 +339,8 @@ class PurchaseItem {
         "purchase_id": purchaseId,
         "voucher_id": voucherId,
         "product_id": productId,
+        "store_id": storeId,
+        "supplier_id": supplierId,
         "quantity": quantity,
         "unit_price": unitPrice,
         "unit": unit,

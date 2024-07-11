@@ -24,6 +24,7 @@ class AddProductScreen extends StatelessWidget {
     );
     GridSelectionProvider gridSelectionProvider =
         Provider.of<GridSelectionProvider>(context);
+
     return SafeArea(
       child: Container(
         margin: const EdgeInsets.only(left: 10, top: 20, bottom: 0, right: 10),
@@ -53,30 +54,37 @@ class AddProductScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // SizedBox(
-                      //   height: 45,
-                      //   width: 180, //size.width * 0.5,
-                      //   child: TextField(
-                      //     cursorColor: ColorManager.kPrimaryColor,
-                      //     cursorHeight: 13,
-                      //     //  controller: searchTextController,
-                      //     style: buildCustomStyle(FontWeightManager.medium,
-                      //         FontSize.s10, 0.18, ColorManager.textColor),
-                      //     decoration: decoration.copyWith(
-                      //         hintText: "Search    ",
-                      //         hintStyle: buildCustomStyle(
-                      //             FontWeightManager.medium,
-                      //             FontSize.s10,
-                      //             0.18,
-                      //             ColorManager.textColor),
-                      //         // prefixIcon: const Icon(
-                      //         //   Icons.search,
-                      //         //   color: Colors.black,
-                      //         //   size: 35,
-                      //         // ),
-                      //         prefixIconColor: Colors.black),
-                      //   ),
-                      // ),
+                      SizedBox(
+                        height: 45,
+                        width: 180, //size.width * 0.5,
+                        child: TextField(
+                          cursorColor: ColorManager.kPrimaryColor,
+                          cursorHeight: 13,
+                          //  controller: searchTextController,
+                          onChanged: (query) {
+                            debugPrint(query);
+                            final filteredProducts =
+                                gridSelectionProvider.searchProducts(query);
+                            gridSelectionProvider
+                                .updateFilteredProducts(filteredProducts);
+                          },
+                          style: buildCustomStyle(FontWeightManager.medium,
+                              FontSize.s10, 0.18, ColorManager.textColor),
+                          decoration: decoration.copyWith(
+                              hintText: "Search    ",
+                              hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor),
+                              // prefixIcon: const Icon(
+                              //   Icons.search,
+                              //   color: Colors.black,
+                              //   size: 35,
+                              // ),
+                              prefixIconColor: Colors.black),
+                        ),
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -101,17 +109,15 @@ class AddProductScreen extends StatelessWidget {
                   child: Consumer<GridSelectionProvider>(
                     builder: (context, productProvider, child) {
                       List<GetProduct>? productList =
-                          // productProvider.getProducts;
-                          productProvider.getSelectedProductListAPI;
+                          productProvider.productList;
 
                       return Table(
                         columnWidths: const {
                           0: FractionColumnWidth(0.01),
-                          1: FractionColumnWidth(0.01),
-                          2: FractionColumnWidth(0.1),
-                          3: FractionColumnWidth(0.06),
-                          4: FractionColumnWidth(0.06),
-                          5: FractionColumnWidth(0.05),
+                          1: FractionColumnWidth(0.03),
+                          2: FractionColumnWidth(0.03),
+                          3: FractionColumnWidth(0.03),
+                          4: FractionColumnWidth(0.03),
                         },
                         border: TableBorder.symmetric(
                             outside: const BorderSide(
@@ -134,7 +140,39 @@ class AddProductScreen extends StatelessWidget {
                                       padding: const EdgeInsets.all(15.0),
                                       child: Center(
                                           child: Text(
+                                        "No",
+                                        style: buildCustomStyle(
+                                          FontWeightManager.medium,
+                                          FontSize.s12,
+                                          0.18,
+                                          ColorManager.kPrimaryColor,
+                                        ),
+                                      )),
+                                    )),
+                                TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                          child: Text(
                                         "Product Name",
+                                        style: buildCustomStyle(
+                                          FontWeightManager.medium,
+                                          FontSize.s12,
+                                          0.18,
+                                          ColorManager.kPrimaryColor,
+                                        ),
+                                      )),
+                                    )),
+                                TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                          child: Text(
+                                        "Category Name",
                                         style: buildCustomStyle(
                                           FontWeightManager.medium,
                                           FontSize.s12,
@@ -178,9 +216,33 @@ class AddProductScreen extends StatelessWidget {
                               ]),
 
                           // Map your order data to table rows here
-                          ...productList!.map((products) {
+                          ...productList!.asMap().entries.map((entry) {
+                            int index = entry.key; // This is the index
+                            var products = entry.value; // This is the product
+                            // Assuming each product has a list of categories and you want the name of the first category
+                            String categoryName = products.category != null &&
+                                    products.category!.isNotEmpty
+                                ? products.category!.first.name ?? 'Unknown'
+                                : 'No Category';
                             return TableRow(
                               children: [
+                                TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: Text(
+                                          "${index + 1}",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s9,
+                                            0.13,
+                                            Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    )),
                                 TableCell(
                                     verticalAlignment:
                                         TableCellVerticalAlignment.middle,
@@ -205,7 +267,24 @@ class AddProductScreen extends StatelessWidget {
                                       padding: const EdgeInsets.all(15.0),
                                       child: Center(
                                         child: Text(
-                                          "${products.productName}",
+                                          "$categoryName",
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s9,
+                                            0.13,
+                                            Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    )),
+                                TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: Text(
+                                          "${products.productSlug}",
                                           style: buildCustomStyle(
                                             FontWeightManager.medium,
                                             FontSize.s9,

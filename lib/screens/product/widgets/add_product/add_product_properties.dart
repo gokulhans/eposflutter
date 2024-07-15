@@ -311,6 +311,15 @@ class _AddProductPropertiesScreenState
                               showScaffoldError(
                                   context: context, message: 'Failed');
                             } else {
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (context) {
+                                    return const Center(
+                                      child:
+                                          CircularProgressIndicator.adaptive(),
+                                    );
+                                  });
                               String? accessToken =
                                   Provider.of<AuthModel>(context, listen: false)
                                       .token;
@@ -346,8 +355,14 @@ class _AddProductPropertiesScreenState
                                   .then(
                                 (value) {
                                   if (value["status"] == "success") {
+                                    showScaffold(
+                                      context: context,
+                                      message: '${value["message"]}',
+                                    );
+                                    Navigator.pop(context);
                                     widget.navigateToScreen(3);
                                   } else {
+                                    Navigator.pop(context);
                                     showScaffoldError(
                                       context: context,
                                       message: 'Failed to add properties',

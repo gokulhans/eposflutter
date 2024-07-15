@@ -655,6 +655,7 @@ class GridSelectionProvider extends ChangeNotifier {
       'message': "Something went wrong, Please try Again!"
     };
 
+    debugPrint("date ${expiryDate.toString()}");
     debugPrint("productProperties ${jsonEncode(productProperties).toString()}");
 
     final Map<String, dynamic> apiBodyData = {

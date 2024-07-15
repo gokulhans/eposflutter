@@ -43,7 +43,7 @@ class _CalendarPickerTableCellState extends State<CalendarPickerTableCell> {
           children: <Widget>[
             Text(
               selectedDate != null
-                  ? DateFormat('dd/MM/yyyy').format(selectedDate!)
+                  ? DateFormat('yyyy-MM-dd').format(selectedDate!)
                   : 'Select Date',
               style: TextStyle(fontSize: 14),
             ),

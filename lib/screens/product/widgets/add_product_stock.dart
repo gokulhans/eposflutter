@@ -307,7 +307,7 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                   await categoryProvider
                                                       .setParentCategory(
                                                           "${selectedCategory.categoryId ?? 0}");
-                                                          
+
                                                   await categoryProvider
                                                       .setCategoryIdforProp(
                                                           categoryId:

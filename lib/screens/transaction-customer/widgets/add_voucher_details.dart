@@ -817,7 +817,7 @@ class AddVoucherDetailsWidget extends StatelessWidget {
                                                     wholesaleMinUnitController
                                                         .text,
                                                 expiryDate: selectedDate != null
-                                                    ? DateFormat('dd/MM/yyyy')
+                                                    ? DateFormat('yyyy-MM-dd')
                                                         .format(selectedDate!)
                                                     : '',
                                                 batchNumber:

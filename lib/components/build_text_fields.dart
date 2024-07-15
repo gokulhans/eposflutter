@@ -333,8 +333,12 @@ class BuildTextFieldColumn3 extends StatelessWidget {
                                 horizontal: 5, vertical: 0),
                         child: CalendarPickerTableCell(
                           onDateSelected: (date) {
+                            debugPrint(date.toString());
                             controller.text =
-                                DateFormat('dd/MM/yyyy').format(date);
+                                DateFormat('yyyy-MM-dd').format(date);
+                            debugPrint(DateFormat('yyyy-MM-dd')
+                                .format(date)
+                                .toString());
                           },
                         ),
                       ),

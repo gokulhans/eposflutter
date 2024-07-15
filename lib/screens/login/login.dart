@@ -396,7 +396,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                             const MainScreen())));
                                           } else {
                                             Navigator.pop(context);
-                                            showScaffold(
+                                            showScaffoldError(
                                               context: context,
                                               message: '${value["message"]}',
                                             );

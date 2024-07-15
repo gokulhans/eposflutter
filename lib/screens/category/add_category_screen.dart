@@ -433,7 +433,7 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                                   .text.isEmpty) {
                                             debugPrint(
                                                 "isEmptycategorySlugController");
-                                            showScaffold(
+                                            showScaffoldError(
                                               context: context,
                                               message:
                                                   'Please Fill the Required Fields',

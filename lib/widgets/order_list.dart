@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_machine/components/build_container_box.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_order_list_design.dart';
 import 'package:pos_machine/helpers/amount_helper.dart';
 // import 'package:pos_machine/components/build_round_button.dart';
@@ -1203,67 +1204,17 @@ class _OrderListState extends State<OrderList> {
                                 debugPrint(
                                     "$response  Provider.of<CartProvider>(context,listen: false).addToOrderAPI(); ");
                                 if (response["status"] == "success") {
-                                  ScaffoldMessenger.of(context)
-                                    ..removeCurrentSnackBar()
-                                    ..showSnackBar(SnackBar(
-                                        showCloseIcon: true,
-                                        dismissDirection: DismissDirection.up,
-                                        closeIconColor: Colors.white,
-                                        duration: const Duration(seconds: 2),
-                                        behavior: SnackBarBehavior.floating,
-                                        elevation: 0,
-                                        margin: EdgeInsets.only(
-                                            top: 50,
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                1.9,
-                                            right: 10),
-                                        backgroundColor: ColorManager
-                                            .kPrimaryColor
-                                            .withOpacity(0.6),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        content: Text(
-                                          "${addToOrderModel.message}", //  'Order Placed Successfully',
-                                          style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.12,
-                                              Colors.white),
-                                        )));
+                                  showScaffold(
+                                    context: context,
+                                    message:
+                                        "${addToOrderModel.message}", //  'Order Placed Successfully',
+                                  );
                                 } else {
-                                  ScaffoldMessenger.of(context)
-                                    ..removeCurrentSnackBar()
-                                    ..showSnackBar(SnackBar(
-                                        showCloseIcon: true,
-                                        dismissDirection: DismissDirection.up,
-                                        closeIconColor: Colors.white,
-                                        duration: const Duration(seconds: 2),
-                                        behavior: SnackBarBehavior.floating,
-                                        elevation: 0,
-                                        margin: EdgeInsets.only(
-                                            top: 50,
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                1.9,
-                                            right: 10),
-                                        backgroundColor: ColorManager
-                                            .kPrimaryColor
-                                            .withOpacity(0.6),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        content: Text(
-                                          "${addToOrderModel.message}", //   'Error Occured! Try Again ',
-                                          style: buildCustomStyle(
-                                              FontWeightManager.medium,
-                                              FontSize.s12,
-                                              0.12,
-                                              Colors.white),
-                                        )));
+                                  showScaffoldError(
+                                    context: context,
+                                    message:
+                                        "${addToOrderModel.message}", //   'Error Occured! Try Again ',
+                                  );
                                 }
                               });
                             } catch (error) {

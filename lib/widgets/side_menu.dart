@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
 
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/responsive.dart';
@@ -347,28 +348,10 @@ class SideMenu extends StatelessWidget {
                   SharedPreferenceProvider().removeTokenAndCustomerId();
 
                   debugPrint(" authmodel logout token ${authModel.token}");
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                        showCloseIcon: true,
-                        dismissDirection: DismissDirection.up,
-                        closeIconColor: Colors.white,
-                        duration: const Duration(seconds: 2),
-                        behavior: SnackBarBehavior.floating,
-                        elevation: 0,
-                        margin: EdgeInsets.only(
-                            top: 50,
-                            left: MediaQuery.of(context).size.width / 1.9,
-                            right: 10),
-                        backgroundColor:
-                            ColorManager.kPrimaryColor.withOpacity(0.6),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        content: Text(
-                          '${value["message"]}',
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s12, 0.12, Colors.white),
-                        )));
+                  showScaffold(
+                    context: context,
+                    message: '${value["message"]}',
+                  );
                   Navigator.pop(context);
                   await Future.delayed(const Duration(seconds: 0)).then(
                       (value) => Navigator.pushReplacement(
@@ -377,28 +360,10 @@ class SideMenu extends StatelessWidget {
                               builder: (context) => const SignInScreen())));
                 } else {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                        showCloseIcon: true,
-                        dismissDirection: DismissDirection.up,
-                        closeIconColor: Colors.white,
-                        duration: const Duration(seconds: 2),
-                        behavior: SnackBarBehavior.floating,
-                        elevation: 0,
-                        margin: EdgeInsets.only(
-                            top: 50,
-                            left: MediaQuery.of(context).size.width / 1.9,
-                            right: 10),
-                        backgroundColor:
-                            ColorManager.kPrimaryColor.withOpacity(0.6),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        content: Text(
-                          '${value["message"]}',
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s12, 0.12, Colors.white),
-                        )));
+                  showScaffoldError(
+                    context: context,
+                    message: '${value["message"]}',
+                  );
                 }
               });
               debugPrint(" 'Logout',${sideBarController.index.value}");

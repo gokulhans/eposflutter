@@ -16,7 +16,7 @@ class ColorManager {
 
   static const Color kRedBox = Color(0XFFF33030);
   static const Color kGreenBox = Color(0XFF54CA93);
-  static const Color kBoxColorF7 = Color(0XFFF7F7F7);
+  static const Color kBoxColorF7 = Color.fromARGB(255, 162, 142, 142);
   static const Color textColor = Color(0XCC000000);
   static const Color shadowColor = Color(0XFFE7ECEF);
   static const Color boxShadowColor = Color.fromRGBO(0, 0, 0, 0.16);
@@ -25,6 +25,8 @@ class ColorManager {
   static const Color containerShadowColorForList = Color(0x80F8F8F8);
   static const Color grey = Colors.grey;
   static const Color textColor1 = Color(0xFFD4D4D4);
+  static const Color kSuccessColor = Colors.green;
+  static const Color kErrorColor = Colors.red;
 
   static const Color tableBGColor = Color(0xFFF9F9F9);
 

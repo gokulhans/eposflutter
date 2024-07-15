@@ -172,7 +172,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
     GetStoreModelData? storeSelected;
     List<Category>? categoryList = categoryProvider.category;
     List<GetProduct>? productList =
-        gridSelectionProvider.getSelectedProductListAPI;
+        gridSelectionProvider.getCategoryProductList;
     Map<String, String>? unitList = purchaseProvider.getUnitList;
     return SafeArea(
       child: Container(
@@ -233,8 +233,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                               BuildTextTile(
                                                 isStarRed: true,
                                                 isTextField: true,
-                                                title:
-                                                    "Select Parent Category ",
+                                                title: "Select Category ",
                                                 textStyle: buildCustomStyle(
                                                   FontWeightManager.regular,
                                                   FontSize.s14,
@@ -291,16 +290,46 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                         .toList(),
                                                     value:
                                                         selectedValueCategory,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        selectedValueCategory =
-                                                            value;
-                                                        if (value != null) {
+                                                    onChanged: (Category?
+                                                        selectedCategory) async {
+                                                      if (selectedCategory !=
+                                                          null) {
+                                                        categoryProvider
+                                                            .selectCategory(
+                                                          categoryList.indexOf(
+                                                              selectedCategory),
+                                                          selectedCategory
+                                                                  .categoryName ??
+                                                              '',
+                                                          selectedCategory
+                                                                  .productsCount ??
+                                                              0,
+                                                        );
+
+                                                        gridSelectionProvider
+                                                            .updateCategory(
+                                                                selectedCategory
+                                                                        .categoryId ??
+                                                                    0);
+
+                                                        setState(() {
+                                                          productList =
+                                                              gridSelectionProvider
+                                                                  .selectedProductsUpOnCategory;
+                                                        });
+
+                                                        await categoryProvider
+                                                            .setParentCategory(
+                                                                "${selectedCategory.categoryId ?? 0}");
+
+                                                        setState(() {
+                                                          selectedValueCategory =
+                                                              selectedCategory;
                                                           categoryIDController
                                                                   .text =
-                                                              "${value.categoryId ?? 1}";
-                                                        }
-                                                      });
+                                                              "${selectedCategory.categoryId ?? 1}";
+                                                        });
+                                                      }
                                                     },
                                                     buttonStyleData:
                                                         ButtonStyleData(

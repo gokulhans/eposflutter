@@ -157,6 +157,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_title.dart';
 import 'package:pos_machine/models/category_list.dart';
 import 'package:pos_machine/models/get_product.dart';
@@ -508,34 +509,8 @@ class _EditProductPropertiesScreenState
                             debugPrint(apiBodyData.toString());
                             int? productId = getProduct!.productId;
                             if (productId == null) {
-                              ScaffoldMessenger.of(context)
-                                ..removeCurrentSnackBar()
-                                ..showSnackBar(SnackBar(
-                                    showCloseIcon: true,
-                                    dismissDirection: DismissDirection.up,
-                                    closeIconColor: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    behavior: SnackBarBehavior.floating,
-                                    elevation: 0,
-                                    margin: EdgeInsets.only(
-                                        top: 50,
-                                        left:
-                                            MediaQuery.of(context).size.width /
-                                                1.9,
-                                        right: 10),
-                                    backgroundColor: ColorManager.kPrimaryColor
-                                        .withOpacity(0.6),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    content: Text(
-                                      'Failed',
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s12,
-                                          0.12,
-                                          Colors.white),
-                                    )));
+                              showScaffoldError(
+                                  context: context, message: 'Failed');
                             } else {
                               String? accessToken =
                                   Provider.of<AuthModel>(context, listen: false)
@@ -559,39 +534,9 @@ class _EditProductPropertiesScreenState
                                   if (value["status"] == "success") {
                                     widget.navigateToScreen(3);
                                   } else {
-                                    ScaffoldMessenger.of(context)
-                                      ..removeCurrentSnackBar()
-                                      ..showSnackBar(
-                                        SnackBar(
-                                          showCloseIcon: true,
-                                          dismissDirection: DismissDirection.up,
-                                          closeIconColor: Colors.white,
-                                          duration: const Duration(seconds: 2),
-                                          behavior: SnackBarBehavior.floating,
-                                          elevation: 0,
-                                          margin: EdgeInsets.only(
-                                              top: 50,
-                                              left: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.9,
-                                              right: 10),
-                                          backgroundColor: ColorManager
-                                              .kPrimaryColor
-                                              .withOpacity(0.6),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          content: Text(
-                                            'Failed to update properties',
-                                            style: buildCustomStyle(
-                                                FontWeightManager.medium,
-                                                FontSize.s12,
-                                                0.12,
-                                                Colors.white),
-                                          ),
-                                        ),
-                                      );
+                                    showScaffoldError(
+                                        context: context,
+                                        message: 'Failed to update properties');
                                   }
                                 },
                               );

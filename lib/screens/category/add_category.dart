@@ -13,14 +13,22 @@ import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
 
-class AddCategoryScreen extends StatelessWidget {
+class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});
+
+  @override
+  _AddCategoryScreenState createState() => _AddCategoryScreenState();
+}
+
+class _AddCategoryScreenState extends State<AddCategoryScreen> {
+  int _currentPage = 1;
+  int _itemsPerPage = 10;
 
   @override
   Widget build(BuildContext context) {
     SideBarController sideBarController = Get.put(SideBarController());
     final categoryProvider = Provider.of<CategoryProvider>(context);
-    final searchTextController = TextEditingController();
+    // final searchTextController = TextEditingController();
 
     return SafeArea(
         child: Container(
@@ -38,7 +46,7 @@ class AddCategoryScreen extends StatelessWidget {
           color: Colors.white),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        child: ListView(
+        child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,10 +61,9 @@ class AddCategoryScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                       height: 45,
-                      width: 180, //size.width * 0.5,
+                      width: 180,
                       child: TextField(
                         cursorWidth: 1,
-                        //  controller: searchTextController,
                         cursorColor: ColorManager.kPrimaryColor,
                         onChanged: (query) {
                           debugPrint(query);
@@ -65,16 +72,15 @@ class AddCategoryScreen extends StatelessWidget {
 
                           categoryProvider.updateCategoryPageFilteredCategories(
                               filteredCategories);
+                          setState(() {
+                            _currentPage = 1; // Reset to first page on search
+                          });
                         },
                         decoration: decoration.copyWith(
                           prefixIcon: WebsafeSvg.asset(
                             ImageAssets.categorySearchIcon,
                             fit: BoxFit.none,
                           ),
-                          // suffixIcon: WebsafeSvg.asset(
-                          //   ImageAssets.barcodeIcon,
-                          //   fit: BoxFit.none,
-                          // ),
                           labelStyle: buildCustomStyle(
                               FontWeightManager.regular,
                               FontSize.s10,
@@ -86,9 +92,7 @@ class AddCategoryScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     CustomRoundButton(
                       title: "Create New Category",
                       fct: () {
@@ -102,254 +106,194 @@ class AddCategoryScreen extends StatelessWidget {
                 ),
               ],
             ),
-            BuildBoxShadowContainer(
-                // height: size.height, //120,
-                margin: const EdgeInsets.only(top: 20, bottom: 0),
-                circleRadius: 7,
-                offsetValue: const Offset(1, 1),
-                child: Consumer<CategoryProvider>(
-                  builder: (context, categoryProvider, child) {
-                    final List<Category>? categorys =
-                        categoryProvider.filteredcategory;
+            const SizedBox(height: 20),
+            Expanded(
+              child: BuildBoxShadowContainer(
+                  circleRadius: 7,
+                  offsetValue: const Offset(1, 1),
+                  child: Consumer<CategoryProvider>(
+                    builder: (context, categoryProvider, child) {
+                      final List<Category> categories =
+                          categoryProvider.filteredcategory ?? [];
+                      final int totalPages =
+                          (categories.length / _itemsPerPage).ceil();
+                      final List<Category> paginatedCategories = categories
+                          .skip((_currentPage - 1) * _itemsPerPage)
+                          .take(_itemsPerPage)
+                          .toList();
 
-                    debugPrint("filteredcategoryList ${categorys!.length}");
-
-                    // List<Category>? categorys = categoryProvider.category;
-
-                    return Table(
-                      columnWidths: const {
-                        0: FractionColumnWidth(0.01),
-                        1: FractionColumnWidth(0.09),
-                        2: FractionColumnWidth(0.09),
-                        3: FractionColumnWidth(0.01),
-                        // 4: FractionColumnWidth(0.06),
-                        // 5: FractionColumnWidth(0.06),
-                        // 6: FractionColumnWidth(0.05),
-                      },
-                      border: TableBorder.symmetric(
-                          outside: const BorderSide(
-                              color: ColorManager.tableBOrderColor, width: 0.3),
-                          inside: const BorderSide(
-                              color: ColorManager.tableBOrderColor,
-                              width: 0.8)),
-                      defaultVerticalAlignment:
-                          TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(
-                            decoration: const BoxDecoration(
-                                color: ColorManager.tableBGColor),
-                            children: [
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                        child: Text(
-                                      "No",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s12,
-                                        0.18,
-                                        ColorManager.kPrimaryColor,
-                                      ),
-                                    )),
-                                  )),
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                        child: Text(
-                                      "Category Name",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s12,
-                                        0.18,
-                                        ColorManager.kPrimaryColor,
-                                      ),
-                                    )),
-                                  )),
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                        child: Text(
-                                      "Slug",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s12,
-                                        0.18,
-                                        ColorManager.kPrimaryColor,
-                                      ),
-                                    )),
-                                  )),
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                        child: Text(
-                                      "Action",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s12,
-                                        0.18,
-                                        ColorManager.kPrimaryColor,
-                                      ),
-                                    )),
-                                  )),
-                            ]),
-
-                        // Map your order data to table rows here
-                        ...(categorys).asMap().entries.map((entry) {
-                          int index = entry.key;
-                          Category category = entry.value;
-                          return TableRow(
-                            children: [
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                      child: Text(
-                                        "${index + 1}",
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s9,
-                                          0.13,
-                                          Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  )),
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                      child: Text(
-                                        "${category.categoryName}",
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s9,
-                                          0.13,
-                                          Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  )),
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                      child: Text(
-                                        "${category.categorySlug}",
-                                        style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s9,
-                                          0.13,
-                                          Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  )),
-                              TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                      child: Row(
-                                        children: [
-                                          BuildBoxShadowContainer(
-                                              margin: const EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              circleRadius: 5,
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.visibility,
-                                                  size: 18,
-                                                  color: ColorManager
-                                                      .kPrimaryColor
-                                                      .withOpacity(0.9),
-                                                ),
-                                                onPressed: () async {
-                                                  await categoryProvider
-                                                      .viewCategoryApi(
-                                                          categoryId: category
-                                                                  .categoryId ??
-                                                              1);
-                                                  sideBarController
-                                                      .index.value = 27;
-                                                },
-                                              )),
-                                          BuildBoxShadowContainer(
-                                              margin: const EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              color: ColorManager.kPrimaryColor
-                                                  .withOpacity(0.9),
-                                              circleRadius: 5,
-                                              child: IconButton(
-                                                icon: const Icon(
-                                                  Icons.edit,
-                                                  size: 18,
-                                                  color: Colors.white,
-                                                ),
-                                                onPressed: () async {
-                                                  await categoryProvider
-                                                      .setEditCategoryId(
-                                                          categoryId: category
-                                                                  .categoryId ??
-                                                              1);
-                                                  await categoryProvider
-                                                      .viewCategoryApi(
-                                                          categoryId: category
-                                                                  .categoryId ??
-                                                              1);
-                                                  sideBarController
-                                                      .index.value = 34;
-                                                },
-                                              )),
-                                          // BuildBoxShadowContainer(
-                                          //     margin: const EdgeInsets.only(
-                                          //         left: 5, right: 5),
-                                          //     circleRadius: 5,
-                                          //     color:
-                                          //         Colors.red.withOpacity(0.9),
-                                          //     child: IconButton(
-                                          //       icon: const Icon(
-                                          //         Icons.delete,
-                                          //         size: 18,
-                                          //         color: Colors.white,
-                                          //       ),
-                                          //       onPressed: () {},
-                                          //     )),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
-                            ],
-                          );
-                        }).toList(),
-                      ],
-                    );
-                  },
-                ))
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Table(
+                                border: TableBorder.symmetric(
+                                    outside: const BorderSide(
+                                        color: ColorManager.tableBOrderColor,
+                                        width: 0.3),
+                                    inside: const BorderSide(
+                                        color: ColorManager.tableBOrderColor,
+                                        width: 0.8)),
+                                defaultVerticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                columnWidths: const {
+                                  0: FlexColumnWidth(1),
+                                  1: FlexColumnWidth(3),
+                                  2: FlexColumnWidth(3),
+                                  3: FlexColumnWidth(2),
+                                },
+                                children: [
+                                  _buildTableHeader(),
+                                  ...paginatedCategories
+                                      .asMap()
+                                      .entries
+                                      .map((entry) {
+                                    int index = entry.key +
+                                        ((_currentPage - 1) * _itemsPerPage);
+                                    Category category = entry.value;
+                                    return _buildTableRow(index, category,
+                                        sideBarController, categoryProvider);
+                                  }).toList(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          _buildPaginationControls(totalPages),
+                        ],
+                      );
+                    },
+                  )),
+            ),
           ],
         ),
       ),
     ));
   }
+
+  TableRow _buildTableHeader() {
+    return TableRow(
+      decoration: const BoxDecoration(color: ColorManager.tableBGColor),
+      children: ["No", "Category Name", "Slug", "Action"]
+          .map((title) => TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: buildCustomStyle(
+                        FontWeightManager.medium,
+                        FontSize.s12,
+                        0.18,
+                        ColorManager.kPrimaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ))
+          .toList(),
+    );
+  }
+
+  TableRow _buildTableRow(int index, Category category,
+      SideBarController sideBarController, CategoryProvider categoryProvider) {
+    return TableRow(
+      children: [
+        _buildTableCell("${index + 1}"),
+        _buildTableCell(category.categoryName ?? ""),
+        _buildTableCell(category.categorySlug ?? ""),
+        TableCell(
+          verticalAlignment: TableCellVerticalAlignment.middle,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildActionButton(
+                  Icons.visibility,
+                  ColorManager.kPrimaryColor.withOpacity(0.9),
+                  Colors.white,
+                  () async {
+                    await categoryProvider.viewCategoryApi(
+                        categoryId: category.categoryId ?? 1);
+                    sideBarController.index.value = 27;
+                  },
+                ),
+                _buildActionButton(
+                  Icons.edit,
+                  ColorManager.kPrimaryColor.withOpacity(0.9),
+                  Colors.white,
+                  () async {
+                    await categoryProvider.setEditCategoryId(
+                        categoryId: category.categoryId ?? 1);
+                    await categoryProvider.viewCategoryApi(
+                        categoryId: category.categoryId ?? 1);
+                    sideBarController.index.value = 34;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTableCell(String text) {
+    return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.middle,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Center(
+          child: Text(
+            text,
+            style: buildCustomStyle(
+              FontWeightManager.medium,
+              FontSize.s9,
+              0.13,
+              Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+      IconData icon, Color bgColor, Color iconColor, VoidCallback onPressed) {
+    return BuildBoxShadowContainer(
+      margin: const EdgeInsets.only(left: 5, right: 5),
+      color: bgColor,
+      circleRadius: 5,
+      child: IconButton(
+        icon: Icon(
+          icon,
+          size: 18,
+          color: iconColor,
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
+  Widget _buildPaginationControls(int totalPages) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.chevron_left),
+          onPressed:
+              _currentPage > 1 ? () => setState(() => _currentPage--) : null,
+        ),
+        Text('Page $_currentPage of $totalPages'),
+        IconButton(
+          icon: const Icon(Icons.chevron_right),
+          onPressed: _currentPage < totalPages
+              ? () => setState(() => _currentPage++)
+              : null,
+        ),
+      ],
+    );
+  }
 }
-// ...categorys!.asMap().entries.map((entry) {
-//   final int index = entry.key;
-//   final Category category = entry.value;

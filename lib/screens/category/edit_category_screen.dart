@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/models/product_list_file.dart';
 import 'package:pos_machine/providers/grid_provider.dart';
@@ -173,6 +174,15 @@ class _EditCategoryPageScreenState extends State<EditCategoryPageScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CustomBackButton(
+                    onPressed: () {
+                      sideBarController.index.value = 12;
+                    },
+                    text: 'All Categories',
+                    // Optionally, you can customize the color and size
+                    // color: ColorManager.customColor,
+                    // size: 20.0,
+                  ),
                   Text(
                     'Edit Category',
                     style: buildCustomStyle(FontWeightManager.semiBold,

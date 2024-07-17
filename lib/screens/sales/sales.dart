@@ -287,15 +287,15 @@ class SalesScreen extends StatelessWidget {
                         List<ListOrderModelData> orders = orderProvider.orders;
                         return Table(
                           columnWidths: const {
-                            0: FractionColumnWidth(0.01),
+                            0: FractionColumnWidth(0.005),
                             1: FractionColumnWidth(0.03),
                             2: FractionColumnWidth(0.03),
-                            3: FractionColumnWidth(0.01),
-                            4: FractionColumnWidth(0.01),
-                            5: FractionColumnWidth(0.06),
+                            3: FractionColumnWidth(0.005),
+                            4: FractionColumnWidth(0.005),
+                            5: FractionColumnWidth(0.02),
                             6: FractionColumnWidth(0.03),
                             7: FractionColumnWidth(0.03),
-                            8: FractionColumnWidth(0.02),
+                            8: FractionColumnWidth(0.08),
                           },
                           border: TableBorder.symmetric(
                               outside: const BorderSide(
@@ -506,7 +506,8 @@ class SalesScreen extends StatelessWidget {
                                                 FontWeightManager.medium,
                                                 FontSize.s9,
                                                 0.13,
-                                                Colors.black,
+                                                ColorManager.kPrimaryColor
+                                                    .withOpacity(0.9),
                                               ),
                                             ),
                                           ),
@@ -647,6 +648,21 @@ class SalesScreen extends StatelessWidget {
                                                       sideBarController
                                                           .index.value = 11;
                                                     },
+                                                  )),
+                                              BuildBoxShadowContainer(
+                                                  margin: const EdgeInsets.only(
+                                                      left: 5, right: 5),
+                                                  color: ColorManager
+                                                      .kPrimaryColor
+                                                      .withOpacity(0.9),
+                                                  circleRadius: 5,
+                                                  child: IconButton(
+                                                    icon: const Icon(
+                                                      Icons.edit,
+                                                      size: 18,
+                                                      color: Colors.white,
+                                                    ),
+                                                    onPressed: () async {},
                                                   )),
                                             ],
                                           ),

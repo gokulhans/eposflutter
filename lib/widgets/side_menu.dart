@@ -210,6 +210,7 @@ class SideMenu extends StatelessWidget {
                     sideBarController.index.value == 29 ||
                     sideBarController.index.value == 20 ||
                     sideBarController.index.value == 26 ||
+                    sideBarController.index.value == 37 ||
                     sideBarController.index.value == 36),
           ),
           // Obx(

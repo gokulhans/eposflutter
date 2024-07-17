@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_round_button.dart';
 import 'package:pos_machine/models/order_details.dart';
 
@@ -117,19 +116,33 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'Order Details - # $orderNumber',
-                                style: ResponsiveWidget.isMobile(context)
-                                    ? buildCustomStyle(
-                                        FontWeightManager.semiBold,
-                                        FontSize.s12,
-                                        0.30,
-                                        ColorManager.textColor)
-                                    : buildCustomStyle(
-                                        FontWeightManager.semiBold,
-                                        FontSize.s20,
-                                        0.30,
-                                        ColorManager.textColor),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CustomBackButton(
+                                    onPressed: () {
+                                      sideBarController.index.value = 2;
+                                    },
+                                    text: 'All Orders',
+                                    // Optionally, you can customize the color and size
+                                    // color: ColorManager.customColor,
+                                    // size: 20.0,
+                                  ),
+                                  Text(
+                                    'Order Details - # $orderNumber',
+                                    style: ResponsiveWidget.isMobile(context)
+                                        ? buildCustomStyle(
+                                            FontWeightManager.semiBold,
+                                            FontSize.s12,
+                                            0.30,
+                                            ColorManager.textColor)
+                                        : buildCustomStyle(
+                                            FontWeightManager.semiBold,
+                                            FontSize.s20,
+                                            0.30,
+                                            ColorManager.textColor),
+                                  ),
+                                ],
                               ),
                               BuildBoxShadowContainer(
                                 width: 15,
@@ -153,6 +166,15 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
                       )
                     : ListView(
                         children: [
+                          CustomBackButton(
+                            onPressed: () {
+                              sideBarController.index.value = 2;
+                            },
+                            text: 'All Orders',
+                            // Optionally, you can customize the color and size
+                            // color: ColorManager.customColor,
+                            // size: 20.0,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

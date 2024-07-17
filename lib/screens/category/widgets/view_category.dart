@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_detail_row.dart';
 import 'package:pos_machine/components/build_title.dart';
 
@@ -44,6 +45,15 @@ class ViewCategoryWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: ListView(
           children: [
+            CustomBackButton(
+              onPressed: () {
+                sideBarController.index.value = 12;
+              },
+              text: 'All Categories',
+              // Optionally, you can customize the color and size
+              // color: ColorManager.customColor,
+              // size: 20.0,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

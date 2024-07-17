@@ -452,21 +452,21 @@ class _AddStockScreenState extends State<AddStockScreen> {
                                                             .index.value = 33;
                                                       },
                                                     )),
-                                                BuildBoxShadowContainer(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            left: 5, right: 5),
-                                                    circleRadius: 5,
-                                                    color: Colors.red
-                                                        .withOpacity(0.9),
-                                                    child: IconButton(
-                                                      icon: const Icon(
-                                                        Icons.delete,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                      onPressed: () {},
-                                                    )),
+                                                // BuildBoxShadowContainer(
+                                                //     margin:
+                                                //         const EdgeInsets.only(
+                                                //             left: 5, right: 5),
+                                                //     circleRadius: 5,
+                                                //     color: Colors.red
+                                                //         .withOpacity(0.9),
+                                                //     child: IconButton(
+                                                //       icon: const Icon(
+                                                //         Icons.delete,
+                                                //         size: 18,
+                                                //         color: Colors.white,
+                                                //       ),
+                                                //       onPressed: () {},
+                                                //     )),
                                               ],
                                             ),
                                           ),

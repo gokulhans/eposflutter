@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:pos_machine/providers/auth_model.dart';
+import 'package:pos_machine/providers/authentication_providers.dart';
+import 'package:pos_machine/providers/shared_preferences.dart';
+import 'package:pos_machine/screens/login/login.dart';
 import 'package:pos_machine/screens/profile/widgets/change_password_widget.dart';
 import 'package:pos_machine/screens/profile/widgets/personal_information_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -10,7 +16,7 @@ import '../../resources/asset_manager.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
- 
+
 class OpenProfileScreen extends StatefulWidget {
   const OpenProfileScreen({super.key});
 
@@ -22,6 +28,7 @@ class _OpenProfileScreenState extends State<OpenProfileScreen> {
   bool isChanged = false;
   @override
   Widget build(BuildContext context) {
+    final authModel = Provider.of<AuthModel>(context);
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: SingleChildScrollView(
@@ -46,7 +53,7 @@ class _OpenProfileScreenState extends State<OpenProfileScreen> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                'Profile',
+                'User Profile',
                 style: buildCustomStyle(FontWeightManager.semiBold,
                     FontSize.s20, 0.30, ColorManager.textColor),
               ),
@@ -189,6 +196,80 @@ class _OpenProfileScreenState extends State<OpenProfileScreen> {
                                   color: isChanged
                                       ? Colors.white
                                       : ColorManager.kListTiletextColor,
+                                ),
+                              )),
+                          BuildBoxShadowContainer(
+                              circleRadius: 10,
+                              margin: const EdgeInsets.only(top: 0, bottom: 15),
+                              color: ColorManager.kListTileColor,
+                              offsetValue: const Offset(1, 1),
+                              blurRadius: 6,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  String token = authModel.token ?? '';
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return const Center(
+                                          child: CircularProgressIndicator
+                                              .adaptive(),
+                                        );
+                                      });
+                                  await AuthenticationProvider()
+                                      .logout(token, context)
+                                      .then((value) async {
+                                    if (value["status"] == "success") {
+                                      authModel.logout();
+                                      SharedPreferenceProvider()
+                                          .removeTokenAndCustomerId();
+
+                                      debugPrint(
+                                          " authmodel logout token ${authModel.token}");
+                                      showScaffold(
+                                        context: context,
+                                        message: '${value["message"]}',
+                                      );
+                                      Navigator.pop(context);
+                                      await Future.delayed(
+                                              const Duration(seconds: 0))
+                                          .then((value) =>
+                                              Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const SignInScreen())));
+                                    } else {
+                                      Navigator.pop(context);
+                                      showScaffoldError(
+                                        context: context,
+                                        message: '${value["message"]}',
+                                      );
+                                    }
+                                  });
+                                },
+                                child: ListTile(
+                                  hoverColor: ColorManager.blackWithOpacity50,
+                                  horizontalTitleGap: 0,
+                                  minVerticalPadding: 0,
+                                  minLeadingWidth: 30,
+                                  leading: WebsafeSvg.asset(
+                                    ImageAssets.deleteIcon,
+                                    color: Colors.black,
+                                    fit: BoxFit.none,
+                                  ),
+                                  title: Text(
+                                    'Logout',
+                                    style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s12,
+                                        0.12,
+                                        Colors.black),
+                                  ),
+                                  trailing: const Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: ColorManager.kListTiletextColor,
+                                  ),
                                 ),
                               )),
                           BuildBoxShadowContainer(

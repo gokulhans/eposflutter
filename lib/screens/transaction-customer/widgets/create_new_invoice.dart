@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
 import 'package:pos_machine/providers/invoice_provider.dart';
 import 'package:provider/provider.dart';
@@ -99,6 +100,15 @@ class CreateNewInvoiceScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CustomBackButton(
+                    onPressed: () {
+                      sideBarController.index.value = 21;
+                    },
+                    text: 'Invoice List',
+                    // Optionally, you can customize the color and size
+                    // color: ColorManager.customColor,
+                    // size: 20.0,
+                  ),
                   Text(
                     'Create New Invoice',
                     style: buildCustomStyle(FontWeightManager.semiBold,

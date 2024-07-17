@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 
 import '../../controllers/sidebar_controller.dart';
 
@@ -70,6 +71,15 @@ class _TabBarForEditProductState extends State<TabBarForEditProduct>
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    CustomBackButton(
+                      onPressed: () {
+                        sideBarController.index.value = 14;
+                      },
+                      text: 'All Products',
+                      // Optionally, you can customize the color and size
+                      // color: ColorManager.customColor,
+                      // size: 20.0,
+                    ),
                     Text(
                       'Edit Product',
                       style: buildCustomStyle(FontWeightManager.semiBold,

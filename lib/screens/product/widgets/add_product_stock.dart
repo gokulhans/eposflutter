@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
 
@@ -145,6 +146,15 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CustomBackButton(
+                    onPressed: () {
+                      sideBarController.index.value = 15;
+                    },
+                    text: 'All Stocks',
+                    // Optionally, you can customize the color and size
+                    // color: ColorManager.customColor,
+                    // size: 20.0,
+                  ),
                   Text(
                     'Product Stock',
                     style: buildCustomStyle(FontWeightManager.semiBold,

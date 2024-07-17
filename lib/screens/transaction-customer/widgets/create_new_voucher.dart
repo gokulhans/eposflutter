@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
 import 'package:provider/provider.dart';
 
@@ -97,6 +98,15 @@ class CreateNewVoucherScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CustomBackButton(
+                    onPressed: () {
+                      sideBarController.index.value = 22;
+                    },
+                    text: 'Voucher List',
+                    // Optionally, you can customize the color and size
+                    // color: ColorManager.customColor,
+                    // size: 20.0,
+                  ),
                   Text(
                     'Create New Voucher',
                     style: buildCustomStyle(FontWeightManager.semiBold,

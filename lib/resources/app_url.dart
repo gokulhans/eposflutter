@@ -10,7 +10,7 @@ class APPUrl {
       '$baseURL/api/product/fetch-prop-values';
 
   static const String getProcductUrl = '$baseURL/api/list-products';
-  static const String addToCartUrl = '$baseURL/api/add-to-cart';
+  static const String addToCartUrl = '$baseURL/api/cart/add-to-cart';
   static const String removeFromCartUrl = '$baseURL/api/remove-from-cart';
   static const String listCartUrl = '$baseURL/api/list-carts';
   static const String addToOrderUrl = '$baseURL/api/order/add-to-order';

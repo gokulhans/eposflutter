@@ -4,6 +4,7 @@ import 'package:pos_machine/screens/category/add_category_properties.dart';
 import 'package:pos_machine/screens/category/add_category_screen.dart';
 import 'package:pos_machine/screens/category/edit_category_screen.dart';
 import 'package:pos_machine/screens/category/widgets/view_category.dart';
+import 'package:pos_machine/screens/customer_profile/open_customer_profile.dart';
 import 'package:pos_machine/screens/customers/add_customers.dart';
 import 'package:pos_machine/screens/cart/cart_list.dart';
 import 'package:pos_machine/screens/customers/customers.dart';
@@ -86,5 +87,6 @@ class SideBarController extends GetxController {
     TabBarForEditProduct(), //35
     ViewPurchaseWidget(), //36
     AddVoucherDetailsWidget(), //37
+    OpenCustomerProfileScreen(), //38
   ];
 }

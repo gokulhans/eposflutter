@@ -25,6 +25,7 @@ class APPUrl {
   static const String dashBoardUrl = '$baseURL/api/sales/dashboard';
   static const String addCustomerUrl = '$baseURL/api/sales/add-customer';
   static const String customerListUrl = '$baseURL/api/sales/list-customer';
+  static const String userDetailsUrl = '$baseURL/api/user/get-user-details';
   static const String findCustomerByPhone = '$baseURL/api/search-user-by-phone';
 
   static const String addProductUrl =

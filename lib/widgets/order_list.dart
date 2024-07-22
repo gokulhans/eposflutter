@@ -20,6 +20,9 @@ import '../providers/auth_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/customer_provider.dart';
 import '../resources/color_manager.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class OrderList extends StatefulWidget {
   const OrderList({super.key});
@@ -251,8 +254,8 @@ class _OrderListState extends State<OrderList> {
                                   return const Iterable<
                                       CustomerListModelData>.empty();
                                 }
-                                if (mobileNumberTextController.text.length ==
-                                    10) {
+                                if (mobileNumberTextController.text.length <
+                                    5) {
                                   debugPrint("called");
                                   String? accessToken = Provider.of<AuthModel>(
                                           context,
@@ -1247,20 +1250,28 @@ class _OrderListState extends State<OrderList> {
                         ),
                       ),
                       Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            WebsafeSvg.asset(
-                              ImageAssets.printIcon,
-                              color: Colors.white,
-                              fit: BoxFit.none,
-                            ),
-                            Text(
-                              'Print',
-                              style: buildCustomStyle(FontWeightManager.medium,
-                                  FontSize.s10, 0.16, Colors.white),
-                            ),
-                          ],
+                        child: GestureDetector(
+                          onTap: () {
+                            print("Print");
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              WebsafeSvg.asset(
+                                ImageAssets.printIcon,
+                                color: Colors.white,
+                                fit: BoxFit.none,
+                              ),
+                              Text(
+                                'Print',
+                                style: buildCustomStyle(
+                                    FontWeightManager.medium,
+                                    FontSize.s10,
+                                    0.16,
+                                    Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ]),

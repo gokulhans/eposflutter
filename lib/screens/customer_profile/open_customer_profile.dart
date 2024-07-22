@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
+import 'package:pos_machine/controllers/sidebar_controller.dart';
+import 'package:pos_machine/models/customer_list.dart';
 import 'package:pos_machine/providers/auth_model.dart';
-import 'package:pos_machine/providers/authentication_providers.dart';
-import 'package:pos_machine/screens/customer_profile/widgets/customer_information_widget.dart';
+import 'package:pos_machine/providers/customer_provider.dart';
+import 'package:pos_machine/screens/customer_profile/widgets/customer_information_edit_widget.dart';
+import 'package:pos_machine/screens/customer_profile/widgets/customer_information_view_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 import '../../components/build_container_box.dart';
@@ -21,11 +25,17 @@ class OpenCustomerProfileScreen extends StatefulWidget {
 }
 
 class _OpenCustomerProfileScreenState extends State<OpenCustomerProfileScreen> {
+// Use selectedCustomer to display the customer's details
   bool isChanged = false;
   @override
   Widget build(BuildContext context) {
+    CustomerProvider customerProvider = Provider.of<CustomerProvider>(context);
+    CustomerListModelData? selectedCustomer =
+        customerProvider.getSelectedCustomer;
     final authModel = Provider.of<AuthModel>(context);
     Size size = MediaQuery.of(context).size;
+    SideBarController sideBarController = Get.put(SideBarController());
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Container(
@@ -48,6 +58,12 @@ class _OpenCustomerProfileScreenState extends State<OpenCustomerProfileScreen> {
             padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              CustomBackButton(
+                onPressed: () {
+                  sideBarController.index.value = 5;
+                },
+                text: 'All Customers',
+              ),
               Text(
                 'Customer Profile',
                 style: buildCustomStyle(FontWeightManager.semiBold,
@@ -83,26 +99,33 @@ class _OpenCustomerProfileScreenState extends State<OpenCustomerProfileScreen> {
                           )),
                           const SizedBox(height: 10),
                           Center(
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: 'John Doe\n',
-                                style: buildCustomStyle(
-                                    FontWeightManager.semiBold,
-                                    FontSize.s24,
-                                    0.35,
-                                    ColorManager.textColor),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: 'Customer ID : 656564564',
+                            child: Column(
+                              children: [
+                                RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: selectedCustomer!.name ??
+                                        'Customer Name',
+                                    style: buildCustomStyle(
+                                        FontWeightManager.semiBold,
+                                        FontSize.s24,
+                                        0.35,
+                                        ColorManager.textColor),
+                                  ),
+                                ),
+                                RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text:
+                                        'Customer ID : ${selectedCustomer.id}',
                                     style: buildCustomStyle(
                                         FontWeightManager.medium,
                                         FontSize.s13,
                                         0.20,
                                         ColorManager.blackWithOpacity50),
                                   ),
-                                ],
-                              ),
+                                )
+                              ],
                             ),
                           ),
                           const SizedBox(height: 60),
@@ -132,7 +155,7 @@ class _OpenCustomerProfileScreenState extends State<OpenCustomerProfileScreen> {
                                   fit: BoxFit.none,
                                 ),
                                 title: Text(
-                                  'Personal Information',
+                                  'Customer Information',
                                   style: !isChanged
                                       ? buildCustomStyle(
                                           FontWeightManager.medium,
@@ -152,48 +175,48 @@ class _OpenCustomerProfileScreenState extends State<OpenCustomerProfileScreen> {
                                       : ColorManager.kListTiletextColor,
                                 ),
                               )),
-                          // BuildBoxShadowContainer(
-                          //     margin: const EdgeInsets.only(top: 0, bottom: 15),
-                          //     circleRadius: 10,
-                          //     color: isChanged
-                          //         ? ColorManager.kPrimaryColor
-                          //         : ColorManager.kListTileColor,
-                          //     offsetValue: const Offset(1, 1),
-                          //     blurRadius: 6,
-                          //     child: ListTile(
-                          //       onTap: () {
-                          //         setState(() {
-                          //           isChanged = !isChanged;
-                          //         });
-                          //       },
-                          //       horizontalTitleGap: 0,
-                          //       minVerticalPadding: 4,
-                          //       minLeadingWidth: 30,
-                          //       leading: WebsafeSvg.asset(ImageAssets.lock,
-                          //           color: isChanged
-                          //               ? Colors.white
-                          //               : ColorManager.kListTiletextColor),
-                          //       title: Text(
-                          //         "Change Password",
-                          //         style: isChanged
-                          //             ? buildCustomStyle(
-                          //                 FontWeightManager.medium,
-                          //                 FontSize.s12,
-                          //                 0.12,
-                          //                 Colors.white)
-                          //             : buildCustomStyle(
-                          //                 FontWeightManager.medium,
-                          //                 FontSize.s12,
-                          //                 0.12,
-                          //                 ColorManager.kListTiletextColor),
-                          //       ),
-                          //       trailing: Icon(
-                          //         Icons.keyboard_arrow_right,
-                          //         color: isChanged
-                          //             ? Colors.white
-                          //             : ColorManager.kListTiletextColor,
-                          //       ),
-                          //     )),
+                          BuildBoxShadowContainer(
+                              margin: const EdgeInsets.only(top: 0, bottom: 15),
+                              circleRadius: 10,
+                              color: isChanged
+                                  ? ColorManager.kPrimaryColor
+                                  : ColorManager.kListTileColor,
+                              offsetValue: const Offset(1, 1),
+                              blurRadius: 6,
+                              child: ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    isChanged = !isChanged;
+                                  });
+                                },
+                                horizontalTitleGap: 0,
+                                minVerticalPadding: 4,
+                                minLeadingWidth: 30,
+                                leading: WebsafeSvg.asset(ImageAssets.lock,
+                                    color: isChanged
+                                        ? Colors.white
+                                        : ColorManager.kListTiletextColor),
+                                title: Text(
+                                  "Edit Details",
+                                  style: isChanged
+                                      ? buildCustomStyle(
+                                          FontWeightManager.medium,
+                                          FontSize.s12,
+                                          0.12,
+                                          Colors.white)
+                                      : buildCustomStyle(
+                                          FontWeightManager.medium,
+                                          FontSize.s12,
+                                          0.12,
+                                          ColorManager.kListTiletextColor),
+                                ),
+                                trailing: Icon(
+                                  Icons.keyboard_arrow_right,
+                                  color: isChanged
+                                      ? Colors.white
+                                      : ColorManager.kListTiletextColor,
+                                ),
+                              )),
                           // BuildBoxShadowContainer(
                           //     circleRadius: 10,
                           //     margin: const EdgeInsets.only(top: 0, bottom: 15),
@@ -226,8 +249,14 @@ class _OpenCustomerProfileScreenState extends State<OpenCustomerProfileScreen> {
                         ]),
                   ),
                   !isChanged
-                      ? CustomerInformationWidget(size: size)
-                      : CustomerInformationWidget(size: size),
+                      ? CustomerInformationViewWidget(
+                          size: size,
+                          customer: selectedCustomer,
+                        )
+                      : CustomerInformationEditWidget(
+                          size: size,
+                          customer: selectedCustomer,
+                        ),
                 ],
               ),
             ]),

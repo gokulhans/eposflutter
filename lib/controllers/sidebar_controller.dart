@@ -23,7 +23,12 @@ import 'package:pos_machine/screens/purchase/widgets/add_purchase.dart';
 import 'package:pos_machine/screens/profile/open_profile.dart';
 import 'package:pos_machine/screens/purchase/widgets/view_purchase.dart';
 import 'package:pos_machine/screens/purchase/widgets/view_voucher.dart';
+import 'package:pos_machine/screens/reports/account_book/account_book.dart';
+import 'package:pos_machine/screens/reports/product_sales_report/product_sales_report.dart';
+import 'package:pos_machine/screens/reports/sales_report/sales_report.dart';
+import 'package:pos_machine/screens/reports/supplier_sales_report/supplier_sales_report.dart';
 import 'package:pos_machine/screens/sales/sales.dart';
+import 'package:pos_machine/screens/settings/location_managment/location_managment.dart';
 import 'package:pos_machine/screens/support/support.dart';
 import 'package:pos_machine/screens/transaction-customer/invoice_list.dart';
 import 'package:pos_machine/screens/transaction-customer/receipt_voucher.dart';
@@ -88,5 +93,10 @@ class SideBarController extends GetxController {
     ViewPurchaseWidget(), //36
     AddVoucherDetailsWidget(), //37
     OpenCustomerProfileScreen(), //38
+    AccountBookScreen(), //39
+    ProductSalesReportScreen(), //40
+    SalesReportScreen(), //41
+    SupplierSalesReportScreen(), //42
+    LocationManagementScreen(), //43
   ];
 }

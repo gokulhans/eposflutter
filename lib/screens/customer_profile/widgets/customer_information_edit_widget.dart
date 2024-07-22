@@ -1,94 +1,76 @@
 import 'package:flutter/material.dart';
-
-import '../../../components/add_radio_button.dart';
+import 'package:pos_machine/components/build_round_button.dart';
+import 'package:pos_machine/models/customer_list.dart';
 import '../../../components/build_container_box.dart';
 import '../../../components/build_title.dart';
 import '../../../resources/color_manager.dart';
 import '../../../resources/font_manager.dart';
 import '../../../resources/style_manager.dart';
 
-class CustomerInformationWidget extends StatefulWidget {
+class CustomerInformationEditWidget extends StatefulWidget {
   final Size size;
-  const CustomerInformationWidget({super.key, required this.size});
+  final CustomerListModelData? customer; // Add this line
+
+  const CustomerInformationEditWidget({
+    Key? key,
+    required this.size,
+    required this.customer, // Add this line
+  }) : super(key: key);
 
   @override
-  State<CustomerInformationWidget> createState() =>
-      _CustomerInformationWidgetState();
+  State<CustomerInformationEditWidget> createState() =>
+      _CustomerInformationEditWidgetState();
 }
 
-class _CustomerInformationWidgetState extends State<CustomerInformationWidget> {
-  Gender selectedGender = Gender.Male;
-  final firstNameTextController = TextEditingController();
-  final lastNameTextController = TextEditingController();
-  final emailTextController = TextEditingController();
-  final phoneNumberController = TextEditingController();
-  final addressTextController = TextEditingController();
+class _CustomerInformationEditWidgetState
+    extends State<CustomerInformationEditWidget> {
+  // Gender selectedGender = Gender.Male;
+  late TextEditingController firstNameTextController;
+  late TextEditingController lastNameTextController;
+  late TextEditingController emailTextController;
+  late TextEditingController phoneNumberController;
+  late TextEditingController addressTextController;
 
-  Gender? gender;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with customer data if available
+    firstNameTextController = TextEditingController(
+        text: widget.customer?.name?.split(' ').first ?? '');
+    lastNameTextController = TextEditingController(
+        text: widget.customer?.name?.split(' ').last ?? '');
+    emailTextController =
+        TextEditingController(text: widget.customer?.email ?? '');
+    phoneNumberController =
+        TextEditingController(text: widget.customer?.phone ?? '');
+    addressTextController =
+        TextEditingController(text: widget.customer?.name ?? '');
+  }
+
+  @override
+  void dispose() {
+    // Dispose of controllers
+    firstNameTextController.dispose();
+    lastNameTextController.dispose();
+    emailTextController.dispose();
+    phoneNumberController.dispose();
+    addressTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    gender = selectedGender;
+    Size size = widget.size;
     return Expanded(
       child: BuildBoxShadowContainer(
           margin: const EdgeInsets.all(24),
           padding: const EdgeInsets.all(15),
-          height: size.height * 0.75, //180,
-          // width: 220,
+          height: size.height * 0.75,
           circleRadius: 7,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
-                Text(
-                  "Personal Information",
-                  style: buildCustomStyle(FontWeightManager.semiBold,
-                      FontSize.s15, 0.23, ColorManager.textColor),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                  style: TextStyle(
-                      fontWeight: FontWeightManager.regular,
-                      fontFamily: FontConstants.fontFamily,
-                      fontSize: FontSize.s10,
-                      letterSpacing: 0.13,
-                      color: ColorManager.blackWithOpacity50),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      child: AddRadioButton(
-                          title: Gender.Male.name,
-                          value: Gender.Male,
-                          selectedTypeOfAddressEnum: gender,
-                          onChanged: (value) {
-                            setState(() {
-                              gender = value;
-                              selectedGender = value!;
-                            });
-                          }),
-                    ),
-                    const SizedBox(width: 50),
-                    SizedBox(
-                      width: 120,
-                      child: AddRadioButton(
-                          title: Gender.Female.name,
-                          value: Gender.Female,
-                          selectedTypeOfAddressEnum: gender,
-                          onChanged: (value) {
-                            setState(() {
-                              gender = value;
-                              selectedGender = value!;
-                            });
-                          }),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
                 Row(
                   children: [
                     Column(
@@ -300,11 +282,12 @@ class _CustomerInformationWidgetState extends State<CustomerInformationWidget> {
                   ],
                 ),
                 const SizedBox(height: 10),
+                RoundButton(
+                    radius: 14, title: "Edit Profile", fct: () {}, size: size),
+                const SizedBox(height: 10),
               ],
             ),
           )),
     );
   }
 }
-  // Text(
-  //                 'Selected Gender: ${selectedGender.toString().split('.').last}'),

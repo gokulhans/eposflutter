@@ -10,7 +10,6 @@ import 'package:websafe_svg/websafe_svg.dart';
 import '../controllers/sidebar_controller.dart';
 import '../providers/auth_model.dart';
 import '../providers/authentication_providers.dart';
-import '../providers/cart.dart';
 
 import '../providers/sales_provider.dart';
 import '../providers/shared_preferences.dart';
@@ -274,10 +273,10 @@ class SideMenu extends StatelessWidget {
                 debugPrint(" 'Customers',${sideBarController.index.value}");
               },
               selected: sideBarController.index.value == 5 ||
-                  sideBarController.index.value == 9,
+                  sideBarController.index.value == 9 ||
+                  sideBarController.index.value == 38,
             ),
           ),
-
           Obx(
             () => DrawerListTile(
               iconPath: ImageAssets.cardIcon,
@@ -288,6 +287,49 @@ class SideMenu extends StatelessWidget {
               },
               selected: sideBarController.index.value == 6,
             ),
+          ),
+          Obx(
+            () => DrawerListTileExpandableColumn(
+                onTapTitle1: () {
+                  sideBarController.index.value = 39;
+                },
+                onTapTitle2: () {
+                  sideBarController.index.value = 40;
+                },
+                onTapTitle3: () {
+                  sideBarController.index.value = 41;
+                },
+                onTapTitle4: () {
+                  sideBarController.index.value = 42;
+                },
+                listTitle1: "Account Book",
+                listTitle2: "Product Sales Report",
+                listTitle3: "Sales Report",
+                listTitle4: "Supplier Sales Report",
+                icon: Icons.bar_chart,
+                title: 'Reports',
+                onTap: () {
+                  sideBarController.index.value = 39;
+                  debugPrint(" 'Reports',${sideBarController.index.value}");
+                },
+                selected: sideBarController.index.value == 39 ||
+                    sideBarController.index.value == 40 ||
+                    sideBarController.index.value == 41 ||
+                    sideBarController.index.value == 42),
+          ),
+          Obx(
+            () => DrawerListTileExpandableColumn(
+                onTapTitle1: () {
+                  sideBarController.index.value = 43;
+                },
+                listTitle1: "Location Management",
+                icon: Icons.settings,
+                title: 'Settings',
+                onTap: () {
+                  sideBarController.index.value = 43;
+                  debugPrint(" 'Settings',${sideBarController.index.value}");
+                },
+                selected: sideBarController.index.value == 43),
           ),
           const SizedBox(
             height: 15,

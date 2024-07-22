@@ -76,6 +76,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
   @override
   Widget build(BuildContext context) {
     SideBarController sideBarController = Get.put(SideBarController());
+    CustomerProvider customerProvider = Provider.of<CustomerProvider>(context);
 
     Size size = MediaQuery.of(context).size;
     return SafeArea(
@@ -183,62 +184,72 @@ class _CustomersScreenState extends State<CustomersScreen> {
                                       shrinkWrap: true,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: index % 2 == 0
-                                                ? ColorManager
-                                                    .containerShadowColorForList
-                                                : null,
-                                          ),
-                                          child: ListTile(
-                                            minLeadingWidth: 0,
-                                            minVerticalPadding: 0,
-                                            contentPadding: EdgeInsets.zero,
-                                            visualDensity: const VisualDensity(
-                                                horizontal: 0, vertical: 0),
-                                            leading: ClipRRect(
-                                              borderRadius: const BorderRadius
-                                                  .all(
-                                                  Radius.elliptical(21, 21)),
-                                              child: Image.asset(
-                                                ImageAssets.profileAvatarIcon,
-                                              ),
+                                        return GestureDetector(
+                                          onTap: () {
+                                            customerProvider.selectCustomer(
+                                                filteredCustomers[index]);
+                                            sideBarController.index.value = 38;
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: index % 2 == 0
+                                                  ? ColorManager
+                                                      .containerShadowColorForList
+                                                  : null,
                                             ),
-                                            title: RichText(
-                                              text: TextSpan(
-                                                text:
-                                                    '${customerList == null ? "" : filteredCustomers[index].name}\n',
+                                            child: ListTile(
+                                              minLeadingWidth: 0,
+                                              minVerticalPadding: 0,
+                                              contentPadding: EdgeInsets.zero,
+                                              visualDensity:
+                                                  const VisualDensity(
+                                                      horizontal: 0,
+                                                      vertical: 0),
+                                              leading: ClipRRect(
+                                                borderRadius: const BorderRadius
+                                                    .all(
+                                                    Radius.elliptical(21, 21)),
+                                                child: Image.asset(
+                                                  ImageAssets.profileAvatarIcon,
+                                                ),
+                                              ),
+                                              title: RichText(
+                                                text: TextSpan(
+                                                  text:
+                                                      '${customerList == null ? "" : filteredCustomers[index].name}\n',
+                                                  style: buildCustomStyle(
+                                                      FontWeightManager.medium,
+                                                      FontSize.s15,
+                                                      0.23,
+                                                      ColorManager.textColor),
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text:
+                                                          '${customerList == null ? "" : filteredCustomers[index].email}',
+                                                      style: buildCustomStyle(
+                                                          FontWeightManager
+                                                              .medium,
+                                                          FontSize.s12,
+                                                          0.18,
+                                                          Colors.black
+                                                              .withOpacity(
+                                                                  0.5)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              trailing: Text(
+                                                customerList == null
+                                                    ? ""
+                                                    : "${filteredCustomers[index].createdAt!.day}/${filteredCustomers[index].createdAt!.month}/${filteredCustomers[index].createdAt!.year}",
                                                 style: buildCustomStyle(
                                                     FontWeightManager.medium,
                                                     FontSize.s15,
-                                                    0.23,
+                                                    0.21,
                                                     ColorManager.textColor),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                    text:
-                                                        '${customerList == null ? "" : filteredCustomers[index].email}',
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s12,
-                                                        0.18,
-                                                        Colors.black
-                                                            .withOpacity(0.5)),
-                                                  ),
-                                                ],
                                               ),
-                                            ),
-                                            trailing: Text(
-                                              customerList == null
-                                                  ? ""
-                                                  : "${filteredCustomers[index].createdAt!.day}/${filteredCustomers[index].createdAt!.month}/${filteredCustomers[index].createdAt!.year}",
-                                              style: buildCustomStyle(
-                                                  FontWeightManager.medium,
-                                                  FontSize.s15,
-                                                  0.21,
-                                                  ColorManager.textColor),
                                             ),
                                           ),
                                         );

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
+import 'package:pos_machine/controllers/sidebar_controller.dart';
 import 'package:pos_machine/providers/customer_provider.dart';
 import 'package:pos_machine/providers/location_provider.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +53,7 @@ class _AddCustomersScreenState extends State<AddCustomersScreen> {
     Size size = MediaQuery.of(context).size;
     final locationProvider = Provider.of<LocationProvider>(context);
     String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
+    SideBarController sideBarController = Get.put(SideBarController());
     return SafeArea(
       child: Container(
           margin:
@@ -71,6 +75,12 @@ class _AddCustomersScreenState extends State<AddCustomersScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CustomBackButton(
+                    onPressed: () {
+                      sideBarController.index.value = 5;
+                    },
+                    text: 'All Customers',
+                  ),
                   Text(
                     'Add New Customer',
                     style: buildCustomStyle(FontWeightManager.semiBold,

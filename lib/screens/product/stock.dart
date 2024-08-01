@@ -21,25 +21,81 @@ class AddStockScreen extends StatefulWidget {
 }
 
 class _AddStockScreenState extends State<AddStockScreen> {
+  final TextEditingController stockNameController = TextEditingController();
+
   bool initLoading = false;
   @override
   void initState() {
+    loadInitData();
     super.initState();
-    loadData();
   }
 
-  loadData() async {
-    setState(() {
-      initLoading = true;
-    });
-    String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
-    GridSelectionProvider gridSelectionProvider =
-        Provider.of<GridSelectionProvider>(context, listen: false);
-    await gridSelectionProvider.listSTockAPI(accessToken: accessToken ?? '');
-    setState(() {
-      initLoading = false;
-    });
+  void loadInitData() async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+
+      GridSelectionProvider categoryProvider =
+          Provider.of<GridSelectionProvider>(context, listen: false);
+
+      await categoryProvider.listSTockAPI(
+        accessToken: accessToken ?? "",
+      );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
   }
+
+  void searchAccountBook() async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+      GridSelectionProvider stockProvider =
+          Provider.of<GridSelectionProvider>(context, listen: false);
+
+      await stockProvider.listSTockAPI(
+        accessToken: accessToken ?? "",
+        filterName: stockNameController.text,
+      );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
+  }
+
+  void resetSearch() {
+    setState(() {
+      stockNameController.clear();
+    });
+    loadInitData();
+  }
+
+  // loadData() async {
+  //   setState(() {
+  //     initLoading = true;
+  //   });
+  //   String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
+  //   GridSelectionProvider gridSelectionProvider =
+  //       Provider.of<GridSelectionProvider>(context, listen: false);
+  //   await gridSelectionProvider.listSTockAPI(accessToken: accessToken ?? '');
+  //   setState(() {
+  //     initLoading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -65,46 +121,134 @@ class _AddStockScreenState extends State<AddStockScreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
           child: ListView(
             children: [
+              Text(
+                "Product Stock List",
+                style: buildCustomStyle(FontWeightManager.semiBold,
+                    FontSize.s20, 0.30, ColorManager.textColor),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                height: 90,
+                child: Row(
+                  // scrollDirection: Axis.horizontal,
+                  // physics: const BouncingScrollPhysics(),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Stock Name ",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120, //size.width * 0.5,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // searchAmount = value;
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              controller: stockNameController,
+                              style: buildCustomStyle(FontWeightManager.medium,
+                                  FontSize.s10, 0.18, ColorManager.textColor),
+                              decoration: decoration.copyWith(
+                                  hintText: "Stock Name   ",
+                                  hintStyle: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s10,
+                                      0.18,
+                                      ColorManager.textColor),
+                                  // prefixIcon: const Icon(
+                                  //   Icons.search,
+                                  //   color: Colors.black,
+                                  //   size: 35,
+                                  // ),
+                                  prefixIconColor: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Search",
+                        fct: searchAccountBook,
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Reset",
+                        boxColor: Colors.white,
+                        textColor: ColorManager.kPrimaryColor,
+                        fct: resetSearch,
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Product Stock List  ",
-                    style: buildCustomStyle(FontWeightManager.semiBold,
-                        FontSize.s20, 0.30, ColorManager.textColor),
-                  ),
+                  // Text(
+                  //   "Product Stock List  ",
+                  //   style: buildCustomStyle(FontWeightManager.semiBold,
+                  //       FontSize.s20, 0.30, ColorManager.textColor),
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        height: 45,
-                        width: 180, //size.width * 0.5,
-                        child: TextField(
-                          cursorColor: ColorManager.kPrimaryColor,
-                          cursorHeight: 13,
-                          //  controller: searchTextController,
-                          onChanged: (value) {
-                            Provider.of<GridSelectionProvider>(context,
-                                    listen: false)
-                                .searchStocks(value);
-                          },
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s10, 0.18, ColorManager.textColor),
-                          decoration: decoration.copyWith(
-                              hintText: "Search    ",
-                              hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor),
-                              // prefixIcon: const Icon(
-                              //   Icons.search,
-                              //   color: Colors.black,
-                              //   size: 35,
-                              // ),
-                              prefixIconColor: Colors.black),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 45,
+                      //   width: 180, //size.width * 0.5,
+                      //   child: TextField(
+                      //     cursorColor: ColorManager.kPrimaryColor,
+                      //     cursorHeight: 13,
+                      //     //  controller: searchTextController,
+                      //     onChanged: (value) {
+                      //       Provider.of<GridSelectionProvider>(context,
+                      //               listen: false)
+                      //           .searchStocks(value);
+                      //     },
+                      //     style: buildCustomStyle(FontWeightManager.medium,
+                      //         FontSize.s10, 0.18, ColorManager.textColor),
+                      //     decoration: decoration.copyWith(
+                      //         hintText: "Search    ",
+                      //         hintStyle: buildCustomStyle(
+                      //             FontWeightManager.medium,
+                      //             FontSize.s10,
+                      //             0.18,
+                      //             ColorManager.textColor),
+                      //         // prefixIcon: const Icon(
+                      //         //   Icons.search,
+                      //         //   color: Colors.black,
+                      //         //   size: 35,
+                      //         // ),
+                      //         prefixIconColor: Colors.black),
+                      //   ),
+                      // ),
                       const SizedBox(
                         width: 10,
                       ),

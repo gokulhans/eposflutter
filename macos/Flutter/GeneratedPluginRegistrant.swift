@@ -5,12 +5,12 @@
 import FlutterMacOS
 import Foundation
 
-import printing
+import network_info_plus
 import shared_preferences_foundation
 import smart_auth
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  PrintingPlugin.register(with: registry.registrar(forPlugin: "PrintingPlugin"))
+  NetworkInfoPlusPlugin.register(with: registry.registrar(forPlugin: "NetworkInfoPlusPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
   SmartAuthPlugin.register(with: registry.registrar(forPlugin: "SmartAuthPlugin"))
 }

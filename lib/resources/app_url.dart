@@ -2,7 +2,8 @@ class APPUrl {
   static const String baseURL = "https://epos.enke.in";
   // static const String baseURL = "http://13.212.33.222";
 
-  static const String categoryListUrl = '$baseURL/api/list-category';
+  // static const String categoryListUrl = '$baseURL/api/list-category';
+  static const String categoryListUrl = '$baseURL/api/category-searchbar';
   static const String viewCategoryListUrl = '$baseURL/api/category-details';
   static const String addCategoryUrl = '$baseURL/api/category/add-category';
   static const String editCategoryUrl = '$baseURL/api/category/edit-category';
@@ -11,10 +12,11 @@ class APPUrl {
 
   static const String getProcductUrl = '$baseURL/api/list-products';
   static const String addToCartUrl = '$baseURL/api/cart/add-to-cart';
-  static const String removeFromCartUrl = '$baseURL/api/remove-from-cart';
-  static const String listCartUrl = '$baseURL/api/list-carts';
+  static const String removeFromCartUrl = '$baseURL/api/cart/remove-from-cart';
+  static const String listCartUrl = '$baseURL/api/cart/list-carts';
   static const String addToOrderUrl = '$baseURL/api/order/add-to-order';
   static const String getListOrder = '$baseURL/api/order/list-orders';
+  static const String searchListOrder = '$baseURL/api/order-searchbar';
   static const String getListOrderDetails = '$baseURL/api/order/order-details';
 
   static const String loginUrl = '$baseURL/api/user/signin';
@@ -23,10 +25,11 @@ class APPUrl {
 
   static const String logoutUrl = '$baseURL/api/user/signout';
   static const String dashBoardUrl = '$baseURL/api/sales/dashboard';
+  static const String dashBoardGraphUrl = '$baseURL/api/dashboard';
   static const String addCustomerUrl = '$baseURL/api/sales/add-customer';
   static const String customerListUrl = '$baseURL/api/sales/list-customer';
   static const String userDetailsUrl = '$baseURL/api/user/get-user-details';
-  static const String findCustomerByPhone = '$baseURL/api/search-user-by-phone';
+  static const String findCustomerByPhone = '$baseURL/api/search-user-by-key';
 
   static const String addProductUrl =
       '$baseURL/api/product/add-product-general-item';
@@ -60,6 +63,7 @@ class APPUrl {
   static const String addToStock = '$baseURL/api/product/add-stock';
   static const String addPurchaseStock = '$baseURL/api/purchases/add-stock';
   static const String listStock = '$baseURL/api/product/list-stocks';
+  // static const String listStock = '$baseURL/api/stock-searchbar';
   static const String detailsOfStock = '$baseURL/api/product/stock-details';
   static const String listPurchaseItems =
       '$baseURL/api/purchases/list-purchase-items';
@@ -83,4 +87,12 @@ class APPUrl {
       '$baseURL/api/transaction/list-transaction';
   static const String listStates = '$baseURL/api/location/get-states';
   static const String listDistricts = '$baseURL/api/location/get-district';
+
+  static const String customerAccountBook =
+      '$baseURL/api/reports/customer-account-book';
+  static const String productSalesReport =
+      '$baseURL/api/reports/product-sales-report';
+  static const String salesReport = '$baseURL/api/reports/sales-report';
+  static const String supplierSalesReport =
+      '$baseURL/api/reports/supplier-sales-report';
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_order_list_design.dart';
@@ -9,6 +11,7 @@ import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/resources/font_manager.dart';
 import 'package:pos_machine/resources/style_manager.dart';
 import 'package:pos_machine/screens/customers/add_customer_modal.dart';
+import 'package:pos_machine/screens/print/print.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -20,9 +23,6 @@ import '../providers/auth_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/customer_provider.dart';
 import '../resources/color_manager.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 class OrderList extends StatefulWidget {
   const OrderList({super.key});
@@ -151,7 +151,7 @@ class _OrderListState extends State<OrderList> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Stack(
+    return Column(
       children: [
         Container(
           margin:
@@ -493,23 +493,8 @@ class _OrderListState extends State<OrderList> {
                 const SizedBox(height: 10),
 
                 SizedBox(
-                  height: size.height * 0.28, // 150,
+                  height: size.height * 0.32, // 150,
 
-                  //                Consumer<CartProvider>(
-//         builder: (context, cartProvider, child) {
-//           return StreamBuilder<List<CartItem>>(
-//             stream: cartProvider.cartStream,
-//             builder: (context, snapshot) {
-//               if (snapshot.hasData) {
-//                 List<CartItem> cartItems = snapshot.data;
-//                 return /* Your UI to display the cart items */;
-//               } else if (snapshot.hasError) {
-//                 return Text('Error: ${snapshot.error}');
-//               } else {
-//                 return CircularProgressIndicator();
-//               }
-//             },
-//           );
                   child: Consumer<CartProvider>(
                       builder: (context, cartProvider, child) {
                     return StreamBuilder<List<ListCartModelData>>(
@@ -903,335 +888,253 @@ class _OrderListState extends State<OrderList> {
                 //     ),
                 //   ],
                 // ),
-              ],
-            ),
-          ),
-        ),
-        Stack(
-          children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                  height: size.height * 0.40, // 280,
-                  // height: size.height * 0.38, // 280,
-                  margin: const EdgeInsets.only(
-                      left: 10, top: 10, bottom: 10, right: 10),
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(0.0),
-                          bottomRight: Radius.circular(13.0),
-                          topLeft: Radius.circular(0.0),
-                          bottomLeft: Radius.circular(13.0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: ColorManager.boxShadowColor,
-                          blurRadius: 4,
-                          offset: Offset(1, 1),
-                        ),
-                      ],
-                      color: Colors.white),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 8, bottom: 0),
-                    child: Column(
-                      children: [
-                        BuildPaymentRow(
-                          amount:
-                              "${Provider.of<CartProvider>(context, listen: true).priceSummary!.subTotal ?? 0.00}",
-                          title: "Net amount",
-                          color: ColorManager.textColor,
-                        ),
-                        BuildPaymentRow(
-                          amount:
-                              "${Provider.of<CartProvider>(context, listen: true).priceSummary!.discount ?? 0.00}",
-                          title: "Discount",
-                          color: ColorManager.textColor,
-                        ),
-                        BuildPaymentRow(
-                          amount:
-                              "${Provider.of<CartProvider>(context, listen: true).priceSummary!.totalTax ?? 0.00}",
-                          title: "Tax Amount",
-                          color: ColorManager.textColor,
-                        ),
-                        const Divider(thickness: 2),
-                        BuildPaymentRow(
-                          amount:
-                              "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}",
-                          title: "Payable",
-                          secondRowTextStyle: buildCustomStyle(
-                            FontWeightManager.bold,
-                            FontSize.s15,
-                            0.23,
-                            ColorManager.textColor,
-                          ),
-                          firstRowTextStyle: buildCustomStyle(
-                            FontWeightManager.bold,
-                            FontSize.s15,
-                            0.23,
-                            ColorManager.textColor,
-                          ),
-                          color: ColorManager.textColor,
-                        ),
-                        const SizedBox(height: 5),
-                        BuildPaymentRow(
-                          amount: "",
-                          title: "Payment Method",
-                          firstRowTextStyle: buildCustomStyle(
-                            FontWeightManager.semiBold,
-                            FontSize.s14,
-                            0.21,
-                            ColorManager.kPrimaryColor,
-                          ),
-                          color: ColorManager.kPrimaryColor,
-                        ),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                // _getBalanceAmount();
-                                setState(() {
-                                  iconColor = 1;
-                                });
-                              },
-                              child: BuildBoxShadowContainer(
-                                border: iconColor == 1
-                                    ? Border.all(
-                                        color: ColorManager.kPrimaryColor)
-                                    : null,
-                                margin: const EdgeInsets.only(top: 10),
-                                padding: const EdgeInsets.all(8),
-                                blurRadius: 4,
-                                circleRadius: 5,
-                                child: Column(
-                                  children: [
-                                    WebsafeSvg.asset(
-                                      ImageAssets.cashIcon,
-                                      color: Colors.black,
-                                      fit: BoxFit.none,
-                                    ),
-                                    Text(
-                                      'Cash',
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s8,
-                                          0.12,
-                                          Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  iconColor = 2;
-                                });
-                              },
-                              child: BuildBoxShadowContainer(
-                                border: iconColor == 2
-                                    ? Border.all(
-                                        color: ColorManager.kPrimaryColor)
-                                    : null,
-                                margin:
-                                    const EdgeInsets.only(left: 10, top: 10),
-                                padding: const EdgeInsets.only(
-                                    left: 12, top: 8, bottom: 8, right: 12),
-                                blurRadius: 4,
-                                circleRadius: 5,
-                                child: Column(
-                                  children: [
-                                    WebsafeSvg.asset(
-                                      ImageAssets.creditCardIcon,
-                                      color: Colors.black,
-                                      fit: BoxFit.none,
-                                    ),
-                                    Text(
-                                      'Card',
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s8,
-                                          0.12,
-                                          Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  iconColor = 3;
-                                });
-                              },
-                              child: BuildBoxShadowContainer(
-                                border: iconColor == 3
-                                    ? Border.all(
-                                        color: ColorManager.kPrimaryColor)
-                                    : null,
-                                margin:
-                                    const EdgeInsets.only(left: 10, top: 10),
-                                padding: const EdgeInsets.only(
-                                    left: 12, top: 8, bottom: 8, right: 12),
-                                blurRadius: 4,
-                                circleRadius: 5,
-                                child: Column(
-                                  children: [
-                                    WebsafeSvg.asset(
-                                      ImageAssets.creditCardIcon,
-                                      color: Colors.black,
-                                      fit: BoxFit.none,
-                                    ),
-                                    Text(
-                                      'Upi',
-                                      style: buildCustomStyle(
-                                          FontWeightManager.medium,
-                                          FontSize.s8,
-                                          0.12,
-                                          Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            // TextFormField for transaction number
-                            if (iconColor == 2 ||
-                                iconColor == 3 ||
-                                iconColor ==
-                                    1) // Assuming 1 is for Cash and 3 is for UPI
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: iconColor != 1
-                                      ? TextFormField(
-                                          controller:
-                                              _transactionNumberController,
-                                          decoration: const InputDecoration(
-                                            hintText:
-                                                'Transaction Reference No:',
-                                          ),
-                                        )
-                                      : TextFormField(
-                                          controller: _paidAmountController,
-                                          onChanged: (value) {
-                                            _getBalanceAmount();
-                                          },
-                                          decoration: const InputDecoration(
-                                            hintText: 'Enter Paid Amount Here:',
-                                          ),
-                                        ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        if (iconColor == 1)
-                          BuildPaymentRow(
-                            amount: _balanceAmount.toStringAsFixed(2),
-                            title: "Balance amount",
-                            secondRowTextStyle: buildCustomStyle(
-                              FontWeightManager.medium,
-                              FontSize.s15,
-                              0.18,
-                              ColorManager.textColorRed,
-                            ),
-                            firstRowTextStyle: buildCustomStyle(
-                              FontWeightManager.bold,
-                              FontSize.s15,
-                              0.23,
-                              ColorManager.textColorRed,
-                            ),
-                            color: ColorManager.textColorRed,
-                          ),
-                      ],
-                    ),
-                  )),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 55,
-                margin: const EdgeInsets.only(
-                    left: 10, top: 20, bottom: 10, right: 10),
-                //  padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(0.0),
-                        bottomRight: Radius.circular(13.0),
-                        topLeft: Radius.circular(0.0),
-                        bottomLeft: Radius.circular(13.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: ColorManager.boxShadowColor,
-                        blurRadius: 6,
-                        offset: Offset(1, 1),
-                      ),
-                    ],
-                    color: ColorManager.greyWithOpacity60),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                // Column(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                Container(
+                    // height: size.height * 0.45, // 280,
+                    // // height: size.height * 0.38, // 280,
+                    // margin: const EdgeInsets.only(
+                    //     left: 10, top: 10, bottom: 10, right: 10),
+                    // padding: const EdgeInsets.all(8),
+                    // decoration: const BoxDecoration(
+                    //     borderRadius: BorderRadius.only(
+                    //         topRight: Radius.circular(0.0),
+                    //         bottomRight: Radius.circular(13.0),
+                    //         topLeft: Radius.circular(0.0),
+                    //         bottomLeft: Radius.circular(13.0)),
+                    //     boxShadow: [
+                    //       BoxShadow(
+                    //         color: ColorManager.boxShadowColor,
+                    //         blurRadius: 4,
+                    //         offset: Offset(1, 1),
+                    //       ),
+                    //     ],
+                    //     color: Colors.white),
+                    child: Container(
+                  // padding: const EdgeInsets.only(
+                  //     left: 8, right: 8, top: 8, bottom: 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        flex: 3,
-                        child: GestureDetector(
-                          onTap: () async {
-                            String? accessToken =
-                                Provider.of<AuthModel>(context, listen: false)
-                                    .token;
-                            debugPrint(
-                                "accessToken From AuthModel $accessToken");
-                            final provider = Provider.of<CartProvider>(context,
-                                listen: false);
-                            int cartId = provider.getCartIDForOrder;
-                            debugPrint("$cartId");
-                            try {
-                              await Provider.of<CartProvider>(context,
-                                      listen: false)
-                                  .addToOrderAPI(
-                                cartIds: cartId,
-                                accessToken: accessToken ?? "",
-                                transactionId:
-                                    _transactionNumberController.text,
-                                totalPrice: Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .priceSummary!
-                                    .netTotal
-                                    .toString(),
-                                customerId: Provider.of<AuthModel>(context,
-                                        listen: false)
-                                    .userId!,
-                              )
-                                  .then((response) {
-                                AddToOrderModel addToOrderModel =
-                                    AddToOrderModel.fromJson(response);
-                                debugPrint(
-                                    "$response  Provider.of<CartProvider>(context,listen: false).addToOrderAPI(); ");
-                                if (response["status"] == "success") {
-                                  showScaffold(
-                                    context: context,
-                                    message:
-                                        "${addToOrderModel.message}", //  'Order Placed Successfully',
-                                  );
-                                } else {
-                                  showScaffoldError(
-                                    context: context,
-                                    message:
-                                        "${addToOrderModel.message}", //   'Error Occured! Try Again ',
-                                  );
-                                }
+                      BuildPaymentRow(
+                        amount:
+                            "${Provider.of<CartProvider>(context, listen: true).priceSummary!.subTotal ?? 0.00}",
+                        title: "Net amount",
+                        color: ColorManager.textColor,
+                      ),
+                      BuildPaymentRow(
+                        amount:
+                            "${Provider.of<CartProvider>(context, listen: true).priceSummary!.discount ?? 0.00}",
+                        title: "Discount",
+                        color: ColorManager.textColor,
+                      ),
+                      BuildPaymentRow(
+                        amount:
+                            "${Provider.of<CartProvider>(context, listen: true).priceSummary!.totalTax ?? 0.00}",
+                        title: "Tax Amount",
+                        color: ColorManager.textColor,
+                      ),
+                      const Divider(thickness: 2),
+                      BuildPaymentRow(
+                        amount:
+                            "${Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal ?? 0.00}",
+                        title: "Payable",
+                        secondRowTextStyle: buildCustomStyle(
+                          FontWeightManager.bold,
+                          FontSize.s15,
+                          0.23,
+                          ColorManager.textColor,
+                        ),
+                        firstRowTextStyle: buildCustomStyle(
+                          FontWeightManager.bold,
+                          FontSize.s15,
+                          0.23,
+                          ColorManager.textColor,
+                        ),
+                        color: ColorManager.textColor,
+                      ),
+                      const SizedBox(height: 5),
+                      BuildPaymentRow(
+                        amount: "",
+                        title: "Payment Method",
+                        firstRowTextStyle: buildCustomStyle(
+                          FontWeightManager.semiBold,
+                          FontSize.s14,
+                          0.21,
+                          ColorManager.kPrimaryColor,
+                        ),
+                        color: ColorManager.kPrimaryColor,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              // _getBalanceAmount();
+                              setState(() {
+                                iconColor = 1;
                               });
-                            } catch (error) {
-                              debugPrint(error.toString());
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(13),
-                            decoration: const BoxDecoration(
+                            },
+                            child: BuildBoxShadowContainer(
+                              border: iconColor == 1
+                                  ? Border.all(
+                                      color: ColorManager.kPrimaryColor)
+                                  : null,
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.all(8),
+                              blurRadius: 4,
+                              circleRadius: 5,
+                              child: Column(
+                                children: [
+                                  WebsafeSvg.asset(
+                                    ImageAssets.cashIcon,
+                                    color: Colors.black,
+                                    fit: BoxFit.none,
+                                  ),
+                                  Text(
+                                    'Cash',
+                                    style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s8,
+                                        0.12,
+                                        Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                iconColor = 2;
+                              });
+                            },
+                            child: BuildBoxShadowContainer(
+                              border: iconColor == 2
+                                  ? Border.all(
+                                      color: ColorManager.kPrimaryColor)
+                                  : null,
+                              margin: const EdgeInsets.only(left: 10, top: 10),
+                              padding: const EdgeInsets.only(
+                                  left: 12, top: 8, bottom: 8, right: 12),
+                              blurRadius: 4,
+                              circleRadius: 5,
+                              child: Column(
+                                children: [
+                                  WebsafeSvg.asset(
+                                    ImageAssets.creditCardIcon,
+                                    color: Colors.black,
+                                    fit: BoxFit.none,
+                                  ),
+                                  Text(
+                                    'Card',
+                                    style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s8,
+                                        0.12,
+                                        Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                iconColor = 3;
+                              });
+                            },
+                            child: BuildBoxShadowContainer(
+                              border: iconColor == 3
+                                  ? Border.all(
+                                      color: ColorManager.kPrimaryColor)
+                                  : null,
+                              margin: const EdgeInsets.only(left: 10, top: 10),
+                              padding: const EdgeInsets.only(
+                                  left: 12, top: 8, bottom: 8, right: 12),
+                              blurRadius: 4,
+                              circleRadius: 5,
+                              child: Column(
+                                children: [
+                                  WebsafeSvg.asset(
+                                    ImageAssets.creditCardIcon,
+                                    color: Colors.black,
+                                    fit: BoxFit.none,
+                                  ),
+                                  Text(
+                                    'Upi',
+                                    style: buildCustomStyle(
+                                        FontWeightManager.medium,
+                                        FontSize.s8,
+                                        0.12,
+                                        Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // TextFormField for transaction number
+                          if (iconColor == 2 ||
+                              iconColor == 3 ||
+                              iconColor ==
+                                  1) // Assuming 1 is for Cash and 3 is for UPI
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: iconColor != 1
+                                    ? TextFormField(
+                                        controller:
+                                            _transactionNumberController,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Transaction Reference No:',
+                                        ),
+                                      )
+                                    : TextFormField(
+                                        controller: _paidAmountController,
+                                        onChanged: (value) {
+                                          _getBalanceAmount();
+                                        },
+                                        decoration: const InputDecoration(
+                                          hintText: 'Enter Paid Amount Here:',
+                                        ),
+                                      ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      if (iconColor == 1)
+                        BuildPaymentRow(
+                          amount: _balanceAmount.toStringAsFixed(2),
+                          title: "Balance amount",
+                          secondRowTextStyle: buildCustomStyle(
+                            FontWeightManager.medium,
+                            FontSize.s15,
+                            0.18,
+                            ColorManager.textColorRed,
+                          ),
+                          firstRowTextStyle: buildCustomStyle(
+                            FontWeightManager.bold,
+                            FontSize.s15,
+                            0.23,
+                            ColorManager.textColorRed,
+                          ),
+                          color: ColorManager.textColorRed,
+                        ),
+                      if (iconColor == 1) const SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          // height: 55,
+                          // margin: const EdgeInsets.only(
+                          //     left: 10, top: 10, right: 10),
+                          //  padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(0.0),
-                                  bottomLeft: Radius.circular(13.0),
-                                  topLeft: Radius.circular(0.0),
-                                  bottomRight: Radius.circular(0.0)),
+                                  topRight: Radius.circular(13.0),
+                                  bottomRight: Radius.circular(13.0),
+                                  topLeft: Radius.circular(13.0),
+                                  bottomLeft: Radius.circular(13.0)),
                               boxShadow: [
                                 BoxShadow(
                                   color: ColorManager.boxShadowColor,
@@ -1239,45 +1142,137 @@ class _OrderListState extends State<OrderList> {
                                   offset: Offset(1, 1),
                                 ),
                               ],
-                              color: ColorManager.kPrimaryColor,
-                            ),
-                            child: Text(
-                              'Save Sales ${AmountHelper.formatAmount(Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal)}',
-                              style: buildCustomStyle(FontWeightManager.medium,
-                                  FontSize.s18, 0.27, Colors.white),
-                            ),
-                          ),
+                              color: ColorManager.greyWithOpacity60),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      String? accessToken =
+                                          Provider.of<AuthModel>(context,
+                                                  listen: false)
+                                              .token;
+                                      debugPrint(
+                                          "accessToken From AuthModel $accessToken");
+                                      final provider =
+                                          Provider.of<CartProvider>(context,
+                                              listen: false);
+                                      int cartId = provider.getCartIDForOrder;
+                                      debugPrint("$cartId");
+                                      try {
+                                        await Provider.of<CartProvider>(context,
+                                                listen: false)
+                                            .addToOrderAPI(
+                                          cartIds: cartId,
+                                          accessToken: accessToken ?? "",
+                                          transactionId:
+                                              _transactionNumberController.text,
+                                          totalPrice: Provider.of<CartProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .priceSummary!
+                                              .netTotal
+                                              .toString(),
+                                          customerId: Provider.of<AuthModel>(
+                                                  context,
+                                                  listen: false)
+                                              .userId!,
+                                        )
+                                            .then((response) {
+                                          AddToOrderModel addToOrderModel =
+                                              AddToOrderModel.fromJson(
+                                                  response);
+                                          debugPrint(
+                                              "$response  Provider.of<CartProvider>(context,listen: false).addToOrderAPI(); ");
+                                          if (response["status"] == "success") {
+                                            showScaffold(
+                                              context: context,
+                                              message:
+                                                  "${addToOrderModel.message}", //  'Order Placed Successfully',
+                                            );
+                                          } else {
+                                            showScaffoldError(
+                                              context: context,
+                                              message:
+                                                  "${addToOrderModel.message}", //   'Error Occured! Try Again ',
+                                            );
+                                          }
+                                        });
+                                      } catch (error) {
+                                        debugPrint(error.toString());
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(13),
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(0.0),
+                                            bottomLeft: Radius.circular(13.0),
+                                            topLeft: Radius.circular(13.0),
+                                            bottomRight: Radius.circular(0.0)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: ColorManager.boxShadowColor,
+                                            blurRadius: 6,
+                                            offset: Offset(1, 1),
+                                          ),
+                                        ],
+                                        color: ColorManager.kPrimaryColor,
+                                      ),
+                                      child: Text(
+                                        'Save Sales ${AmountHelper.formatAmount(Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal)}',
+                                        style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s18,
+                                            0.27,
+                                            Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const PrintPage()),
+                                      );
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        WebsafeSvg.asset(
+                                          ImageAssets.printIcon,
+                                          color: Colors.white,
+                                          fit: BoxFit.none,
+                                        ),
+                                        Text(
+                                          'Print',
+                                          style: buildCustomStyle(
+                                              FontWeightManager.medium,
+                                              FontSize.s10,
+                                              0.16,
+                                              Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ]),
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            print("Print");
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              WebsafeSvg.asset(
-                                ImageAssets.printIcon,
-                                color: Colors.white,
-                                fit: BoxFit.none,
-                              ),
-                              Text(
-                                'Print',
-                                style: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.16,
-                                    Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ]),
-              ),
+                    ],
+                  ),
+                )),
+                // ],
+                // ),
+              ],
             ),
-          ],
+          ),
         ),
       ],
     );
@@ -1543,14 +1538,14 @@ class CompactQuantityControl extends StatelessWidget {
         children: [
           InkWell(
             onTap: onDecrement,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               child: Icon(Icons.remove,
                   size: 16, color: ColorManager.kPrimaryColor),
             ),
           ),
           Container(
-            constraints: BoxConstraints(minWidth: 24),
+            constraints: const BoxConstraints(minWidth: 24),
             alignment: Alignment.center,
             child: Text(
               quantity.toString(),
@@ -1560,8 +1555,8 @@ class CompactQuantityControl extends StatelessWidget {
           ),
           InkWell(
             onTap: onIncrement,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               child:
                   Icon(Icons.add, size: 16, color: ColorManager.kPrimaryColor),
             ),

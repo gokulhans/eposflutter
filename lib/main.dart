@@ -16,6 +16,7 @@ import 'package:pos_machine/providers/grid_provider.dart';
 
 import 'package:pos_machine/providers/invoice_provider.dart';
 import 'package:pos_machine/providers/location_provider.dart';
+import 'package:pos_machine/providers/report_provider.dart';
 import 'package:pos_machine/providers/sales_provider.dart';
 
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ void main() {
       debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
     }
   }
+
   Get.put(CategoryProvider());
   runApp(const MyApp());
 }
@@ -67,6 +69,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => InvoiceProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => CustomerProvider()),
+        ChangeNotifierProvider(create: (_) => ReportsProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

@@ -697,26 +697,65 @@ class GridSelectionProvider extends ChangeNotifier {
 
   //          *********************** LIST STOCK  API ***************************************************
 
-  Future<void> listSTockAPI({required String accessToken}) async {
-    final url = Uri.parse(APPUrl.listStock);
-    try {
-      final response = await http.get(url, headers: {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json'
-      });
+  Future<void> listSTockAPI({
+    required String accessToken,
+    String? filterName,
+  }) async {
+    final queryParameters = <String, String>{};
 
-      debugPrint('inside  listSTockAPI ${response.statusCode}');
+    if (filterName != null && filterName.isNotEmpty) {
+      queryParameters['filter_name'] = filterName;
+    }
+
+    final uri =
+        Uri.parse(APPUrl.listStock).replace(queryParameters: queryParameters);
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ).timeout(const Duration(seconds: 15));
+
+      debugPrint('inside listSTockAPI ${response.statusCode}');
+
       if (response.statusCode == 200) {
-        debugPrint(json.decode(response.body).toString());
-        ListStockModel listStockModel =
-            ListStockModel.fromJson(json.decode(response.body));
-        listStockModelDataList = listStockModel.data;
-        filteredStockList = listStockModelDataList;
-        notifyListeners();
+        if (response.body.isNotEmpty) {
+          final jsonData = json.decode(response.body);
+          debugPrint('Received JSON data: ${jsonData.toString()}');
+
+          // Detailed error handling for JSON parsing
+          try {
+            ListStockModel listStockModel = ListStockModel.fromJson(jsonData);
+            listStockModelDataList = listStockModel.data;
+            filteredStockList =
+                List<ListStockModelData>.from(listStockModelDataList!);
+            notifyListeners();
+          } catch (e) {
+            debugPrint('Error parsing JSON data: $e');
+            debugPrint('JSON structure: ${jsonData.runtimeType}');
+            if (jsonData is Map) {
+              jsonData.forEach((key, value) {
+                debugPrint('Key: $key, Value type: ${value.runtimeType}');
+              });
+            }
+            throw Exception('Failed to parse stock list data: $e');
+          }
+        } else {
+          debugPrint('Empty response body');
+          throw Exception('Received empty response');
+        }
       } else {
-        // return error;
+        debugPrint(
+            'Failed to load stock list: ${response.statusCode} - ${response.body}');
+        throw Exception('Failed to load stock list');
       }
-    } finally {}
+    } catch (error) {
+      debugPrint('Error in listSTockAPI: $error');
+      rethrow;
+    }
   }
   //          *********************** CALL VIEW STOCK DETAILS  API ***************************************************
 

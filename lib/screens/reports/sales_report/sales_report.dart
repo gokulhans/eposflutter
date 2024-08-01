@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pos_machine/components/build_calendar_selection.dart';
+import 'package:pos_machine/components/build_container_border.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_round_button.dart';
 import 'package:pos_machine/controllers/sidebar_controller.dart';
+import 'package:pos_machine/helpers/amount_helper.dart';
 import 'package:pos_machine/models/list_transaction.dart';
 import 'package:pos_machine/providers/auth_model.dart';
 import 'package:pos_machine/providers/invoice_provider.dart';
+import 'package:pos_machine/providers/report_provider.dart';
 import 'package:pos_machine/resources/color_manager.dart';
 import 'package:pos_machine/resources/font_manager.dart';
 import 'package:pos_machine/resources/style_manager.dart';
@@ -21,13 +26,14 @@ class SalesReportScreen extends StatefulWidget {
 }
 
 class _SalesReportScreenState extends State<SalesReportScreen> {
-  final TextEditingController amountRefController = TextEditingController();
-  //final TextEditingController dateController = TextEditingController();
+  final TextEditingController customerController = TextEditingController();
+  final TextEditingController createdByController = TextEditingController();
+  final TextEditingController fromDateController = TextEditingController();
+  final TextEditingController toDateController = TextEditingController();
+
   SideBarController sideBarController = Get.put(SideBarController());
   bool initLoading = false;
-  List<ListTransaction>? listTransaction = [];
-  String searchAmount = '';
-  String searchDate = '';
+
   @override
   void initState() {
     loadInitData();
@@ -41,20 +47,12 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
       });
       String? accessToken =
           Provider.of<AuthModel>(context, listen: false).token;
-      InvoiceProvider invoiceProvider =
-          Provider.of<InvoiceProvider>(context, listen: false);
+      ReportsProvider reportsProvider =
+          Provider.of<ReportsProvider>(context, listen: false);
 
-      await invoiceProvider
-          .listAllTransaction(type: null, accessToken: accessToken ?? "")
-          .then((value) {
-        if (value['status'] == 'success') {
-          ListTransactionModel listTransactionModel =
-              ListTransactionModel.fromJson(value);
-          listTransaction = listTransactionModel.data ?? [];
-        } else {
-          showScaffold(context: context, message: "Data Not Found");
-        }
-      });
+      await reportsProvider.fetchSalesReport(
+        accessToken: accessToken ?? "",
+      );
     } catch (error) {
       debugPrint(error.toString());
     } finally {
@@ -64,12 +62,47 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
     }
   }
 
+  void searchAccountBook() async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+      ReportsProvider reportsProvider =
+          Provider.of<ReportsProvider>(context, listen: false);
+
+      await reportsProvider.fetchSalesReport(
+        accessToken: accessToken ?? "",
+        customerName: customerController.text,
+        startDate: fromDateController.text,
+        endDate: toDateController.text,
+        createdBy: createdByController.text,
+      );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
+  }
+
+  void resetSearch() {
+    setState(() {
+      customerController.clear();
+      createdByController.clear();
+      fromDateController.clear();
+      toDateController.clear();
+    });
+    loadInitData();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     String? token = Provider.of<AuthModel>(context, listen: false).token;
-    InvoiceProvider invoiceProvider =
-        Provider.of<InvoiceProvider>(context, listen: false);
+    ReportsProvider reportsProvider = Provider.of<ReportsProvider>(context);
     return SafeArea(
       child: Container(
         margin: const EdgeInsets.only(left: 10, top: 20, bottom: 0, right: 10),
@@ -108,7 +141,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Customer Name",
+                              "Customer ",
                               style: buildCustomStyle(
                                 FontWeightManager.regular,
                                 FontSize.s14,
@@ -123,12 +156,12 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                             child: TextFormField(
                               onChanged: (value) {
                                 setState(() {
-                                  searchAmount = value;
+                                  // searchAmount = value;
                                 });
                               },
                               cursorColor: ColorManager.kPrimaryColor,
                               cursorHeight: 13,
-                              controller: amountRefController,
+                              controller: customerController,
                               style: buildCustomStyle(FontWeightManager.medium,
                                   FontSize.s10, 0.18, ColorManager.textColor),
                               decoration: decoration.copyWith(
@@ -171,12 +204,12 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                               child: TextFormField(
                                 onChanged: (value) {
                                   setState(() {
-                                    searchAmount = value;
+                                    // searchAmount = value;
                                   });
                                 },
                                 cursorColor: ColorManager.kPrimaryColor,
                                 cursorHeight: 13,
-                                controller: amountRefController,
+                                controller: createdByController,
                                 style: buildCustomStyle(
                                     FontWeightManager.medium,
                                     FontSize.s10,
@@ -215,16 +248,19 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: WebDatePicker(
-                              dateformat: "dd/MM/yyyy",
-                              height: size.height * .06,
-                              width: size.width / 8,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime(2100),
-                              onChange: (value) {},
+                          BuildBorderContainer(
+                            margin: const EdgeInsets.only(left: 8),
+                            height: 45,
+                            width: 150, //size.width * 0.5,
+                            child: CalendarPickerTableCell(
+                              onDateSelected: (date) {
+                                debugPrint(date.toString());
+                                fromDateController.text =
+                                    DateFormat('yyyy-MM-dd').format(date);
+                                debugPrint(DateFormat('yyyy-MM-dd')
+                                    .format(date)
+                                    .toString());
+                              },
                             ),
                           ),
                         ],
@@ -244,16 +280,24 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: WebDatePicker(
-                              dateformat: "dd/MM/yyyy",
+                          BuildBorderContainer(
+                            margin: const EdgeInsets.only(left: 8),
+                            height: 45,
+                            width: 150, //size.width * 0.5,
+                            child: Container(
                               height: size.height * .06,
-                              width: size.width / 8,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime(2100),
-                              onChange: (value) {},
+                              width: size.width / 4.3,
+                              margin: const EdgeInsets.only(left: 8),
+                              child: CalendarPickerTableCell(
+                                onDateSelected: (date) {
+                                  debugPrint(date.toString());
+                                  toDateController.text =
+                                      DateFormat('yyyy-MM-dd').format(date);
+                                  debugPrint(DateFormat('yyyy-MM-dd')
+                                      .format(date)
+                                      .toString());
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -262,7 +306,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                         padding: const EdgeInsets.only(left: 10.0, top: 30),
                         child: CustomRoundButton(
                           title: "Search",
-                          fct: () async {},
+                          fct: searchAccountBook,
                           height: 50,
                           width: size.width * 0.09,
                           fontSize: FontSize.s12,
@@ -274,13 +318,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                           title: "Reset",
                           boxColor: Colors.white,
                           textColor: ColorManager.kPrimaryColor,
-                          fct: () async {
-                            amountRefController.clear();
-                            setState(() {
-                              searchAmount = '';
-                            });
-                            // sideBarController.index.value = 22;
-                          },
+                          fct: resetSearch,
                           height: 50,
                           width: size.width * 0.09,
                           fontSize: FontSize.s12,
@@ -302,235 +340,125 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                 thickness: 0.5,
               ),
               BuildBoxShadowContainer(
-                  // height: size.height, //120,
-                  margin: const EdgeInsets.only(top: 20),
-                  circleRadius: 7,
-                  offsetValue: const Offset(1, 1),
-                  child: Table(
-                    columnWidths: const {
-                      0: FractionColumnWidth(0.06),
-                      1: FractionColumnWidth(0.06),
-                      2: FractionColumnWidth(0.06),
-                      3: FractionColumnWidth(0.06),
-                      4: FractionColumnWidth(0.06),
-                      5: FractionColumnWidth(0.05),
-                    },
-                    border: TableBorder.symmetric(
-                        outside: const BorderSide(
-                            color: ColorManager.tableBOrderColor, width: 0.3),
-                        inside: const BorderSide(
-                            color: ColorManager.tableBOrderColor, width: 0.8)),
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: [
-                      TableRow(
-                          decoration: const BoxDecoration(
-                              color: ColorManager.tableBGColor),
-                          children: [
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                      child: Text(
-                                    "Name",
-                                    style: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s12,
-                                      0.18,
-                                      ColorManager.kPrimaryColor,
-                                    ),
-                                  )),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                      child: Text(
-                                    "Type",
-                                    style: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s12,
-                                      0.18,
-                                      ColorManager.kPrimaryColor,
-                                    ),
-                                  )),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                      child: Text(
-                                    "Amount",
-                                    style: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s12,
-                                      0.18,
-                                      ColorManager.kPrimaryColor,
-                                    ),
-                                  )),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                      child: Text(
-                                    "Status",
-                                    style: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s12,
-                                      0.18,
-                                      ColorManager.kPrimaryColor,
-                                    ),
-                                  )),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                      child: Text(
-                                    "Action",
-                                    style: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s12,
-                                      0.18,
-                                      ColorManager.kPrimaryColor,
-                                    ),
-                                  )),
-                                )),
-                          ]),
-
-                      // Map your order data to table rows here
-                      ...listTransaction!.where((transaction) {
-                        return transaction.amount!.contains(searchAmount);
-                        //&&
-                        //  transaction.date.contains(searchDate);
-                      }).map((transaction) {
-                        String? userName = invoiceProvider
-                            .getUserUpOnId(transaction.userId ?? 1);
-
-                        // String? invoiceAccountType =
-                        //     invoiceProvider.getInvoiceNameUpOnId(
-                        //         transaction.accountId ?? 1,
-                        //         transaction.type ?? "");
+                margin: const EdgeInsets.only(top: 20),
+                circleRadius: 7,
+                offsetValue: const Offset(1, 1),
+                child: Table(
+                  columnWidths: const {
+                    0: FractionColumnWidth(0.06),
+                    1: FractionColumnWidth(0.15),
+                    2: FractionColumnWidth(0.15),
+                    3: FractionColumnWidth(0.15),
+                    4: FractionColumnWidth(0.15),
+                    5: FractionColumnWidth(0.15),
+                  },
+                  border: TableBorder.symmetric(
+                      outside: const BorderSide(
+                          color: ColorManager.tableBOrderColor, width: 0.3),
+                      inside: const BorderSide(
+                          color: ColorManager.tableBOrderColor, width: 0.8)),
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(
+                      decoration:
+                          const BoxDecoration(color: ColorManager.tableBGColor),
+                      children: [
+                        _buildTableHeader("No"),
+                        _buildTableHeader("Customer Name"),
+                        _buildTableHeader("Created By"),
+                        _buildTableHeader("Price"),
+                        _buildTableHeader("Date"),
+                        _buildTableHeader("Action"),
+                      ],
+                    ),
+                    if (reportsProvider.salesReport != null)
+                      ...reportsProvider.salesReport!.data
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                        final index = entry.key;
+                        final item = entry.value;
                         return TableRow(
                           children: [
+                            _buildTableCell("${index + 1}"),
+                            _buildTableCell(item.customerName),
+                            _buildTableCell(item.createdBy),
+                            _buildTableCell(
+                                AmountHelper.formatAmount(item.totalPrice)
+                                    .toString()),
+                            _buildTableCell(item.date),
                             TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Text(
-                                      userName ?? "",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s9,
-                                        0.13,
-                                        Colors.black,
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Center(
+                                  child: BuildBoxShadowContainer(
+                                    margin: const EdgeInsets.only(
+                                        left: 5, right: 5),
+                                    circleRadius: 5,
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.visibility,
+                                        size: 18,
+                                        color: ColorManager.kPrimaryColor
+                                            .withOpacity(0.9),
                                       ),
+                                      onPressed: () {
+                                        // Implement view action
+                                      },
                                     ),
                                   ),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Text(
-                                      "${transaction.type}",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s9,
-                                        0.13,
-                                        Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Text(
-                                      "${transaction.amount}",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s9,
-                                        0.13,
-                                        Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Text(
-                                      "${transaction.status}",
-                                      style: buildCustomStyle(
-                                        FontWeightManager.medium,
-                                        FontSize.s9,
-                                        0.13,
-                                        Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                            TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Row(
-                                      children: [
-                                        BuildBoxShadowContainer(
-                                            margin: const EdgeInsets.only(
-                                                left: 5, right: 5),
-                                            circleRadius: 5,
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.visibility,
-                                                size: 18,
-                                                color: ColorManager
-                                                    .kPrimaryColor
-                                                    .withOpacity(0.9),
-                                              ),
-                                              onPressed: () {
-                                                invoiceProvider
-                                                    .callDetailsOfTransaction(
-                                                        id: transaction.id ?? 0,
-                                                        accessToken:
-                                                            token ?? "");
-                                                sideBarController.index.value =
-                                                    30;
-                                              },
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                )),
+                                ),
+                              ),
+                            ),
                           ],
                         );
                       }).toList(),
-                    ],
-                  )),
+                  ],
+                ),
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableHeader(String text) {
+    return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.middle,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Center(
+          child: Text(
+            text,
+            style: buildCustomStyle(
+              FontWeightManager.medium,
+              FontSize.s12,
+              0.18,
+              ColorManager.kPrimaryColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableCell(String text) {
+    return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.middle,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Center(
+          child: Text(
+            text,
+            style: buildCustomStyle(
+              FontWeightManager.medium,
+              FontSize.s9,
+              0.13,
+              Colors.black,
+            ),
           ),
         ),
       ),

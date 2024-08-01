@@ -12,9 +12,14 @@ import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
 
-class AddProductScreen extends StatelessWidget {
+class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
 
+  @override
+  State<AddProductScreen> createState() => _AddProductScreenState();
+}
+
+class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     //  Size size = MediaQuery.of(context).size;
@@ -24,6 +29,8 @@ class AddProductScreen extends StatelessWidget {
     );
     GridSelectionProvider gridSelectionProvider =
         Provider.of<GridSelectionProvider>(context);
+
+    Size size = MediaQuery.of(context).size;
 
     return SafeArea(
       child: Container(
@@ -43,14 +50,408 @@ class AddProductScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
           child: ListView(
             children: [
+              Text(
+                "Product List",
+                style: buildCustomStyle(FontWeightManager.semiBold,
+                    FontSize.s20, 0.30, ColorManager.textColor),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                height: 90,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Name",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Product Name",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Filter Category
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Category",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Category",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Filter Price
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Price",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Price",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Filter Created By
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Created By",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Created By",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Filter Properties
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Properties",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Properties",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Filter Store
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Store",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Store",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Filter Supplier
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Supplier",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Supplier",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Search",
+                        fct: (searchAccountBook) {},
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Reset",
+                        boxColor: Colors.white,
+                        textColor: ColorManager.kPrimaryColor,
+                        fct: (resetSearch) {},
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Product List  ",
-                    style: buildCustomStyle(FontWeightManager.semiBold,
-                        FontSize.s20, 0.30, ColorManager.textColor),
-                  ),
+                  // Text(
+                  //   "Product List  ",
+                  //   style: buildCustomStyle(FontWeightManager.semiBold,
+                  //       FontSize.s20, 0.30, ColorManager.textColor),
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

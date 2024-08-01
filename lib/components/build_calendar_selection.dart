@@ -37,6 +37,7 @@ class _CalendarPickerTableCellState extends State<CalendarPickerTableCell> {
       child: InputDecorator(
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          border: InputBorder.none,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

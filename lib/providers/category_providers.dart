@@ -17,6 +17,7 @@ class CategoryProvider extends ChangeNotifier {
   String parentCategory = '0';
   int editCategoryId = 0;
   int propCategory = 0;
+  Meta? paginationMeta;
   //bool _isLoading = false;
   CategoryProvider() {
     listAllCategory();
@@ -30,6 +31,10 @@ class CategoryProvider extends ChangeNotifier {
   int get getCount => categoryCount;
   List<dynamic>? propValues;
   List? get categoryProperties => propValues;
+
+  int currentPage = 1;
+  int totalPages = 1;
+  int itemsPerPage = 3;
 
   setCategoryItemCount(int value) {
     categoryCount = value;
@@ -84,44 +89,66 @@ class CategoryProvider extends ChangeNotifier {
   // }
   //          *********************** LIST ALL CATEGORY  API ***************************************************
 
-  Future<void> listAllCategory() async {
-    debugPrint("LIST ALL CATEGORY ");
-// Set isLoading to true to show a loading indicator
-    // _isLoading = true;
-    // notifyListeners();
+  Future<void> listAllCategory({
+    String? filterName,
+    String? filterParent,
+    String? filterCreatedBy,
+    int page = 1,
+  }) async {
+    final queryParameters = <String, String>{
+      'page': page.toString(),
+    };
 
-    final url = Uri.parse(APPUrl.categoryListUrl);
+    if (filterName != null && filterName.isNotEmpty) {
+      queryParameters['filter_name'] = filterName;
+    }
+    if (filterParent != null && filterParent.isNotEmpty) {
+      queryParameters['filter_parent'] = filterParent;
+    }
+    if (filterCreatedBy != null && filterCreatedBy.isNotEmpty) {
+      queryParameters['filter_created_by'] = filterCreatedBy;
+    }
+
+    final uri = Uri.parse(APPUrl.categoryListUrl)
+        .replace(queryParameters: queryParameters);
+
     try {
-      final response =
-          await http.get(url, headers: {'Content-Type': 'application/json'});
-      debugPrint('inside ${response.statusCode}');
-      if (response.statusCode == 200) {
-        // debugPrint('inside');
+      final response = await http.get(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 15));
 
-        debugPrint(json.decode(response.body).toString());
+      if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         CategoryListModel categoryListModel =
             CategoryListModel.fromJson(jsonData);
 
-        categoryList = categoryListWithoutQuery =
-            filteredcategoryList = categoryListModel.category;
-        categoryList!.insert(0, categoryDemo);
-        // debugPrint('List Category Name in Category Provider');
-        // for (var v in categoryList ?? []) {
-        //   debugPrint(v.categoryName);
-        // }
-        categoryText =
-            categoryList!.isEmpty ? "" : categoryList![0].categoryName ?? "";
-        categoryCount =
-            categoryList!.isEmpty ? 0 : categoryList![0].productsCount ?? 0;
-        // _selectedCategoryIndex = 0;
+        categoryList = categoryListModel.category;
+        currentPage = categoryListModel.meta?.currentPage ?? 1;
+        totalPages = categoryListModel.meta?.lastPage ?? 1;
+
         notifyListeners();
-      } else {}
-    } finally {
-      // _isLoading = false;
-      // notifyListeners();
+      } else {
+        throw Exception('Failed to load categories');
+      }
+    } catch (error) {
+      debugPrint('Error fetching categories: $error');
+      rethrow;
     }
   }
+
+  Future<void> nextPage() async {
+    if (currentPage < totalPages) {
+      await listAllCategory(page: currentPage + 1);
+    }
+  }
+
+  Future<void> previousPage() async {
+    if (currentPage > 1) {
+      await listAllCategory(page: currentPage - 1);
+    }
+  }
+
   //          *********************** VIEW  CATEGORY USING CATEGORY ID API ***************************************************
 
   Future<void> viewCategoryApi({required int categoryId}) async {

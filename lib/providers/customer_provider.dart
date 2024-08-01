@@ -111,7 +111,7 @@ class CustomerProvider extends ChangeNotifier {
 
   Future<dynamic> findCustomerByPhone(
       String accessToken, String phoneNumber, BuildContext context) async {
-    final url = Uri.parse('${APPUrl.findCustomerByPhone}?phone=$phoneNumber');
+    final url = Uri.parse('${APPUrl.findCustomerByPhone}?value=$phoneNumber');
 
     try {
       debugPrint('accessToken: $accessToken');

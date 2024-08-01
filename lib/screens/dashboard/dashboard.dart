@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_round_button.dart';
 import 'package:pos_machine/providers/auth_model.dart';
@@ -25,11 +26,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
   DashBoardModelData? dashBoardModelData;
   TotalSales? totalSales;
   String value = 'today';
+  bool isLoading = false;
+  List<GraphData> graphData = [];
+  List<GraphData> chartData = [];
 
   @override
   void initState() {
     super.initState();
     getDashBoardDetails();
+    fetchGraphData();
+  }
+
+  Future<void> fetchGraphData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+      if (accessToken != null) {
+        final data = await DashboardProvider().fetchGraphData(accessToken);
+        setState(() {
+          graphData = data;
+          chartData = data.reversed.take(5).toList().reversed.toList();
+        });
+      }
+    } catch (error) {
+      // Handle error (e.g., show a snackbar)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load graph data: $error')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void getDashBoardDetails() async {
@@ -219,108 +251,124 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   margin: const EdgeInsets.all(15),
                                   padding: const EdgeInsets.all(15),
                                   height: 200,
-                                  // width: 220,
                                   circleRadius: 7,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          BuildBoxShadowContainer(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              height: 30,
-                                              width: 80,
-                                              circleRadius: 4,
-                                              child: Row(
-                                                children: [
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    "Today",
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s8,
-                                                        0.10,
-                                                        ColorManager.textColor),
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  const Icon(
-                                                    Icons.keyboard_arrow_down,
-                                                    size: 12,
-                                                  ),
-                                                ],
-                                              )),
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.end,
+                                      //   children: [
+                                      //     BuildBoxShadowContainer(
+                                      //         padding: const EdgeInsets.only(
+                                      //             left: 10),
+                                      //         height: 30,
+                                      //         width: 80,
+                                      //         circleRadius: 4,
+                                      //         child: Row(
+                                      //           children: [
+                                      //             const SizedBox(width: 6),
+                                      //             Text(
+                                      //               "Today",
+                                      //               style: buildCustomStyle(
+                                      //                   FontWeightManager
+                                      //                       .medium,
+                                      //                   FontSize.s8,
+                                      //                   0.10,
+                                      //                   ColorManager.textColor),
+                                      //             ),
+                                      //             const SizedBox(width: 6),
+                                      //             const Icon(
+                                      //               Icons.keyboard_arrow_down,
+                                      //               size: 12,
+                                      //             ),
+                                      //           ],
+                                      //         )),
+                                      //   ],
+                                      // ),
                                       Expanded(
-                                        child: LineChart(
-                                          LineChartData(
-                                            gridData: FlGridData(show: false),
-                                            titlesData: FlTitlesData(
-                                              leftTitles: AxisTitles(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: LineChart(
+                                            LineChartData(
+                                              gridData: FlGridData(show: false),
+                                              titlesData: FlTitlesData(
+                                                leftTitles: AxisTitles(
                                                   sideTitles: SideTitles(
-                                                      showTitles: false)),
-                                              topTitles: AxisTitles(
+                                                    showTitles: true,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return Text(
+                                                        value
+                                                            .toInt()
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 10,
+                                                        ),
+                                                      );
+                                                    },
+                                                    reservedSize: 30,
+                                                    interval:
+                                                        5, // Set a fixed interval
+                                                  ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                        showTitles: false)),
+                                                rightTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                        showTitles: false)),
+                                                bottomTitles: AxisTitles(
                                                   sideTitles: SideTitles(
-                                                      showTitles: false)),
-                                              rightTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                      showTitles: false)),
-                                              bottomTitles: AxisTitles(
-                                                sideTitles: SideTitles(
-                                                  showTitles: true,
-                                                  getTitlesWidget:
-                                                      (value, meta) {
-                                                    const titles = [
-                                                      'Mon',
-                                                      'Tue',
-                                                      'Wed',
-                                                      'Thu',
-                                                      'Fri',
-                                                      'Sat',
-                                                      'Sun'
-                                                    ];
-                                                    if (value.toInt() <
-                                                        titles.length) {
-                                                      return Text(titles[
-                                                          value.toInt()]);
-                                                    }
-                                                    return const Text('');
-                                                  },
+                                                    showTitles: true,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      if (value.toInt() <
+                                                          graphData.length) {
+                                                        return Text(
+                                                          '${graphData[value.toInt()].date.day}/${graphData[value.toInt()].date.month}',
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 10),
+                                                        );
+                                                      }
+                                                      return const Text('');
+                                                    },
+                                                  ),
                                                 ),
                                               ),
+                                              borderData:
+                                                  FlBorderData(show: false),
+                                              minY:
+                                                  0, // Set the minimum Y value
+                                              maxY:
+                                                  20, // Set the maximum Y value, adjust based on your data
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  spots: graphData
+                                                      .asMap()
+                                                      .entries
+                                                      .map((entry) {
+                                                    return FlSpot(
+                                                        entry.key.toDouble(),
+                                                        entry.value.count
+                                                            .toDouble());
+                                                  }).toList(),
+                                                  isCurved: true,
+                                                  color: Colors.blue,
+                                                  barWidth: 3,
+                                                  isStrokeCapRound: true,
+                                                  dotData:
+                                                      FlDotData(show: true),
+                                                  belowBarData:
+                                                      BarAreaData(show: false),
+                                                ),
+                                              ],
                                             ),
-                                            borderData:
-                                                FlBorderData(show: false),
-                                            minX: 0,
-                                            maxX: 6,
-                                            minY: 0,
-                                            maxY: 6,
-                                            lineBarsData: [
-                                              LineChartBarData(
-                                                spots: [
-                                                  FlSpot(0, 3),
-                                                  FlSpot(1, 1),
-                                                  FlSpot(2, 4),
-                                                  FlSpot(3, 2),
-                                                  FlSpot(4, 5),
-                                                  FlSpot(5, 1),
-                                                  FlSpot(6, 4),
-                                                ],
-                                                isCurved: true,
-                                                color:
-                                                    ColorManager.kPrimaryColor,
-                                                barWidth: 3,
-                                                isStrokeCapRound: true,
-                                                dotData: FlDotData(show: false),
-                                                belowBarData:
-                                                    BarAreaData(show: false),
-                                              ),
-                                            ],
                                           ),
                                         ),
                                       ),
@@ -351,37 +399,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          BuildBoxShadowContainer(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              height: 30,
-                                              width: 80,
-                                              circleRadius: 4,
-                                              child: Row(
-                                                children: [
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    "Today",
-                                                    style: buildCustomStyle(
-                                                        FontWeightManager
-                                                            .medium,
-                                                        FontSize.s8,
-                                                        0.10,
-                                                        ColorManager.textColor),
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  const Icon(
-                                                    Icons.keyboard_arrow_down,
-                                                    size: 12,
-                                                  ),
-                                                ],
-                                              )),
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.end,
+                                      //   children: [
+                                      //     BuildBoxShadowContainer(
+                                      //         padding: const EdgeInsets.only(
+                                      //             left: 10),
+                                      //         height: 30,
+                                      //         width: 80,
+                                      //         circleRadius: 4,
+                                      //         child: Row(
+                                      //           children: [
+                                      //             const SizedBox(width: 6),
+                                      //             Text(
+                                      //               "Today",
+                                      //               style: buildCustomStyle(
+                                      //                   FontWeightManager
+                                      //                       .medium,
+                                      //                   FontSize.s8,
+                                      //                   0.10,
+                                      //                   ColorManager.textColor),
+                                      //             ),
+                                      //             const SizedBox(width: 6),
+                                      //             const Icon(
+                                      //               Icons.keyboard_arrow_down,
+                                      //               size: 12,
+                                      //             ),
+                                      //           ],
+                                      //         )),
+                                      //   ],
+                                      // ),
                                       Expanded(
                                         child: BarChart(
                                           BarChartData(
@@ -392,18 +440,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               enabled: false,
                                               touchTooltipData:
                                                   BarTouchTooltipData(
-                                                // getTooltipColor:
-                                                //     Colors.transparent,
                                                 tooltipPadding: EdgeInsets.zero,
                                                 tooltipMargin: 8,
-                                                getTooltipItem: (
-                                                  BarChartGroupData group,
-                                                  int groupIndex,
-                                                  BarChartRodData rod,
-                                                  int rodIndex,
-                                                ) {
+                                                getTooltipItem: (group,
+                                                    groupIndex, rod, rodIndex) {
                                                   return BarTooltipItem(
-                                                    rod.toY.round().toString(),
+                                                    chartData[groupIndex]
+                                                        .count
+                                                        .toString(),
                                                     const TextStyle(
                                                       color: ColorManager
                                                           .kPrimaryColor,
@@ -420,86 +464,86 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 sideTitles: SideTitles(
                                                   showTitles: true,
                                                   reservedSize: 30,
-                                                  getTitlesWidget: getTitles,
+                                                  getTitlesWidget:
+                                                      (double value,
+                                                          TitleMeta meta) {
+                                                    if (value.toInt() >= 0 &&
+                                                        value.toInt() <
+                                                            chartData.length) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 4,
+                                                        child: Text(
+                                                          DateFormat('dd/MM')
+                                                              .format(chartData[
+                                                                      value
+                                                                          .toInt()]
+                                                                  .date),
+                                                          style: TextStyle(
+                                                            color: ColorManager
+                                                                .textColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 10,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    return SizedBox();
+                                                  },
                                                 ),
                                               ),
                                               leftTitles: AxisTitles(
                                                 sideTitles: SideTitles(
-                                                    showTitles: false),
+                                                  showTitles: true,
+                                                  getTitlesWidget:
+                                                      (double value,
+                                                          TitleMeta meta) {
+                                                    return Text(
+                                                      value.toInt().toString(),
+                                                      style: TextStyle(
+                                                        color: ColorManager
+                                                            .textColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 12,
+                                                      ),
+                                                    );
+                                                  },
+                                                  reservedSize: 40,
+                                                  interval: 5,
+                                                ),
                                               ),
                                               topTitles: AxisTitles(
-                                                sideTitles: SideTitles(
-                                                    showTitles: false),
-                                              ),
+                                                  sideTitles: SideTitles(
+                                                      showTitles: false)),
                                               rightTitles: AxisTitles(
-                                                sideTitles: SideTitles(
-                                                    showTitles: false),
+                                                  sideTitles: SideTitles(
+                                                      showTitles: false)),
+                                            ),
+                                            borderData:
+                                                FlBorderData(show: false),
+                                            barGroups: List.generate(
+                                              chartData.length,
+                                              (index) => BarChartGroupData(
+                                                x: index,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                    toY: chartData[index]
+                                                        .count
+                                                        .toDouble(),
+                                                    color: ColorManager
+                                                        .kPrimaryColor,
+                                                    width: 16,
+                                                  )
+                                                ],
+                                                showingTooltipIndicators: [0],
                                               ),
                                             ),
-                                            borderData: FlBorderData(
-                                              show: false,
-                                            ),
-                                            barGroups: [
-                                              BarChartGroupData(
-                                                x: 0,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                      toY: 8,
-                                                      color: ColorManager
-                                                          .kPrimaryColor,
-                                                      width: 16)
-                                                ],
-                                                showingTooltipIndicators: [0],
-                                              ),
-                                              BarChartGroupData(
-                                                x: 1,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                      toY: 10,
-                                                      color: ColorManager
-                                                          .kPrimaryColor,
-                                                      width: 16)
-                                                ],
-                                                showingTooltipIndicators: [0],
-                                              ),
-                                              BarChartGroupData(
-                                                x: 2,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                      toY: 14,
-                                                      color: ColorManager
-                                                          .kPrimaryColor,
-                                                      width: 16)
-                                                ],
-                                                showingTooltipIndicators: [0],
-                                              ),
-                                              BarChartGroupData(
-                                                x: 3,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                      toY: 15,
-                                                      color: ColorManager
-                                                          .kPrimaryColor,
-                                                      width: 16)
-                                                ],
-                                                showingTooltipIndicators: [0],
-                                              ),
-                                              BarChartGroupData(
-                                                x: 4,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                      toY: 13,
-                                                      color: ColorManager
-                                                          .kPrimaryColor,
-                                                      width: 16)
-                                                ],
-                                                showingTooltipIndicators: [0],
-                                              ),
-                                            ],
                                             gridData: FlGridData(show: false),
                                           ),
                                         ),
-                                      ),
+                                      )
                                     ],
                                   )),
                             ],

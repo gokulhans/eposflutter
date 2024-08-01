@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pos_machine/providers/category_providers.dart';
-import 'package:pos_machine/resources/asset_manager.dart';
+import 'package:pos_machine/providers/auth_model.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -9,32 +8,107 @@ import '../../components/build_container_box.dart';
 import '../../components/build_round_button.dart';
 import '../../controllers/sidebar_controller.dart';
 import '../../models/category_list.dart';
+import '../../providers/category_providers.dart';
+import '../../resources/asset_manager.dart';
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/style_manager.dart';
 
 class AddCategoryScreen extends StatefulWidget {
-  const AddCategoryScreen({super.key});
+  const AddCategoryScreen({Key? key}) : super(key: key);
 
   @override
   _AddCategoryScreenState createState() => _AddCategoryScreenState();
 }
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
-  int _currentPage = 1;
-  int _itemsPerPage = 10;
+  final TextEditingController categoryNameController = TextEditingController();
+  final TextEditingController parentCategoryController =
+      TextEditingController();
+  final TextEditingController createdByController = TextEditingController();
+  bool initLoading = false;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<CategoryProvider>(context, listen: false).listAllCategory();
+  //   });
+  // }
+
+  @override
+  void initState() {
+    loadInitData();
+    super.initState();
+  }
+
+  void loadInitData() async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+      // String? accessToken =
+      //     Provider.of<AuthModel>(context, listen: false).token;
+
+      CategoryProvider categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+
+      await categoryProvider.listAllCategory(
+          // accessToken: accessToken ?? "",
+          );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
+  }
+
+  void searchAccountBook() async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+      CategoryProvider categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+
+      await categoryProvider.listAllCategory(
+        filterName: categoryNameController.text,
+        filterCreatedBy: createdByController.text,
+        filterParent: parentCategoryController.text,
+      );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
+  }
+
+  void resetSearch() {
+    setState(() {
+      categoryNameController.clear();
+      createdByController.clear();
+      parentCategoryController.clear();
+    });
+    loadInitData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    SideBarController sideBarController = Get.put(SideBarController());
     final categoryProvider = Provider.of<CategoryProvider>(context);
-    // final searchTextController = TextEditingController();
+    final SideBarController sideBarController = Get.put(SideBarController());
+    Size size = MediaQuery.of(context).size;
 
     return SafeArea(
-        child: Container(
-      margin: const EdgeInsets.only(left: 10, top: 20, bottom: 0, right: 10),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
+      child: Container(
+        margin: const EdgeInsets.only(left: 10, top: 20, bottom: 0, right: 10),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
           boxShadow: const [
             BoxShadow(
@@ -43,132 +117,319 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               offset: Offset(1, 1),
             ),
           ],
-          color: Colors.white),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Category  ",
-                  style: buildCustomStyle(FontWeightManager.semiBold,
-                      FontSize.s20, 0.30, ColorManager.textColor),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+          color: Colors.white,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Category List",
+                style: buildCustomStyle(FontWeightManager.semiBold,
+                    FontSize.s20, 0.30, ColorManager.textColor),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                height: 90,
+                child: Row(
+                  // scrollDirection: Axis.horizontal,
+                  // physics: const BouncingScrollPhysics(),
                   children: [
-                    SizedBox(
-                      height: 45,
-                      width: 180,
-                      child: TextField(
-                        cursorWidth: 1,
-                        cursorColor: ColorManager.kPrimaryColor,
-                        onChanged: (query) {
-                          debugPrint(query);
-                          final filteredCategories = categoryProvider
-                              .searchCategoryPageCategories(query);
-
-                          categoryProvider.updateCategoryPageFilteredCategories(
-                              filteredCategories);
-                          setState(() {
-                            _currentPage = 1; // Reset to first page on search
-                          });
-                        },
-                        decoration: decoration.copyWith(
-                          prefixIcon: WebsafeSvg.asset(
-                            ImageAssets.categorySearchIcon,
-                            fit: BoxFit.none,
-                          ),
-                          labelStyle: buildCustomStyle(
-                              FontWeightManager.regular,
-                              FontSize.s10,
-                              0.10,
-                              ColorManager.textColor),
-                          hintText: 'Search category',
-                          hintStyle: buildCustomStyle(FontWeightManager.regular,
-                              FontSize.s10, 0.13, ColorManager.textColor1),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    CustomRoundButton(
-                      title: "Create New Category",
-                      fct: () {
-                        sideBarController.index.value = 16;
-                      },
-                      fontSize: 12,
-                      height: 45,
-                      width: 200,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: BuildBoxShadowContainer(
-                  circleRadius: 7,
-                  offsetValue: const Offset(1, 1),
-                  child: Consumer<CategoryProvider>(
-                    builder: (context, categoryProvider, child) {
-                      final List<Category> categories =
-                          categoryProvider.filteredcategory ?? [];
-                      final int totalPages =
-                          (categories.length / _itemsPerPage).ceil();
-                      final List<Category> paginatedCategories = categories
-                          .skip((_currentPage - 1) * _itemsPerPage)
-                          .take(_itemsPerPage)
-                          .toList();
-
-                      return Column(
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Table(
-                                border: TableBorder.symmetric(
-                                    outside: const BorderSide(
-                                        color: ColorManager.tableBOrderColor,
-                                        width: 0.3),
-                                    inside: const BorderSide(
-                                        color: ColorManager.tableBOrderColor,
-                                        width: 0.8)),
-                                defaultVerticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                columnWidths: const {
-                                  0: FlexColumnWidth(1),
-                                  1: FlexColumnWidth(3),
-                                  2: FlexColumnWidth(3),
-                                  3: FlexColumnWidth(2),
-                                },
-                                children: [
-                                  _buildTableHeader(),
-                                  ...paginatedCategories
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                    int index = entry.key +
-                                        ((_currentPage - 1) * _itemsPerPage);
-                                    Category category = entry.value;
-                                    return _buildTableRow(index, category,
-                                        sideBarController, categoryProvider);
-                                  }).toList(),
-                                ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Category Name ",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          _buildPaginationControls(totalPages),
+                          SizedBox(
+                            height: 45,
+                            width: 120, //size.width * 0.5,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // searchAmount = value;
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              controller: categoryNameController,
+                              style: buildCustomStyle(FontWeightManager.medium,
+                                  FontSize.s10, 0.18, ColorManager.textColor),
+                              decoration: decoration.copyWith(
+                                  hintText: "Category Name    ",
+                                  hintStyle: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s10,
+                                      0.18,
+                                      ColorManager.textColor),
+                                  // prefixIcon: const Icon(
+                                  //   Icons.search,
+                                  //   color: Colors.black,
+                                  //   size: 35,
+                                  // ),
+                                  prefixIconColor: Colors.black),
+                            ),
+                          ),
                         ],
-                      );
-                    },
-                  )),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Parent Category ",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120, //size.width * 0.5,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // searchAmount = value;
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              controller: parentCategoryController,
+                              style: buildCustomStyle(FontWeightManager.medium,
+                                  FontSize.s10, 0.18, ColorManager.textColor),
+                              decoration: decoration.copyWith(
+                                  hintText: "Parent Category Name    ",
+                                  hintStyle: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s10,
+                                      0.18,
+                                      ColorManager.textColor),
+                                  // prefixIcon: const Icon(
+                                  //   Icons.search,
+                                  //   color: Colors.black,
+                                  //   size: 35,
+                                  // ),
+                                  prefixIconColor: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Created By ",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120, //size.width * 0.5,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // searchAmount = value;
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              controller: createdByController,
+                              style: buildCustomStyle(FontWeightManager.medium,
+                                  FontSize.s10, 0.18, ColorManager.textColor),
+                              decoration: decoration.copyWith(
+                                  hintText: "Created By   ",
+                                  hintStyle: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s10,
+                                      0.18,
+                                      ColorManager.textColor),
+                                  // prefixIcon: const Icon(
+                                  //   Icons.search,
+                                  //   color: Colors.black,
+                                  //   size: 35,
+                                  // ),
+                                  prefixIconColor: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Search",
+                        fct: searchAccountBook,
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Reset",
+                        boxColor: Colors.white,
+                        textColor: ColorManager.kPrimaryColor,
+                        fct: resetSearch,
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _buildHeader(categoryProvider, sideBarController),
+              const SizedBox(height: 20),
+              Expanded(
+                child: BuildBoxShadowContainer(
+                  circleRadius: 7,
+                  offsetValue: const Offset(1, 1),
+                  child:
+                      _buildCategoryTable(categoryProvider, sideBarController),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(
+      CategoryProvider categoryProvider, SideBarController sideBarController) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        // Text(
+        //   "Category",
+        //   style: buildCustomStyle(
+        //     FontWeightManager.semiBold,
+        //     FontSize.s20,
+        //     0.30,
+        //     ColorManager.textColor,
+        //   ),
+        // ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            // SizedBox(
+            //   height: 45,
+            //   width: 180,
+            //   child: TextField(
+            //     controller: _searchController,
+            //     cursorWidth: 1,
+            //     cursorColor: ColorManager.kPrimaryColor,
+            //     onChanged: (query) {
+            //       categoryProvider.searchCategories(query);
+            //     },
+            //     decoration: InputDecoration(
+            //       prefixIcon: WebsafeSvg.asset(
+            //         ImageAssets.categorySearchIcon,
+            //         fit: BoxFit.none,
+            //       ),
+            //       labelStyle: buildCustomStyle(
+            //         FontWeightManager.regular,
+            //         FontSize.s10,
+            //         0.10,
+            //         ColorManager.textColor,
+            //       ),
+            //       hintText: 'Search category',
+            //       hintStyle: buildCustomStyle(
+            //         FontWeightManager.regular,
+            //         FontSize.s10,
+            //         0.13,
+            //         ColorManager.textColor1,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(width: 10),
+            CustomRoundButton(
+              title: "Create New Category",
+              fct: () {
+                sideBarController.index.value = 16;
+              },
+              fontSize: 12,
+              height: 45,
+              width: 200,
             ),
           ],
         ),
-      ),
-    ));
+      ],
+    );
+  }
+
+  Widget _buildCategoryTable(
+      CategoryProvider categoryProvider, SideBarController sideBarController) {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Table(
+              border: TableBorder.symmetric(
+                outside: const BorderSide(
+                    color: ColorManager.tableBOrderColor, width: 0.3),
+                inside: const BorderSide(
+                    color: ColorManager.tableBOrderColor, width: 0.8),
+              ),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              columnWidths: const {
+                0: FlexColumnWidth(1),
+                1: FlexColumnWidth(3),
+                2: FlexColumnWidth(3),
+                3: FlexColumnWidth(2),
+              },
+              children: [
+                _buildTableHeader(),
+                if (categoryProvider.categoryList != null)
+                  ...categoryProvider.categoryList!
+                      .asMap()
+                      .entries
+                      .map((entry) {
+                    Category category = entry.value;
+                    return _buildTableRow(
+                        category, sideBarController, categoryProvider);
+                  }).toList(),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        _buildPaginationControls(categoryProvider),
+      ],
+    );
   }
 
   TableRow _buildTableHeader() {
@@ -196,11 +457,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     );
   }
 
-  TableRow _buildTableRow(int index, Category category,
+  TableRow _buildTableRow(Category category,
       SideBarController sideBarController, CategoryProvider categoryProvider) {
     return TableRow(
       children: [
-        _buildTableCell("${index + 1}"),
+        _buildTableCell(category.categoryId?.toString() ?? ""),
         _buildTableCell(category.categoryName ?? ""),
         _buildTableCell(category.categorySlug ?? ""),
         TableCell(
@@ -277,20 +538,26 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     );
   }
 
-  Widget _buildPaginationControls(int totalPages) {
+  Widget _buildPaginationControls(CategoryProvider categoryProvider) {
+    final meta = categoryProvider.paginationMeta;
+    if (meta == null) return SizedBox.shrink();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
           icon: const Icon(Icons.chevron_left),
-          onPressed:
-              _currentPage > 1 ? () => setState(() => _currentPage--) : null,
+          onPressed: meta.currentPage! > 1
+              ? () =>
+                  categoryProvider.listAllCategory(page: meta.currentPage! - 1)
+              : null,
         ),
-        Text('Page $_currentPage of $totalPages'),
+        Text('Page ${meta.currentPage} of ${meta.lastPage}'),
         IconButton(
           icon: const Icon(Icons.chevron_right),
-          onPressed: _currentPage < totalPages
-              ? () => setState(() => _currentPage++)
+          onPressed: meta.currentPage! < meta.lastPage!
+              ? () =>
+                  categoryProvider.listAllCategory(page: meta.currentPage! + 1)
               : null,
         ),
       ],

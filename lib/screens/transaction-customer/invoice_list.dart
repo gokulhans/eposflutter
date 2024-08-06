@@ -65,7 +65,7 @@ class _InvoiceListcreenState extends State<InvoiceListcreen> {
 
   @override
   Widget build(BuildContext context) {
-    //  Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     String? token = Provider.of<AuthModel>(context, listen: false).token;
     InvoiceProvider invoiceProvider =
         Provider.of<InvoiceProvider>(context, listen: false);
@@ -87,14 +87,102 @@ class _InvoiceListcreenState extends State<InvoiceListcreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
           child: ListView(
             children: [
+              Text(
+                "Invoice List",
+                style: buildCustomStyle(FontWeightManager.semiBold,
+                    FontSize.s20, 0.30, ColorManager.textColor),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                height: 90,
+                child: Row(
+                  // scrollDirection: Axis.horizontal,
+                  // physics: const BouncingScrollPhysics(),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Name",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              decoration: decoration.copyWith(
+                                hintText: "Name",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Search",
+                        fct: (searchAccountBook) {},
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 30),
+                      child: CustomRoundButton(
+                        title: "Reset",
+                        boxColor: Colors.white,
+                        textColor: ColorManager.kPrimaryColor,
+                        fct: (resetSearch) {},
+                        height: 45,
+                        width: size.width * 0.09,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Invoice List  ",
-                    style: buildCustomStyle(FontWeightManager.semiBold,
-                        FontSize.s20, 0.30, ColorManager.textColor),
-                  ),
+                  // Text(
+                  //   "Invoice List  ",
+                  //   style: buildCustomStyle(FontWeightManager.semiBold,
+                  //       FontSize.s20, 0.30, ColorManager.textColor),
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

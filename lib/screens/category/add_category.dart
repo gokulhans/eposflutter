@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_machine/providers/auth_model.dart';
@@ -54,8 +56,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           Provider.of<CategoryProvider>(context, listen: false);
 
       await categoryProvider.listAllCategory(
-          // accessToken: accessToken ?? "",
-          );
+        // accessToken: accessToken ?? "",
+        page: 1,
+      );
     } catch (error) {
       debugPrint(error.toString());
     } finally {
@@ -65,7 +68,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     }
   }
 
-  void searchAccountBook() async {
+  void searchAccountBook(page) async {
     try {
       setState(() {
         initLoading = true;
@@ -79,6 +82,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         filterName: categoryNameController.text,
         filterCreatedBy: createdByController.text,
         filterParent: parentCategoryController.text,
+        page: page,
       );
     } catch (error) {
       debugPrint(error.toString());
@@ -124,11 +128,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Category List",
-                style: buildCustomStyle(FontWeightManager.semiBold,
-                    FontSize.s20, 0.30, ColorManager.textColor),
-              ),
+              // Text(
+              //   "Category List",
+              //   style: buildCustomStyle(FontWeightManager.semiBold,
+              //       FontSize.s20, 0.30, ColorManager.textColor),
+              // ),
+              _buildHeader(categoryProvider, sideBarController),
               const SizedBox(
                 height: 15,
               ),
@@ -310,7 +315,6 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                   ],
                 ),
               ),
-              _buildHeader(categoryProvider, sideBarController),
               const SizedBox(height: 20),
               Expanded(
                 child: BuildBoxShadowContainer(
@@ -330,17 +334,17 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   Widget _buildHeader(
       CategoryProvider categoryProvider, SideBarController sideBarController) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Text(
-        //   "Category",
-        //   style: buildCustomStyle(
-        //     FontWeightManager.semiBold,
-        //     FontSize.s20,
-        //     0.30,
-        //     ColorManager.textColor,
-        //   ),
-        // ),
+        Text(
+          "Category List",
+          style: buildCustomStyle(
+            FontWeightManager.semiBold,
+            FontSize.s20,
+            0.30,
+            ColorManager.textColor,
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -539,26 +543,40 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   }
 
   Widget _buildPaginationControls(CategoryProvider categoryProvider) {
-    final meta = categoryProvider.paginationMeta;
-    if (meta == null) return SizedBox.shrink();
-
+    final currentPage = categoryProvider.currentPage;
+    final totalPages = categoryProvider.totalPages;
+    print({currentPage, totalPages}.toString());
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: meta.currentPage! > 1
-              ? () =>
-                  categoryProvider.listAllCategory(page: meta.currentPage! - 1)
-              : null,
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: CustomRoundButton(
+            title: "Previous",
+            boxColor: Colors.white,
+            textColor: ColorManager.kPrimaryColor,
+            fct: () {
+              searchAccountBook(currentPage - 1);
+            },
+            height: 30,
+            width: 80,
+            fontSize: FontSize.s12,
+          ),
         ),
-        Text('Page ${meta.currentPage} of ${meta.lastPage}'),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: meta.currentPage! < meta.lastPage!
-              ? () =>
-                  categoryProvider.listAllCategory(page: meta.currentPage! + 1)
-              : null,
+        Text('Page ${currentPage} of ${totalPages}'),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: CustomRoundButton(
+            title: "Next",
+            boxColor: Colors.white,
+            textColor: ColorManager.kPrimaryColor,
+            fct: () {
+              searchAccountBook(currentPage + 1);
+            },
+            height: 30,
+            width: 80,
+            fontSize: FontSize.s12,
+          ),
         ),
       ],
     );

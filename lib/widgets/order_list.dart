@@ -5,6 +5,7 @@ import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_order_list_design.dart';
 import 'package:pos_machine/helpers/amount_helper.dart';
+import 'package:pos_machine/helpers/date_helper.dart';
 // import 'package:pos_machine/components/build_round_button.dart';
 // import 'package:pos_machine/components/build_title.dart';
 import 'package:pos_machine/resources/asset_manager.dart';
@@ -46,6 +47,7 @@ class _OrderListState extends State<OrderList> {
   bool isInitLoading = false;
   List<CustomerListModelData>? customerList = [];
   CustomerListModelData? selectedCustomer;
+  List<ListCartModelDataCartItem>? cartProductItems = [];
 
   Map<int, bool> hoverMap = {};
 
@@ -506,7 +508,7 @@ class _OrderListState extends State<OrderList> {
                             // List<ListCartModelDataCartItem>? cart =
                             //     cartItems.;
                             List<ListCartModelDataCartItem>? cartItem =
-                                cartItems!.isEmpty
+                                cartProductItems = cartItems!.isEmpty
                                     ? []
                                     : cartItems.map((e) => e.cartItems).first;
 
@@ -1225,7 +1227,7 @@ class _OrderListState extends State<OrderList> {
                                         'Save Sales ${AmountHelper.formatAmount(Provider.of<CartProvider>(context, listen: true).priceSummary!.netTotal)}',
                                         style: buildCustomStyle(
                                             FontWeightManager.medium,
-                                            FontSize.s18,
+                                            FontSize.s16,
                                             0.27,
                                             Colors.white),
                                       ),
@@ -1235,11 +1237,26 @@ class _OrderListState extends State<OrderList> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
+                                      String formattedTotal =
+                                          AmountHelper.formatAmount(
+                                              Provider.of<CartProvider>(context,
+                                                      listen: false)
+                                                  .priceSummary!
+                                                  .netTotal);
+                                      debugPrint(
+                                          cartProductItems!.length.toString());
+                                      debugPrint(formattedTotal.toString());
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PrintPage()),
+                                          builder: (context) => PrintPage(
+                                            cartItems: cartProductItems!,
+                                            formattedTotal: formattedTotal,
+                                            orderDate: DateHelper.formatDate(
+                                                DateTime.now()),
+                                            orderNumber: "#000000",
+                                          ),
+                                        ),
                                       );
                                     },
                                     child: Column(
@@ -1261,7 +1278,7 @@ class _OrderListState extends State<OrderList> {
                                       ],
                                     ),
                                   ),
-                                ),
+                                )
                               ]),
                         ),
                       ),

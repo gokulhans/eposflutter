@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/providers/auth_model.dart';
 import 'package:pos_machine/providers/category_providers.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,71 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
+  final TextEditingController productNameController = TextEditingController();
+  bool initLoading = false;
+
+  @override
+  void initState() {
+    loadInitData();
+    super.initState();
+  }
+
+  void loadInitData() async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+      // String? accessToken =
+      //     Provider.of<AuthModel>(context, listen: false).token;
+
+      GridSelectionProvider gridSelectionProvider =
+          Provider.of<GridSelectionProvider>(context);
+
+      await gridSelectionProvider.listAllProducts(
+          // accessToken: accessToken ?? "",
+          // page: 1,
+          // filterName: productNameController.text,
+          );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
+  }
+
+  void searchAccountBook(page) async {
+    try {
+      setState(() {
+        initLoading = true;
+      });
+      String? accessToken =
+          Provider.of<AuthModel>(context, listen: false).token;
+
+      GridSelectionProvider gridSelectionProvider =
+          Provider.of<GridSelectionProvider>(context);
+
+      await gridSelectionProvider.listAllProducts(
+          // filterName: productNameController.text,
+          // page: page,
+          );
+    } catch (error) {
+      debugPrint(error.toString());
+    } finally {
+      setState(() {
+        initLoading = false;
+      });
+    }
+  }
+
+  void resetSearch() {
+    setState(() {
+      productNameController.clear();
+    });
+    loadInitData();
+  }
+
   @override
   Widget build(BuildContext context) {
     //  Size size = MediaQuery.of(context).size;
@@ -50,10 +116,63 @@ class _AddProductScreenState extends State<AddProductScreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
           child: ListView(
             children: [
-              Text(
-                "Product List",
-                style: buildCustomStyle(FontWeightManager.semiBold,
-                    FontSize.s20, 0.30, ColorManager.textColor),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Product List  ",
+                    style: buildCustomStyle(FontWeightManager.semiBold,
+                        FontSize.s20, 0.30, ColorManager.textColor),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // SizedBox(
+                      //   height: 45,
+                      //   width: 180, //size.width * 0.5,
+                      //   child: TextField(
+                      //     cursorColor: ColorManager.kPrimaryColor,
+                      //     cursorHeight: 13,
+                      //     //  controller: searchTextController,
+                      //     onChanged: (query) {
+                      //       debugPrint(query);
+                      //       final filteredProducts =
+                      //           gridSelectionProvider.searchProducts(query);
+                      //       gridSelectionProvider
+                      //           .updateFilteredProducts(filteredProducts);
+                      //     },
+                      //     style: buildCustomStyle(FontWeightManager.medium,
+                      //         FontSize.s10, 0.18, ColorManager.textColor),
+                      //     decoration: decoration.copyWith(
+                      //         hintText: "Search    ",
+                      //         hintStyle: buildCustomStyle(
+                      //             FontWeightManager.medium,
+                      //             FontSize.s10,
+                      //             0.18,
+                      //             ColorManager.textColor),
+                      //         // prefixIcon: const Icon(
+                      //         //   Icons.search,
+                      //         //   color: Colors.black,
+                      //         //   size: 35,
+                      //         // ),
+                      //         prefixIconColor: Colors.black),
+                      //   ),
+                      // ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      CustomRoundButton(
+                        title: "Create New Product",
+                        fct: () {
+                          sideBarController.index.value = 17;
+                        },
+                        fontSize: 12,
+                        height: 45,
+                        width: 200,
+                      ),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 15,
@@ -90,6 +209,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   // Update state if needed
                                 });
                               },
+                              controller: productNameController,
                               cursorColor: ColorManager.kPrimaryColor,
                               cursorHeight: 13,
                               style: buildCustomStyle(
@@ -423,7 +543,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       padding: const EdgeInsets.only(left: 10.0, top: 30),
                       child: CustomRoundButton(
                         title: "Search",
-                        fct: (searchAccountBook) {},
+                        fct: searchAccountBook,
                         height: 45,
                         width: size.width * 0.09,
                         fontSize: FontSize.s12,
@@ -435,7 +555,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         title: "Reset",
                         boxColor: Colors.white,
                         textColor: ColorManager.kPrimaryColor,
-                        fct: (resetSearch) {},
+                        fct: resetSearch,
                         height: 45,
                         width: size.width * 0.09,
                         fontSize: FontSize.s12,
@@ -443,64 +563,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // Text(
-                  //   "Product List  ",
-                  //   style: buildCustomStyle(FontWeightManager.semiBold,
-                  //       FontSize.s20, 0.30, ColorManager.textColor),
-                  // ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        height: 45,
-                        width: 180, //size.width * 0.5,
-                        child: TextField(
-                          cursorColor: ColorManager.kPrimaryColor,
-                          cursorHeight: 13,
-                          //  controller: searchTextController,
-                          onChanged: (query) {
-                            debugPrint(query);
-                            final filteredProducts =
-                                gridSelectionProvider.searchProducts(query);
-                            gridSelectionProvider
-                                .updateFilteredProducts(filteredProducts);
-                          },
-                          style: buildCustomStyle(FontWeightManager.medium,
-                              FontSize.s10, 0.18, ColorManager.textColor),
-                          decoration: decoration.copyWith(
-                              hintText: "Search    ",
-                              hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor),
-                              // prefixIcon: const Icon(
-                              //   Icons.search,
-                              //   color: Colors.black,
-                              //   size: 35,
-                              // ),
-                              prefixIconColor: Colors.black),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      CustomRoundButton(
-                        title: "Create New Product",
-                        fct: () {
-                          sideBarController.index.value = 17;
-                        },
-                        fontSize: 12,
-                        height: 45,
-                        width: 200,
-                      ),
-                    ],
-                  ),
-                ],
               ),
               BuildBoxShadowContainer(
                   // height: size.height, //120,

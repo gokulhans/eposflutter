@@ -29,60 +29,85 @@ class SalesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchOrders(
-      {int? customerId,
-      required String accessToken,
-      required int storeId,
-      String? date,
-      required bool orderNumberSelect,
-      String? orderNumber}) async {
-    debugPrint("fetchOrders customerId $customerId");
-    DateTime now = DateTime.now();
+  Future<void> fetchOrders({
+    required String accessToken,
+    required int storeId,
+    String? orderNumber,
+    String? filterName,
+    String? date,
+    String? filterStatus,
+    String? filterPrice,
+    String? filterEmail,
+    String? filterPhone,
+    String? filterStore,
+    String? filterCreatedBy,
+    int? page,
+  }) async {
+    final queryParameters = <String, String>{
+      'store_id': storeId.toString(),
+    };
 
-    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-    debugPrint("fetchOrders customerId $userId $date");
-    debugPrint("fetchOrders orderNumberSelect $orderNumberSelect");
-    final response = orderNumberSelect
-        ? await http.get(
-            Uri.parse(
-                "${APPUrl.getListOrder}?order_number=$orderNumber&store_id=$storeId"),
-            headers: {
-                'Authorization': 'Bearer $accessToken',
-                'content-type': 'application/json'
-              })
-        : date != null
-            ? await http.get(
-                Uri.parse(
-                    "${APPUrl.getListOrder}?order_date=$date&store_id=$storeId&customer_id=$userId"),
-                headers: {
-                    'Authorization': 'Bearer $accessToken',
-                    'content-type': 'application/json'
-                  })
-            // : userId == 0
-            //     ? await http.get(Uri.parse(
-            //         "${APPUrl.getListOrder}?&order_date=${date ?? formattedDate}&store_id=$storeId"))
-            //     :
-            : await http.get(
-                Uri.parse(
-                    "${APPUrl.getListOrder}?customer_id=$userId&store_id=$storeId"),
-                headers: {
-                    'Authorization': 'Bearer $accessToken',
-                    'content-type': 'application/json'
-                  });
+    // Add filters to query parameters if they are not null
+    if (orderNumber != null) queryParameters['filter_number'] = orderNumber;
+    if (filterName != null) queryParameters['filter_name'] = filterName;
+    if (date != null) queryParameters['filter_date'] = date;
+    if (filterStatus != null) queryParameters['filter_status'] = filterStatus;
+    if (filterPrice != null) queryParameters['filter_price'] = filterPrice;
+    if (filterEmail != null) queryParameters['filter_email'] = filterEmail;
+    if (filterPhone != null) queryParameters['filter_phone'] = filterPhone;
+    if (filterStore != null) queryParameters['filter_store'] = filterStore;
+    if (filterCreatedBy != null) {
+      queryParameters['filter_created_by'] = filterCreatedBy;
+    }
+    if (page != null) queryParameters['page'] = page.toString();
 
-    if (response.statusCode == 200) {
-      debugPrint("response.statusCode == 200");
+    final uri = Uri.parse(APPUrl.getListOrder)
+        .replace(queryParameters: queryParameters);
 
-      //final jsonData = json.decode(response.body);
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ).timeout(const Duration(seconds: 15));
 
-      ListSalesOrderModel listSalesOrderModel =
-          ListSalesOrderModel.fromJson(json.decode(response.body));
-      _orders = listSalesOrderModel.data ?? [];
+      debugPrint('fetchOrders response status code: ${response.statusCode}');
 
-      notifyListeners();
-    } else {
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          final jsonData = json.decode(response.body);
+          debugPrint('Received JSON data: ${jsonData.toString()}');
+
+          try {
+            ListSalesOrderModel listSalesOrderModel =
+                ListSalesOrderModel.fromJson(jsonData);
+            _orders = listSalesOrderModel.data ?? [];
+            notifyListeners();
+          } catch (e) {
+            debugPrint('Error parsing JSON data: $e');
+            debugPrint('JSON structure: ${jsonData.runtimeType}');
+            if (jsonData is Map) {
+              jsonData.forEach((key, value) {
+                debugPrint('Key: $key, Value type: ${value.runtimeType}');
+              });
+            }
+            throw Exception('Failed to parse order list data: $e');
+          }
+        } else {
+          debugPrint('Empty response body');
+          throw Exception('Received empty response');
+        }
+      } else {
+        debugPrint(
+            'Failed to load orders: ${response.statusCode} - ${response.body}');
+        throw Exception('Failed to load orders');
+      }
+    } catch (error) {
+      debugPrint('Error in fetchOrders: $error');
       _orders = [];
-      throw Exception('Failed to load orders');
+      rethrow;
     }
   }
 
@@ -103,7 +128,7 @@ class SalesProvider with ChangeNotifier {
         debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
 
-        debugPrint(jsonData["status"]);
+        debugPrint("status${jsonData["status"]}");
 
         return json.decode(response.body);
       } else if (response.statusCode > 400) {

@@ -4,6 +4,7 @@ import 'package:pos_machine/components/build_dialog_box.dart';
 
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/responsive.dart';
+import 'package:pos_machine/temp/invoice.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -135,7 +136,6 @@ class SideMenu extends StatelessWidget {
                 salesProvider.fetchOrders(
                   accessToken: accessToken ?? '',
                   storeId: 1,
-                  orderNumberSelect: false,
                 );
               },
               selected: sideBarController.index.value == 2 ||
@@ -369,7 +369,13 @@ class SideMenu extends StatelessWidget {
               selected: sideBarController.index.value == 8,
             ),
           ),
-
+          // TextButton(
+          //     onPressed: () {
+          //       Get.to(
+          //         InvoiceScreen(),
+          //       );
+          //     },
+          //     child: const Text("Print Invoice")),
           DrawerListTile(
             iconPath: ImageAssets.logoutIcon,
             title: 'Logout',

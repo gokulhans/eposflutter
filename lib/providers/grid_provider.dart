@@ -700,8 +700,11 @@ class GridSelectionProvider extends ChangeNotifier {
   Future<void> listSTockAPI({
     required String accessToken,
     String? filterName,
+    int? page,
   }) async {
-    final queryParameters = <String, String>{};
+    final queryParameters = <String, String>{
+      'page': page.toString(),
+    };
 
     if (filterName != null && filterName.isNotEmpty) {
       queryParameters['filter_name'] = filterName;

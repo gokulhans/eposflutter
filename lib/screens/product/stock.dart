@@ -44,6 +44,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
       await categoryProvider.listSTockAPI(
         accessToken: accessToken ?? "",
+        page: 1,
       );
     } catch (error) {
       debugPrint(error.toString());
@@ -121,10 +122,24 @@ class _AddStockScreenState extends State<AddStockScreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
           child: ListView(
             children: [
-              Text(
-                "Product Stock List",
-                style: buildCustomStyle(FontWeightManager.semiBold,
-                    FontSize.s20, 0.30, ColorManager.textColor),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Product Stock List",
+                    style: buildCustomStyle(FontWeightManager.semiBold,
+                        FontSize.s20, 0.30, ColorManager.textColor),
+                  ),
+                  CustomRoundButton(
+                    title: "Add Product Stock",
+                    fct: () {
+                      sideBarController.index.value = 18;
+                    },
+                    fontSize: 12,
+                    height: 45,
+                    width: 200,
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 15,
@@ -209,62 +224,62 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // Text(
-                  //   "Product Stock List  ",
-                  //   style: buildCustomStyle(FontWeightManager.semiBold,
-                  //       FontSize.s20, 0.30, ColorManager.textColor),
-                  // ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // SizedBox(
-                      //   height: 45,
-                      //   width: 180, //size.width * 0.5,
-                      //   child: TextField(
-                      //     cursorColor: ColorManager.kPrimaryColor,
-                      //     cursorHeight: 13,
-                      //     //  controller: searchTextController,
-                      //     onChanged: (value) {
-                      //       Provider.of<GridSelectionProvider>(context,
-                      //               listen: false)
-                      //           .searchStocks(value);
-                      //     },
-                      //     style: buildCustomStyle(FontWeightManager.medium,
-                      //         FontSize.s10, 0.18, ColorManager.textColor),
-                      //     decoration: decoration.copyWith(
-                      //         hintText: "Search    ",
-                      //         hintStyle: buildCustomStyle(
-                      //             FontWeightManager.medium,
-                      //             FontSize.s10,
-                      //             0.18,
-                      //             ColorManager.textColor),
-                      //         // prefixIcon: const Icon(
-                      //         //   Icons.search,
-                      //         //   color: Colors.black,
-                      //         //   size: 35,
-                      //         // ),
-                      //         prefixIconColor: Colors.black),
-                      //   ),
-                      // ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      CustomRoundButton(
-                        title: "Add Product Stock",
-                        fct: () {
-                          sideBarController.index.value = 18;
-                        },
-                        fontSize: 12,
-                        height: 45,
-                        width: 200,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     // Text(
+              //     //   "Product Stock List  ",
+              //     //   style: buildCustomStyle(FontWeightManager.semiBold,
+              //     //       FontSize.s20, 0.30, ColorManager.textColor),
+              //     // ),
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.end,
+              //       children: [
+              //         // SizedBox(
+              //         //   height: 45,
+              //         //   width: 180, //size.width * 0.5,
+              //         //   child: TextField(
+              //         //     cursorColor: ColorManager.kPrimaryColor,
+              //         //     cursorHeight: 13,
+              //         //     //  controller: searchTextController,
+              //         //     onChanged: (value) {
+              //         //       Provider.of<GridSelectionProvider>(context,
+              //         //               listen: false)
+              //         //           .searchStocks(value);
+              //         //     },
+              //         //     style: buildCustomStyle(FontWeightManager.medium,
+              //         //         FontSize.s10, 0.18, ColorManager.textColor),
+              //         //     decoration: decoration.copyWith(
+              //         //         hintText: "Search    ",
+              //         //         hintStyle: buildCustomStyle(
+              //         //             FontWeightManager.medium,
+              //         //             FontSize.s10,
+              //         //             0.18,
+              //         //             ColorManager.textColor),
+              //         //         // prefixIcon: const Icon(
+              //         //         //   Icons.search,
+              //         //         //   color: Colors.black,
+              //         //         //   size: 35,
+              //         //         // ),
+              //         //         prefixIconColor: Colors.black),
+              //         //   ),
+              //         // ),
+              //         const SizedBox(
+              //           width: 10,
+              //         ),
+              //         CustomRoundButton(
+              //           title: "Add Product Stock",
+              //           fct: () {
+              //             sideBarController.index.value = 18;
+              //           },
+              //           fontSize: 12,
+              //           height: 45,
+              //           width: 200,
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // ),
               initLoading
                   ? SizedBox(
                       height: size.height,

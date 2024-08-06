@@ -93,7 +93,7 @@ class CategoryProvider extends ChangeNotifier {
     String? filterName,
     String? filterParent,
     String? filterCreatedBy,
-    int page = 1,
+    int? page,
   }) async {
     final queryParameters = <String, String>{
       'page': page.toString(),

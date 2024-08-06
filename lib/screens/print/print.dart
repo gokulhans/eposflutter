@@ -129,10 +129,19 @@ class _PrintPageState extends State<PrintPage> {
     setState(() {
       selectedPrinter = printer;
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text('${printer.deviceName.toString()} Printer Selected')),
+    );
   }
 
   Future<void> printReceipt() async {
-    if (selectedPrinter == null) return;
+    if (selectedPrinter == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No Print Selected')),
+      );
+      return;
+    }
 
     try {
       // Connect to the printer
@@ -179,7 +188,7 @@ class _PrintPageState extends State<PrintPage> {
           PosColumn(text: item.productName ?? '', width: 6),
           PosColumn(text: item.quantity.toString(), width: 2),
           PosColumn(
-              text: AmountHelper.formatAmount(item.totalPrice ?? 0),
+              text: item.totalPrice.toString(),
               width: 4,
               styles: const PosStyles(align: PosAlign.right)),
         ]);
@@ -211,6 +220,9 @@ class _PrintPageState extends State<PrintPage> {
           .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     } finally {
       // Disconnect from the printer
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Print Disconnected')),
+      );
       await printerManager.disconnect(type: selectedPrinter!.typePrinter);
     }
   }
@@ -241,11 +253,7 @@ class _PrintPageState extends State<PrintPage> {
             ),
           ),
           ElevatedButton(
-            onPressed: selectedPrinter == null
-                ? null
-                : () {
-                    printReceipt;
-                  },
+            onPressed: selectedPrinter == null ? null : printReceipt,
             child: const Text('Print Receipt'),
           )
         ],

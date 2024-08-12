@@ -309,6 +309,12 @@ class BuildTextFieldColumn3 extends StatelessWidget {
                           ),
                         ),
                         controller: controller,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'This field is required';
+                          }
+                          return null;
+                        },
                         style: buildCustomStyle(
                           FontWeightManager.medium,
                           FontSize.s12,
@@ -541,17 +547,19 @@ class BuildDropDownStatic extends StatelessWidget {
   }
 }
 
-Widget buildColumnWidgetForTextFields(
-        {required TextEditingController controller,
-        required Size size,
-        double? width,
-        double? height,
-        EdgeInsetsGeometry? margin,
-        required bool isLeft,
-        required bool readOnly,
-        required String title,
-        required void Function(String?) onchanged,
-        required String hintText}) =>
+Widget buildColumnWidgetForTextFields({
+  required TextEditingController controller,
+  required Size size,
+  double? width,
+  double? height,
+  EdgeInsetsGeometry? margin,
+  required bool isLeft,
+  required bool readOnly,
+  required String title,
+  required void Function(String?) onchanged,
+  required String hintText,
+  String? Function(String?)? validator, // Add validator parameter
+}) =>
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -579,15 +587,23 @@ Widget buildColumnWidgetForTextFields(
             keyboardType: TextInputType.text,
             cursorColor: ColorManager.kPrimaryColor,
             decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: hintText,
-              hintStyle: buildCustomStyle(
-                FontWeightManager.medium,
-                FontSize.s13,
-                0.27,
-                ColorManager.textColor.withOpacity(.5),
-              ),
-            ),
+                border: InputBorder.none,
+                hintText: hintText,
+                hintStyle: buildCustomStyle(
+                  FontWeightManager.medium,
+                  FontSize.s13,
+                  0.27,
+                  ColorManager.textColor.withOpacity(.5),
+                ),
+                errorStyle: buildCustomStyle(
+                  FontWeightManager.regular,
+                  FontSize.s12,
+                  0.27,
+                  Colors.red, // Red color for error message
+                )
+                // .copyWith(height: 2), // Adjust line height for spacing
+                // contentPadding: const EdgeInsets.only(top: 0, bottom: 10.0),
+                ),
             controller: controller,
             style: buildCustomStyle(
               FontWeightManager.medium,
@@ -595,6 +611,7 @@ Widget buildColumnWidgetForTextFields(
               0.27,
               ColorManager.textColor.withOpacity(.5),
             ),
+            validator: validator, // Apply the validator
           ),
         ),
       ],

@@ -130,6 +130,12 @@ class _AddCustomersScreenState extends State<AddCustomersScreen> {
                                       border: InputBorder.none,
                                     ),
                                     controller: firstNameTextController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'This field is required';
+                                      }
+                                      return null;
+                                    },
                                     style: buildCustomStyle(
                                       FontWeightManager.medium,
                                       FontSize.s12,
@@ -224,6 +230,12 @@ class _AddCustomersScreenState extends State<AddCustomersScreen> {
                                   border: InputBorder.none,
                                 ),
                                 controller: phoneNumberController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'This field is required';
+                                  }
+                                  return null;
+                                },
                                 style: buildCustomStyle(
                                   FontWeightManager.medium,
                                   FontSize.s12,

@@ -683,6 +683,13 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                 // readOnly: true,
                                                 keyboardType:
                                                     TextInputType.number,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'This field is required';
+                                                  }
+                                                  return null;
+                                                },
                                                 cursorColor:
                                                     ColorManager.kPrimaryColor,
                                                 decoration: InputDecoration(
@@ -873,6 +880,13 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                                 //readOnly: true,
                                                 keyboardType:
                                                     TextInputType.number,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'This field is required';
+                                                  }
+                                                  return null;
+                                                },
                                                 cursorColor:
                                                     ColorManager.kPrimaryColor,
                                                 decoration: InputDecoration(

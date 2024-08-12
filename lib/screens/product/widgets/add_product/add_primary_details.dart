@@ -227,6 +227,12 @@ class AddProductPageScreen extends StatelessWidget {
                                               .withOpacity(.5),
                                         ),
                                       ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required';
+                                        }
+                                        return null;
+                                      },
                                       controller: productNameController,
                                       style: buildCustomStyle(
                                         FontWeightManager.medium,
@@ -280,6 +286,12 @@ class AddProductPageScreen extends StatelessWidget {
                                         ),
                                       ),
                                       controller: productSlugController,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required';
+                                        }
+                                        return null;
+                                      },
                                       style: buildCustomStyle(
                                         FontWeightManager.medium,
                                         FontSize.s12,
@@ -295,7 +307,7 @@ class AddProductPageScreen extends StatelessWidget {
                                 children: [
                                   BuildTextTile(
                                     title: "Price",
-                                    isStarRed: true,
+                                    isStarRed: false,
                                     isTextField: true,
                                     textStyle: buildCustomStyle(
                                       FontWeightManager.regular,
@@ -714,6 +726,7 @@ class AddProductPageScreen extends StatelessWidget {
                                           // productNameController.clear();
                                           // productSlugController.clear();
                                           // productPriceController.clear();
+
                                           navigateToScreen(1);
                                         } else {
                                           debugPrint("errors.password !=null");

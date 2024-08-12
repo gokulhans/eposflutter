@@ -8,6 +8,7 @@ import 'package:pos_machine/models/list_cart.dart';
 
 class PrintPage extends StatefulWidget {
   final List<dynamic> cartItems;
+  final String? storeName;
   final String formattedTotal;
   final String orderDate;
   final String orderNumber;
@@ -15,6 +16,7 @@ class PrintPage extends StatefulWidget {
     Key? key,
     required this.cartItems,
     required this.formattedTotal,
+    this.storeName,
     required this.orderDate,
     required this.orderNumber,
   }) : super(key: key);
@@ -138,7 +140,7 @@ class _PrintPageState extends State<PrintPage> {
   Future<void> printReceipt() async {
     if (selectedPrinter == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No Print Selected')),
+        const SnackBar(content: Text('No Printer Selected')),
       );
       return;
     }
@@ -158,39 +160,45 @@ class _PrintPageState extends State<PrintPage> {
 
       // Generate receipt
       final profile = await CapabilityProfile.load();
-      final generator = Generator(PaperSize.mm58, profile);
+      final generator = Generator(PaperSize.mm80, profile);
       List<int> bytes = [];
 
-      bytes += generator.text('Epos Invoice',
+      // Title
+      bytes += generator.text('EPOS Invoice',
           styles: const PosStyles(
               align: PosAlign.center, bold: true, height: PosTextSize.size2));
-      bytes += generator.text('Thank you for your purchase!');
       bytes += generator.feed(1);
-      bytes += generator.text('Date: ${widget.orderDate.toString()}');
-      bytes += generator.text('Order No: ${widget.orderNumber}');
-      bytes += generator.feed(1);
-      bytes += generator.hr();
 
-      // Add order items header
+      // Date and Order number
+      bytes += generator.text('Date: ${widget.orderDate}',
+          styles: const PosStyles(align: PosAlign.left));
+      bytes += generator.text('Order#: ${widget.orderNumber}',
+          styles: const PosStyles(align: PosAlign.left));
+
+      // Store Name (You might want to make this configurable)
+      bytes += generator.text('Store Name: ${widget.storeName}',
+          styles: const PosStyles(align: PosAlign.left));
+      bytes += generator.feed(1);
+
+      // Table header
       bytes += generator.row([
-        PosColumn(text: 'Item', width: 6),
+        PosColumn(text: 'Sl#', width: 1),
+        PosColumn(text: 'Item', width: 4),
         PosColumn(text: 'Qty', width: 2),
-        PosColumn(
-            text: 'Price',
-            width: 4,
-            styles: const PosStyles(align: PosAlign.right)),
+        PosColumn(text: 'Unit Price', width: 2),
+        PosColumn(text: 'Price', width: 3),
       ]);
       bytes += generator.hr();
 
       // Add cart items
-      for (var item in widget.cartItems) {
+      for (var i = 0; i < widget.cartItems.length; i++) {
+        var item = widget.cartItems[i];
         bytes += generator.row([
-          PosColumn(text: item.productName ?? '', width: 6),
+          PosColumn(text: (i + 1).toString(), width: 1),
+          PosColumn(text: item.productName ?? '', width: 4),
           PosColumn(text: item.quantity.toString(), width: 2),
-          PosColumn(
-              text: item.totalPrice.toString(),
-              width: 4,
-              styles: const PosStyles(align: PosAlign.right)),
+          PosColumn(text: item.unitPrice.toString(), width: 2),
+          PosColumn(text: item.totalPrice.toString(), width: 3),
         ]);
       }
 
@@ -199,12 +207,24 @@ class _PrintPageState extends State<PrintPage> {
       // Add total
       bytes += generator.row([
         PosColumn(
-            text: 'Total:', width: 8, styles: const PosStyles(bold: true)),
+            text: 'Total:', width: 9, styles: const PosStyles(bold: true)),
         PosColumn(
             text: widget.formattedTotal,
-            width: 4,
+            width: 3,
             styles: const PosStyles(bold: true, align: PosAlign.right)),
       ]);
+
+      bytes += generator.feed(1);
+
+      // Note
+      bytes += generator.text('Note: This is a computer generated invoice',
+          styles: const PosStyles(align: PosAlign.center));
+
+      // Customer Care
+      bytes += generator.text('Customer Care: +91 9496410199',
+          styles: const PosStyles(align: PosAlign.center));
+      bytes += generator.text('Email: customercare@eposenke.in',
+          styles: const PosStyles(align: PosAlign.center));
 
       bytes += generator.feed(2);
       bytes += generator.cut();

@@ -1257,6 +1257,9 @@ class _SalesScreenState extends State<SalesScreen> {
                                                     onPressed: () async {
                                                       orderProvider.setOrderId(
                                                           "${order.ordersId ?? "0"}");
+                                                      await getOrderDetails(
+                                                          order.ordersId
+                                                              .toString());
                                                       sideBarController
                                                           .index.value = 11;
                                                     },
@@ -1303,9 +1306,14 @@ class _SalesScreenState extends State<SalesScreen> {
                                                                   .priceSummary!
                                                                   .netTotal);
 
-                                                      // debugPrint(cartItems!
-                                                      //     .length
-                                                      //     .toString());
+                                                      // debugPrint(
+                                                      //   Provider.of<PurchaseProvider>(
+                                                      //           context,
+                                                      //           listen: false)
+                                                      //       .getStoreNameFromId(
+                                                      //           order.storeId ??
+                                                      //               0).toString()
+                                                      // );
                                                       // debugPrint(formattedTotal
                                                       //     .toString());
 
@@ -1323,6 +1331,14 @@ class _SalesScreenState extends State<SalesScreen> {
                                                         MaterialPageRoute(
                                                           builder: (context) =>
                                                               PrintPage(
+                                                            storeName: Provider
+                                                                    .of<PurchaseProvider>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                .getStoreNameFromId(
+                                                                    order.storeId ??
+                                                                        0),
                                                             cartItems:
                                                                 cartItems!,
                                                             formattedTotal:

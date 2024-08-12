@@ -123,6 +123,9 @@ class CategoryProvider extends ChangeNotifier {
         CategoryListModel categoryListModel =
             CategoryListModel.fromJson(jsonData);
 
+        categoryList = categoryListWithoutQuery = categoryListModel.category;
+        categoryList!.insert(0, categoryDemo);
+
         categoryList = categoryListModel.category;
         currentPage = categoryListModel.meta?.currentPage ?? 1;
         totalPages = categoryListModel.meta?.lastPage ?? 1;

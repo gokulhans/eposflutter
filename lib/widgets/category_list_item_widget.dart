@@ -132,7 +132,7 @@ class CategoryListItemWidget extends StatelessWidget {
                   .then((value) {
                 AddToCartModel addToCartModel = AddToCartModel.fromJson(value);
                 if (value["status"] == "success") {
-                  showScaffoldError(
+                  showScaffold(
                     context: context,
                     message: addToCartModel.message ?? 'Added To Cart',
                   );

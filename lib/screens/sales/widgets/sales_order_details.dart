@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_round_button.dart';
+import 'package:pos_machine/helpers/amount_helper.dart';
+import 'package:pos_machine/helpers/date_helper.dart';
 import 'package:pos_machine/models/order_details.dart';
+import 'package:pos_machine/providers/cart_provider.dart';
+import 'package:pos_machine/providers/purchase_provider.dart';
 
 import 'package:pos_machine/providers/sales_provider.dart';
+import 'package:pos_machine/screens/print/print.dart';
 import 'package:pos_machine/screens/sales/widgets/buid_order_details_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -227,13 +232,55 @@ class _SalesOrderDetailsScreenState extends State<SalesOrderDetailsScreen> {
                           Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
+                                padding:
+                                    const EdgeInsets.only(left: 10.0, top: 10),
                                 child: CustomRoundButton(
-                                  title: "Back",
+                                  title: "Print",
                                   boxColor: Colors.white,
                                   textColor: ColorManager.kPrimaryColor,
                                   fct: () async {
-                                    sideBarController.index.value = 2;
+                                    String formattedTotal =
+                                        AmountHelper.formatAmount(
+                                            Provider.of<CartProvider>(context,
+                                                    listen: false)
+                                                .priceSummary!
+                                                .netTotal);
+
+                                    debugPrint(Provider.of<PurchaseProvider>(
+                                            context,
+                                            listen: false)
+                                        .getStoreNameFromId(
+                                            orderDetailsModelData!.storeId ??
+                                                0));
+                                    // debugPrint(formattedTotal
+                                    //     .toString());
+
+                                    // for (var item in cartItems!) {
+                                    //   debugPrint(item.productName.toString());
+                                    //   debugPrint(
+                                    //       "aaa aaa ${item.productName.toString()}");
+                                    // }
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PrintPage(
+                                          storeName:
+                                              Provider.of<PurchaseProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .getStoreNameFromId(
+                                                      orderDetailsModelData!
+                                                              .storeId ??
+                                                          0),
+                                          cartItems: cartItems!,
+                                          formattedTotal: formattedTotal,
+                                          orderDate: DateHelper.formatDate(
+                                              DateTime.now()),
+                                          orderNumber: orderNumber,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   height: 50,
                                   width: size.width * 0.19,

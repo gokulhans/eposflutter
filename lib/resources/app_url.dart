@@ -2,8 +2,8 @@ class APPUrl {
   static const String baseURL = "https://epos.enke.in";
   // static const String baseURL = "http://13.212.33.222";
 
-  static const String categoryListUrl = '$baseURL/api/list-category';
-  // static const String categoryListUrl = '$baseURL/api/category-searchbar';
+  // static const String categoryListUrl = '$baseURL/api/list-category';
+  static const String categoryListUrl = '$baseURL/api/category-searchbar';
   static const String viewCategoryListUrl = '$baseURL/api/category-details';
   static const String addCategoryUrl = '$baseURL/api/category/add-category';
   static const String editCategoryUrl = '$baseURL/api/category/edit-category';
@@ -16,8 +16,8 @@ class APPUrl {
   static const String removeFromCartUrl = '$baseURL/api/cart/remove-from-cart';
   static const String listCartUrl = '$baseURL/api/cart/list-carts';
   static const String addToOrderUrl = '$baseURL/api/order/add-to-order';
-  static const String getListOrder = '$baseURL/api/order/list-orders';
-  // static const String getListOrder = '$baseURL/api/order-searchbar';
+  // static const String getListOrder = '$baseURL/api/order/list-orders';
+  static const String getListOrder = '$baseURL/api/order-searchbar';
   static const String searchListOrder = '$baseURL/api/order-searchbar';
   static const String getListOrderDetails = '$baseURL/api/order/order-details';
 

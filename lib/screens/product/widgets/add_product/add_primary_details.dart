@@ -660,8 +660,7 @@ class AddProductPageScreen extends StatelessWidget {
                                     debugPrint(
                                         "categoryIdController.text ${idController.text}");
 
-                                    if (productPriceController.text.isEmpty ||
-                                        productSlugController.text.isEmpty ||
+                                    if (productSlugController.text.isEmpty ||
                                         productNameController.text.isEmpty ||
                                         selectedCurrency == null ||
                                         selectedUnit == null) {

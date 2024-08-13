@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
+import 'package:pos_machine/components/build_err_view.dart';
 import 'package:pos_machine/models/product_list_file.dart';
 import 'package:pos_machine/providers/grid_provider.dart';
 
@@ -29,6 +30,31 @@ class AddCategoryPageScreen extends StatefulWidget {
 }
 
 class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
+  final TextEditingController categoryNameEnglishController =
+      TextEditingController();
+  final TextEditingController categoryNameController = TextEditingController();
+  final TextEditingController categoryNameArabicController =
+      TextEditingController();
+  final TextEditingController categoryNameHindiController =
+      TextEditingController();
+  final TextEditingController categorySlugController = TextEditingController();
+  final TextEditingController idController = TextEditingController(text: "0");
+  final TextEditingController categoryIDController =
+      TextEditingController(text: "0");
+
+  @override
+  void dispose() {
+    // Dispose of the controllers when the widget is disposed
+    categoryNameEnglishController.dispose();
+    categoryNameController.dispose();
+    categoryNameArabicController.dispose();
+    categoryNameHindiController.dispose();
+    categorySlugController.dispose();
+    idController.dispose();
+    categoryIDController.dispose();
+    super.dispose();
+  }
+
   final imageTitleController = TextEditingController();
   final imageAltController = TextEditingController();
   int? selectedImageIndex;
@@ -45,11 +71,6 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
     getData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void getData() {
     String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
     Provider.of<GridSelectionProvider>(context, listen: false)
@@ -63,21 +84,17 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
     });
   }
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _imageError;
+  String? _iconError;
+  String? _categoryNameEnglishError;
+  String? _categoryNameError;
+  String? _categoryNameHindiError;
+  String? _categoryNameArabicError;
+  String? _categorySlugError;
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController categoryNameEnglishController =
-        TextEditingController();
-    final TextEditingController categoryNameController =
-        TextEditingController();
-    final TextEditingController categoryNameArabicController =
-        TextEditingController();
-    final TextEditingController categoryNameHindiController =
-        TextEditingController();
-    final TextEditingController categorySlugController =
-        TextEditingController();
-    final TextEditingController idController = TextEditingController(text: "0");
-    final TextEditingController categoryIDController =
-        TextEditingController(text: "0");
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     SideBarController sideBarController = Get.put(SideBarController());
     Size size = MediaQuery.of(context).size;
@@ -97,6 +114,101 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
       categoryNameEnglishController.clear();
       categoryNameHindiController.clear();
       categorySlugController.clear();
+    }
+
+    bool _validateForm() {
+      bool isValid = true;
+
+      // Check if _formKey.currentState is not null before calling validate()
+      if (_formKey.currentState != null) {
+        isValid = _formKey.currentState!.validate() && isValid;
+      }
+
+      // if (categoryNameEnglishController.text.isEmpty) {
+      //   setState(() {
+      //     _categoryNameEnglishError = "Category Name in English is required";
+      //   });
+      //   isValid = false;
+      // } else {
+      //   setState(() {
+      //     _categoryNameEnglishError = null;
+      //   });
+      // }
+
+      if (categoryNameController.text.isEmpty) {
+        setState(() {
+          _categoryNameError = "Category Name is required";
+        });
+        isValid = false;
+      } else {
+        setState(() {
+          _categoryNameError = null;
+        });
+      }
+
+      // if (categoryNameHindiController.text.isEmpty) {
+      //   setState(() {
+      //     _categoryNameHindiError = "Category Name in Hindi is required";
+      //   });
+      //   isValid = false;
+      // } else {
+      //   setState(() {
+      //     _categoryNameHindiError = null;
+      //   });
+      // }
+
+      // if (categoryNameArabicController.text.isEmpty) {
+      //   setState(() {
+      //     _categoryNameArabicError = "Category Name in Arabic is required";
+      //   });
+      //   isValid = false;
+      // } else {
+      //   setState(() {
+      //     _categoryNameArabicError = null;
+      //   });
+      // }
+
+      if (categorySlugController.text.isEmpty) {
+        setState(() {
+          _categorySlugError = "Category Slug is required";
+        });
+        isValid = false;
+      } else {
+        setState(() {
+          _categorySlugError = null;
+        });
+      }
+
+      if (imageFilePathController.text.isEmpty) {
+        setState(() {
+          _imageError = "Category Image is required";
+        });
+        isValid = false;
+      } else {
+        setState(() {
+          _imageError = null;
+        });
+      }
+
+      if (iconFilePathController.text.isEmpty) {
+        setState(() {
+          _iconError = "Category Icon is required";
+        });
+        isValid = false;
+      } else {
+        setState(() {
+          _iconError = null;
+        });
+      }
+
+      if (!isValid) {
+        showScaffoldError(
+          context: context,
+          message: 'Please fill all required fields',
+        );
+      }
+
+      return isValid;
     }
 
     return SafeArea(
@@ -273,38 +385,42 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: size.height * .17,
-                                    child: buildColumnWidgetForTextFields(
-                                      onchanged: (value) {},
-                                      isLeft: true,
-                                      readOnly: false,
-                                      controller: categoryNameEnglishController,
-                                      size: size,
-                                      title: "Category Name - English (US)*",
-                                      hintText: 'Enter...',
-                                    ),
+                                  buildColumnWidgetForTextFields(
+                                    onchanged: (value) {},
+                                    isLeft: true,
+                                    readOnly: false,
+                                    controller: categoryNameEnglishController,
+                                    size: size,
+                                    title: "Category Name - English (US)*",
+                                    hintText: 'Enter...',
                                   ),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  buildColumnWidgetForTextFields(
-                                    onchanged: ((value) {
-                                      categorySlugController.text = categoryNameController
-                                          .text
-                                          .toLowerCase() // Convert to lowercase
-                                          .replaceAll(RegExp(r'\s+'),
-                                              '-') // Replace spaces with hyphens
-                                          .replaceAll(RegExp(r'[^a-z0-9-]'),
-                                              ''); // Remove non-alphanumeric characters except hyphens
-                                    }),
-                                    isLeft: false,
-                                    readOnly: false,
-                                    controller: categoryNameController,
-                                    size: size,
-                                    title: 'Category Name',
-                                    hintText: 'Category Name',
+                                  BuildErrorText(
+                                    errorText: _categoryNameError != null
+                                        ? _categoryNameError!
+                                        : "",
+                                    padding: const EdgeInsets.only(left: 10.0),
+                                    child: buildColumnWidgetForTextFields(
+                                      onchanged: ((value) {
+                                        categorySlugController.text = categoryNameController
+                                            .text
+                                            .toLowerCase() // Convert to lowercase
+                                            .replaceAll(RegExp(r'\s+'),
+                                                '-') // Replace spaces with hyphens
+                                            .replaceAll(RegExp(r'[^a-z0-9-]'),
+                                                ''); // Remove non-alphanumeric characters except hyphens
+                                      }),
+                                      isLeft: false,
+                                      isStarRed: true,
+                                      readOnly: false,
+                                      controller: categoryNameController,
+                                      size: size,
+                                      title: 'Category Name',
+                                      hintText: 'Category Name',
+                                    ),
                                   ),
                                   buildColumnWidgetForTextFields(
                                     onchanged: (value) {},
@@ -312,27 +428,34 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                     readOnly: false,
                                     controller: categoryNameHindiController,
                                     size: size,
-                                    title: "Category Name - Hindi(IND)*",
+                                    title: "Category Name - Hindi(IND)",
                                     hintText: 'Enter...',
                                   ),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  buildColumnWidgetForTextFields(
-                                      onchanged: (value) {},
-                                      isLeft: false,
-                                      controller: categorySlugController,
-                                      size: size,
-                                      title: "Category Slug",
-                                      hintText: 'Url Slug',
-                                      readOnly: true),
+                                  BuildErrorText(
+                                    errorText: _categorySlugError != null
+                                        ? _categorySlugError!
+                                        : "",
+                                    padding: const EdgeInsets.only(left: 10.0),
+                                    child: buildColumnWidgetForTextFields(
+                                        onchanged: (value) {},
+                                        isLeft: false,
+                                        controller: categorySlugController,
+                                        size: size,
+                                        isStarRed: true,
+                                        title: "Category Slug",
+                                        hintText: 'Url Slug',
+                                        readOnly: true),
+                                  ),
                                   buildColumnWidgetForTextFields(
                                       onchanged: (value) {},
                                       isLeft: true,
                                       controller: categoryNameArabicController,
                                       size: size,
-                                      title: "Category Name - Arabic(AR)*",
+                                      title: "Category Name - Arabic(AR)",
                                       hintText: 'Enter...',
                                       readOnly: false),
                                 ],
@@ -371,6 +494,17 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                           fontSize: FontSize.s12,
                                         ),
                                       ),
+                                      if (_imageError != null)
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8.0),
+                                          child: Text(
+                                            _imageError!,
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                   Column(
@@ -407,6 +541,17 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                           fontSize: FontSize.s12,
                                         ),
                                       ),
+                                      if (_iconError != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0, left: 20),
+                                          child: Text(
+                                            _iconError!,
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ],
@@ -423,8 +568,8 @@ class _AddCategoryPageScreenState extends State<AddCategoryPageScreen> {
                                             categoryProvider.getParentCategory;
                                         debugPrint(
                                             "categoryIdController.text ${idController.text}");
-                                        if (formKey.currentState!.validate()) {
-                                          formKey.currentState!.save();
+                                        if (_validateForm()) {
+                                          // formKey.currentState!.save();
                                           debugPrint("submit");
                                           debugPrint(
                                               "categoryIdController.text ${idController.text}");

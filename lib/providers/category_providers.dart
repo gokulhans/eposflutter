@@ -17,7 +17,7 @@ class CategoryProvider extends ChangeNotifier {
   String parentCategory = '0';
   int editCategoryId = 0;
   int propCategory = 0;
-  Meta? paginationMeta;
+  // Meta? paginationMeta;
   //bool _isLoading = false;
   CategoryProvider() {
     listAllCategory();
@@ -34,7 +34,6 @@ class CategoryProvider extends ChangeNotifier {
 
   int currentPage = 1;
   int totalPages = 1;
-  int itemsPerPage = 3;
 
   setCategoryItemCount(int value) {
     categoryCount = value;
@@ -127,8 +126,8 @@ class CategoryProvider extends ChangeNotifier {
         categoryList!.insert(0, categoryDemo);
 
         categoryList = categoryListModel.category;
-        currentPage = categoryListModel.meta?.currentPage ?? 1;
-        totalPages = categoryListModel.meta?.lastPage ?? 1;
+        // currentPage = categoryListModel.meta?.currentPage ?? 1;
+        // totalPages = categoryListModel.meta?.lastPage ?? 1;
 
         notifyListeners();
       } else {

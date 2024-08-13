@@ -14,15 +14,40 @@ import '../../../../resources/color_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/style_manager.dart';
 
-class AddProductNamePageScreen extends StatelessWidget {
+class AddProductNamePageScreen extends StatefulWidget {
   final Function(int) navigateToScreen;
   const AddProductNamePageScreen({super.key, required this.navigateToScreen});
 
   @override
+  State<AddProductNamePageScreen> createState() =>
+      _AddProductNamePageScreenState();
+}
+
+class _AddProductNamePageScreenState extends State<AddProductNamePageScreen> {
+  final productNameEnglishController = TextEditingController();
+  final productNameHindiController = TextEditingController();
+  final productNameArabicController = TextEditingController();
+
+  String? englishError;
+  String? hindiError;
+  String? arabicError;
+
+  void validateFields() {
+    setState(() {
+      englishError = productNameEnglishController.text.isEmpty
+          ? "This field is required"
+          : null;
+      hindiError = productNameHindiController.text.isEmpty
+          ? "This field is required"
+          : null;
+      arabicError = productNameArabicController.text.isEmpty
+          ? "This field is required"
+          : null;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final productNameEnglishController = TextEditingController();
-    final productNameHindiController = TextEditingController();
-    final productNameArabicController = TextEditingController();
     GridSelectionProvider gridSelectionProvider =
         Provider.of<GridSelectionProvider>(context);
     Size size = MediaQuery.of(context).size;
@@ -37,12 +62,10 @@ class AddProductNamePageScreen extends StatelessWidget {
             width: double.infinity,
             child: BuildBoxShadowContainer(
               circleRadius: 7,
-              // margin: const EdgeInsets.only(bottom: 10),
               blurRadius: 6,
               padding: const EdgeInsets.only(
                   left: 10.0, right: 20, top: 30, bottom: 10),
               offsetValue: const Offset(1, 1),
-
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,8 +95,9 @@ class AddProductNamePageScreen extends StatelessWidget {
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
                                 cursorColor: ColorManager.kPrimaryColor,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
+                                  errorText: englishError,
                                 ),
                                 controller: productNameEnglishController,
                                 style: buildCustomStyle(
@@ -108,8 +132,9 @@ class AddProductNamePageScreen extends StatelessWidget {
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
                                 cursorColor: ColorManager.kPrimaryColor,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
+                                  errorText: hindiError,
                                 ),
                                 controller: productNameHindiController,
                                 style: buildCustomStyle(
@@ -147,8 +172,9 @@ class AddProductNamePageScreen extends StatelessWidget {
                           child: TextFormField(
                             keyboardType: TextInputType.text,
                             cursorColor: ColorManager.kPrimaryColor,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none,
+                              errorText: arabicError,
                             ),
                             controller: productNameArabicController,
                             style: buildCustomStyle(
@@ -171,91 +197,13 @@ class AddProductNamePageScreen extends StatelessWidget {
                             boxColor: Colors.white,
                             textColor: ColorManager.kPrimaryColor,
                             fct: () async {
-                              navigateToScreen(0);
-                              // sideBarController.index.value = 14;
+                              widget.navigateToScreen(0);
                             },
                             height: 50,
                             width: size.width * 0.19,
                             fontSize: FontSize.s12,
                           ),
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 10.0),
-                        //   child: CustomRoundButton(
-                        //     title: "Submit",
-                        //     fct: () async {
-                        //       int? productId =
-                        //           gridSelectionProvider.getProductId;
-                        //       if (productId == null) {
-                        //         showScaffold(
-                        //           context: context,
-                        //           message: 'Failed',
-                        //         );
-                        //       } else {
-                        //         if (productNameArabicController.text.isEmpty ||
-                        //             productNameHindiController.text.isEmpty ||
-                        //             productNameArabicController.text.isEmpty) {
-                        //           showScaffold(
-                        //             context: context,
-                        //             message: 'Please Fill the Required Fields',
-                        //           );
-                        //           sideBarController.index.value = 14;
-                        //         } else {
-                        //           showDialog(
-                        //               context: context,
-                        //               barrierDismissible: false,
-                        //               builder: (context) {
-                        //                 return const Center(
-                        //                   child: CircularProgressIndicator
-                        //                       .adaptive(),
-                        //                 );
-                        //               });
-                        //           String? accessToken = Provider.of<AuthModel>(
-                        //                   context,
-                        //                   listen: false)
-                        //               .token;
-                        //           debugPrint(
-                        //               "accessToken From AuthModel $accessToken");
-                        //           gridSelectionProvider
-                        //               .addProductNamesAPI(
-                        //                   productId: "$productId",
-                        //                   productNameEnglish:
-                        //                       productNameEnglishController.text,
-                        //                   productNameHindi:
-                        //                       productNameHindiController.text,
-                        //                   productNameArabic:
-                        //                       productNameArabicController.text,
-                        //                   accessToken: accessToken ?? "")
-                        //               .then((value) {
-                        //             if (value["status"] == "success") {
-                        //               showScaffold(
-                        //                 context: context,
-                        //                 message: '${value["message"]}',
-                        //               );
-
-                        //               Navigator.pop(context);
-                        //               navigateToScreen(2);
-                        //               productNameArabicController.clear();
-                        //               productNameEnglishController.clear();
-                        //               productNameHindiController.clear();
-                        //             } else {
-                        //               Navigator.pop(context);
-                        //               showScaffold(
-                        //                 context: context,
-                        //                 message: '${value["message"]}',
-                        //               );
-                        //               sideBarController.index.value = 14;
-                        //             }
-                        //           });
-                        //         }
-                        //       }
-                        //     },
-                        //     height: 50,
-                        //     width: size.width * 0.19,
-                        //     fontSize: FontSize.s12,
-                        //   ),
-                        // ),
-
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: CustomRoundButton(
@@ -263,22 +211,17 @@ class AddProductNamePageScreen extends StatelessWidget {
                             boxColor: Colors.white,
                             textColor: ColorManager.kPrimaryColor,
                             fct: () async {
-                              int? productId =
-                                  gridSelectionProvider.getProductId;
-                              if (productId == null) {
-                                showScaffold(
-                                  context: context,
-                                  message: 'Failed',
-                                );
-                              } else {
-                                if (productNameArabicController.text.isEmpty ||
-                                    productNameHindiController.text.isEmpty ||
-                                    productNameArabicController.text.isEmpty) {
+                              validateFields();
+                              if (englishError == null &&
+                                  hindiError == null &&
+                                  arabicError == null) {
+                                int? productId =
+                                    gridSelectionProvider.getProductId;
+                                if (productId == null) {
                                   showScaffold(
                                     context: context,
-                                    message: 'Please Fill the Required Fields',
+                                    message: 'Failed',
                                   );
-                                  // sideBarController.index.value = 14;
                                 } else {
                                   showDialog(
                                       context: context,
@@ -313,24 +256,17 @@ class AddProductNamePageScreen extends StatelessWidget {
                                       );
 
                                       Navigator.pop(context);
-                                      navigateToScreen(2);
-                                      // productNameArabicController.clear();
-                                      // productNameEnglishController.clear();
-                                      // productNameHindiController.clear();
+                                      widget.navigateToScreen(2);
                                     } else {
                                       Navigator.pop(context);
                                       showScaffold(
                                         context: context,
                                         message: '${value["message"]}',
                                       );
-                                      // sideBarController.index.value = 14;
                                     }
                                   });
                                 }
                               }
-                              // old data
-                              // navigateToScreen(2);
-                              // sideBarController.index.value = 14;
                             },
                             height: 50,
                             width: size.width * 0.19,

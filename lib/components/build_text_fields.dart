@@ -66,22 +66,26 @@ class BuildTextFieldColumn extends StatelessWidget {
   final String? isDoubleTitle;
   final String? isDoubleHintText;
   final TextEditingController? isDoubleontroller;
-  const BuildTextFieldColumn(
-      {super.key,
-      required this.size,
-      this.maxlines,
-      this.read,
-      this.textInputType,
-      required this.controller,
-      this.hintText,
-      required this.title,
-      this.isStarRed,
-      this.isTextField,
-      required this.isLeft,
-      this.isDouble,
-      this.isDoubleTitle,
-      this.isDoubleHintText,
-      this.isDoubleontroller});
+  final String? Function(String?)? validator; // New validator parameter
+
+  const BuildTextFieldColumn({
+    Key? key,
+    required this.size,
+    this.maxlines,
+    this.read,
+    this.textInputType,
+    required this.controller,
+    this.hintText,
+    required this.title,
+    this.isStarRed,
+    this.isTextField,
+    required this.isLeft,
+    this.isDouble,
+    this.isDoubleTitle,
+    this.isDoubleHintText,
+    this.isDoubleontroller,
+    this.validator, // Add validator to constructor
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +137,7 @@ class BuildTextFieldColumn extends StatelessWidget {
                     0.27,
                     ColorManager.textColor.withOpacity(.5),
                   ),
+                  validator: validator, // Apply validator
                 ),
               ),
             ],
@@ -187,6 +192,7 @@ class BuildTextFieldColumn extends StatelessWidget {
                         0.27,
                         ColorManager.textColor.withOpacity(.5),
                       ),
+                      validator: validator, // Apply validator
                     ),
                   ),
                   BuildBoxShadowContainer(
@@ -223,6 +229,7 @@ class BuildTextFieldColumn extends StatelessWidget {
                         0.27,
                         ColorManager.textColor.withOpacity(.5),
                       ),
+                      validator: validator, // Apply validator
                     ),
                   ),
                 ],
@@ -552,6 +559,7 @@ Widget buildColumnWidgetForTextFields({
   required Size size,
   double? width,
   double? height,
+  bool isStarRed = false,
   EdgeInsetsGeometry? margin,
   required bool isLeft,
   required bool readOnly,
@@ -565,6 +573,7 @@ Widget buildColumnWidgetForTextFields({
       children: [
         BuildTextTile(
           title: title,
+          isStarRed: isStarRed,
           textStyle: buildCustomStyle(
             FontWeightManager.regular,
             FontSize.s14,

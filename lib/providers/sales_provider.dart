@@ -31,7 +31,7 @@ class SalesProvider with ChangeNotifier {
 
   Future<void> fetchOrders({
     required String accessToken,
-    required int storeId,
+    int? storeId,
     String? orderNumber,
     String? filterName,
     String? date,

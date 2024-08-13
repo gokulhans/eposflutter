@@ -852,7 +852,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             BuildTextTile(
-                                              isStarRed: true,
+                                              isStarRed: false,
                                               isTextField: true,
                                               title: "Batch Number ",
                                               textStyle: buildCustomStyle(

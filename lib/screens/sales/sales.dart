@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pos_machine/components/build_calendar_selection.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/helpers/amount_helper.dart';
 import 'package:pos_machine/helpers/date_helper.dart';
@@ -31,6 +32,15 @@ class SalesScreen extends StatefulWidget {
 
 class _SalesScreenState extends State<SalesScreen> {
   final TextEditingController orderNumberController = TextEditingController();
+  final TextEditingController customerNameController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController storeController = TextEditingController();
+  GetStoreModelData? storeSelected;
+  DateTime? selectedDate;
+
   bool isInitLoading = false;
   String orderNumber = "";
   OrderDetailsModelData? orderDetailsModelData;
@@ -69,7 +79,7 @@ class _SalesScreenState extends State<SalesScreen> {
     }
   }
 
-  void searchAccountBook() async {
+  void searchOrders() async {
     try {
       setState(() {
         initLoading = true;
@@ -83,6 +93,14 @@ class _SalesScreenState extends State<SalesScreen> {
         accessToken: accessToken ?? '',
         storeId: 1,
         orderNumber: orderNumberController.text,
+        filterName: customerNameController.text,
+        filterPrice: amountController.text,
+        filterEmail: emailController.text,
+        filterPhone: phoneController.text,
+        date: selectedDate != null
+            ? DateFormat('yyyy-MM-dd').format(selectedDate!)
+            : '',
+        filterStore: storeController.text,
       );
     } catch (error) {
       debugPrint(error.toString());
@@ -138,13 +156,16 @@ class _SalesScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     SideBarController sideBarController = Get.put(SideBarController());
-    final searchTextController = TextEditingController();
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('d,MMMM,y').format(now);
-    final dateController =
-        TextEditingController(text: formattedDate); //"6,April,2023");
-    final dateFormatController = TextEditingController();
+    // final searchTextController = TextEditingController();
+    // DateTime now = DateTime.now();
+    // String formattedDate = DateFormat('d,MMMM,y').format(now);
+    // final dateController =
+    //     TextEditingController(text: formattedDate); //"6,April,2023");
+    // final dateFormatController = TextEditingController();
     Size size = MediaQuery.of(context).size;
+    PurchaseProvider purchaseProvider =
+        Provider.of<PurchaseProvider>(context, listen: false);
+    List<GetStoreModelData>? storeList = purchaseProvider.getStoreList;
     return SafeArea(
       child: Container(
           margin:
@@ -165,176 +186,176 @@ class _SalesScreenState extends State<SalesScreen> {
             child: ListView(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       "Orders List",
                       style: buildCustomStyle(FontWeightManager.semiBold,
                           FontSize.s20, 0.30, ColorManager.textColor),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 45,
-                          width: 150, //size.width * 0.5,
-                          child: TextField(
-                            cursorColor: ColorManager.kPrimaryColor,
-                            cursorHeight: 13,
-                            controller: searchTextController,
-                            style: buildCustomStyle(FontWeightManager.medium,
-                                FontSize.s10, 0.18, ColorManager.textColor),
-                            decoration: decoration.copyWith(
-                                hintText: "Search Order",
-                                hintStyle: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.18,
-                                    ColorManager.textColor),
-                                // prefixIcon: const Icon(
-                                //   Icons.search,
-                                //   color: Colors.black,
-                                //   size: 35,
-                                // ),
-                                prefixIconColor: Colors.black),
-                          ),
-                        ),
-                        BuildBoxShadowContainer(
-                          margin: const EdgeInsets.all(15),
-                          // padding: const EdgeInsets.all(15),
-                          height: 45,
-                          width: 190,
-                          circleRadius: 4,
-                          child: GestureDetector(
-                            onTap: () async {
-                              DateTime? datePicked = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2021),
-                                  lastDate: DateTime(2025));
-                              if (datePicked != null) {
-                                String dateFormat = DateFormat(
-                                        DateFormat.YEAR_ABBR_MONTH_WEEKDAY_DAY)
-                                    .format(datePicked);
-                                debugPrint(
-                                    "date Picked ${datePicked.day},${datePicked.month},${datePicked.year}");
-                                debugPrint(dateFormat);
-                                String formattedDate = DateFormat('d,MMMM,yyyy')
-                                    .format(datePicked);
-                                debugPrint(formattedDate);
-                                dateController.text = formattedDate;
-                                dateFormatController.text =
-                                    DateFormat('yyyy-MM-dd').format(datePicked);
-                                searchTextController.clear();
-                              }
-                            },
-                            child: TextField(
-                              cursorColor: ColorManager.kPrimaryColor,
-                              cursorHeight: 20,
-                              controller: dateController,
-                              enabled: false,
-                              style: buildCustomStyle(FontWeightManager.medium,
-                                  FontSize.s10, 0.18, ColorManager.textColor),
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  // labelText: dateController.text,
-                                  labelStyle: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s10,
-                                      0.18,
-                                      ColorManager.textColor),
-                                  hintText: dateController.text,
-                                  //  hintText: "6,April,2022",
-                                  hintStyle: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s10,
-                                      0.18,
-                                      ColorManager.textColor),
-                                  prefixIcon: const Icon(
-                                    Icons.calendar_month,
-                                    size: 12,
-                                  ),
-                                  suffixIcon: const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 12,
-                                  ),
-                                  prefixIconColor: Colors.black),
-                            ),
-                          ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   children: [
+                    //     SizedBox(
+                    //       height: 45,
+                    //       width: 150, //size.width * 0.5,
+                    //       child: TextField(
+                    //         cursorColor: ColorManager.kPrimaryColor,
+                    //         cursorHeight: 13,
+                    //         controller: searchTextController,
+                    //         style: buildCustomStyle(FontWeightManager.medium,
+                    //             FontSize.s10, 0.18, ColorManager.textColor),
+                    //         decoration: decoration.copyWith(
+                    //             hintText: "Search Order",
+                    //             hintStyle: buildCustomStyle(
+                    //                 FontWeightManager.medium,
+                    //                 FontSize.s10,
+                    //                 0.18,
+                    //                 ColorManager.textColor),
+                    //             // prefixIcon: const Icon(
+                    //             //   Icons.search,
+                    //             //   color: Colors.black,
+                    //             //   size: 35,
+                    //             // ),
+                    //             prefixIconColor: Colors.black),
+                    //       ),
+                    //     ),
+                    //     BuildBoxShadowContainer(
+                    //       margin: const EdgeInsets.all(15),
+                    //       // padding: const EdgeInsets.all(15),
+                    //       height: 45,
+                    //       width: 190,
+                    //       circleRadius: 4,
+                    //       child: GestureDetector(
+                    //         onTap: () async {
+                    //           DateTime? datePicked = await showDatePicker(
+                    //               context: context,
+                    //               initialDate: DateTime.now(),
+                    //               firstDate: DateTime(2021),
+                    //               lastDate: DateTime(2025));
+                    //           if (datePicked != null) {
+                    //             String dateFormat = DateFormat(
+                    //                     DateFormat.YEAR_ABBR_MONTH_WEEKDAY_DAY)
+                    //                 .format(datePicked);
+                    //             debugPrint(
+                    //                 "date Picked ${datePicked.day},${datePicked.month},${datePicked.year}");
+                    //             debugPrint(dateFormat);
+                    //             String formattedDate = DateFormat('d,MMMM,yyyy')
+                    //                 .format(datePicked);
+                    //             debugPrint(formattedDate);
+                    //             dateController.text = formattedDate;
+                    //             dateFormatController.text =
+                    //                 DateFormat('yyyy-MM-dd').format(datePicked);
+                    //             searchTextController.clear();
+                    //           }
+                    //         },
+                    //         child: TextField(
+                    //           cursorColor: ColorManager.kPrimaryColor,
+                    //           cursorHeight: 20,
+                    //           controller: dateController,
+                    //           enabled: false,
+                    //           style: buildCustomStyle(FontWeightManager.medium,
+                    //               FontSize.s10, 0.18, ColorManager.textColor),
+                    //           decoration: InputDecoration(
+                    //               border: InputBorder.none,
+                    //               // labelText: dateController.text,
+                    //               labelStyle: buildCustomStyle(
+                    //                   FontWeightManager.medium,
+                    //                   FontSize.s10,
+                    //                   0.18,
+                    //                   ColorManager.textColor),
+                    //               hintText: dateController.text,
+                    //               //  hintText: "6,April,2022",
+                    //               hintStyle: buildCustomStyle(
+                    //                   FontWeightManager.medium,
+                    //                   FontSize.s10,
+                    //                   0.18,
+                    //                   ColorManager.textColor),
+                    //               prefixIcon: const Icon(
+                    //                 Icons.calendar_month,
+                    //                 size: 12,
+                    //               ),
+                    //               suffixIcon: const Icon(
+                    //                 Icons.keyboard_arrow_down,
+                    //                 size: 12,
+                    //               ),
+                    //               prefixIconColor: Colors.black),
+                    //         ),
+                    //       ),
 
-                          //  Row(
-                          //   children: [
-                          //     const Icon(
-                          //       Icons.calendar_month,
-                          //       size: 10,
-                          //     ),
-                          //     const SizedBox(width: 6),
-                          //     Text(
-                          //       "6,April,2022",
-                          //       style: buildCustomStyle(
-                          //           FontWeightManager.medium,
-                          //           FontSize.s10,
-                          //           0.10,
-                          //           ColorManager.textColor),
-                          //     ),
-                          //     const SizedBox(width: 6),
-                          //     const Icon(
-                          //       Icons.keyboard_arrow_down,
-                          //       size: 12,
-                          //     ),
-                          //   ],
-                          // ),
-                        ),
-                        CustomRoundButtonWithIcon(
-                          title: "Search",
-                          fct: () {
-                            debugPrint("Search");
-                            final salesProvider = Provider.of<SalesProvider>(
-                                context,
-                                listen: false);
-                            String? accessToken =
-                                Provider.of<AuthModel>(context, listen: false)
-                                    .token;
-                            //-------------------------
-                            // dateFormatController.text.isEmpty &&
-                            //         searchTextController.text.isEmpty
-                            //     ? salesProvider.fetchOrders(
-                            //         storeId: 1, orderNumberSelect: false)
-                            //     :
-                            searchTextController.text.isEmpty
-                                ? salesProvider.fetchOrders(
-                                    accessToken: accessToken ?? '',
-                                    storeId: 1,
-                                    date: dateFormatController.text,
-                                    // orderNumberSelect: false,
-                                  )
-                                : dateFormatController.text.isNotEmpty ||
-                                        searchTextController.text.isNotEmpty
-                                    ? salesProvider.fetchOrders(
-                                        accessToken: accessToken ?? "",
-                                        storeId: 1,
-                                        orderNumber: searchTextController.text,
-                                      )
-                                    : salesProvider.fetchOrders(
-                                        accessToken: accessToken ?? "",
-                                        storeId: 1,
-                                        orderNumber: searchTextController.text,
-                                      );
-                            // salesProvider.fetchOrders(
-                            //     storeId: 1, orderNumberSelect: false);
-                          },
-                          fontSize: 12,
-                          height: 45,
-                          width: 120,
-                          size: size,
-                          icon: const Icon(
-                            Icons.search_rounded,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
+                    //       //  Row(
+                    //       //   children: [
+                    //       //     const Icon(
+                    //       //       Icons.calendar_month,
+                    //       //       size: 10,
+                    //       //     ),
+                    //       //     const SizedBox(width: 6),
+                    //       //     Text(
+                    //       //       "6,April,2022",
+                    //       //       style: buildCustomStyle(
+                    //       //           FontWeightManager.medium,
+                    //       //           FontSize.s10,
+                    //       //           0.10,
+                    //       //           ColorManager.textColor),
+                    //       //     ),
+                    //       //     const SizedBox(width: 6),
+                    //       //     const Icon(
+                    //       //       Icons.keyboard_arrow_down,
+                    //       //       size: 12,
+                    //       //     ),
+                    //       //   ],
+                    //       // ),
+                    //     ),
+                    //     CustomRoundButtonWithIcon(
+                    //       title: "Search",
+                    //       fct: () {
+                    //         debugPrint("Search");
+                    //         final salesProvider = Provider.of<SalesProvider>(
+                    //             context,
+                    //             listen: false);
+                    //         String? accessToken =
+                    //             Provider.of<AuthModel>(context, listen: false)
+                    //                 .token;
+                    //         //-------------------------
+                    //         // dateFormatController.text.isEmpty &&
+                    //         //         searchTextController.text.isEmpty
+                    //         //     ? salesProvider.fetchOrders(
+                    //         //         storeId: 1, orderNumberSelect: false)
+                    //         //     :
+                    //         searchTextController.text.isEmpty
+                    //             ? salesProvider.fetchOrders(
+                    //                 accessToken: accessToken ?? '',
+                    //                 storeId: 1,
+                    //                 date: dateFormatController.text,
+                    //                 // orderNumberSelect: false,
+                    //               )
+                    //             : dateFormatController.text.isNotEmpty ||
+                    //                     searchTextController.text.isNotEmpty
+                    //                 ? salesProvider.fetchOrders(
+                    //                     accessToken: accessToken ?? "",
+                    //                     storeId: 1,
+                    //                     orderNumber: searchTextController.text,
+                    //                   )
+                    //                 : salesProvider.fetchOrders(
+                    //                     accessToken: accessToken ?? "",
+                    //                     storeId: 1,
+                    //                     orderNumber: searchTextController.text,
+                    //                   );
+                    //         // salesProvider.fetchOrders(
+                    //         //     storeId: 1, orderNumberSelect: false);
+                    //       },
+                    //       fontSize: 12,
+                    //       height: 45,
+                    //       width: 120,
+                    //       size: size,
+                    //       icon: const Icon(
+                    //         Icons.search_rounded,
+                    //         size: 14,
+                    //         color: Colors.white,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
                 const SizedBox(
@@ -406,7 +427,7 @@ class _SalesScreenState extends State<SalesScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "Name",
+                                "Customer ",
                                 style: buildCustomStyle(
                                   FontWeightManager.regular,
                                   FontSize.s14,
@@ -432,8 +453,9 @@ class _SalesScreenState extends State<SalesScreen> {
                                   0.18,
                                   ColorManager.textColor,
                                 ),
+                                controller: customerNameController,
                                 decoration: decoration.copyWith(
-                                  hintText: "Name",
+                                  hintText: "Customer Name",
                                   hintStyle: buildCustomStyle(
                                     FontWeightManager.medium,
                                     FontSize.s10,
@@ -466,83 +488,22 @@ class _SalesScreenState extends State<SalesScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 45,
-                              width: 120,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    // Update state if needed
-                                  });
-                                },
-                                cursorColor: ColorManager.kPrimaryColor,
-                                cursorHeight: 13,
-                                style: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor,
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: ColorManager.grey.withOpacity(0.7),
+                                  width: 0.4, // You can adjust the border width
                                 ),
-                                decoration: decoration.copyWith(
-                                  hintText: "Date",
-                                  hintStyle: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.18,
-                                    ColorManager.textColor,
-                                  ),
-                                  prefixIconColor: Colors.black,
-                                ),
+                                borderRadius: BorderRadius.circular(
+                                    6), // Optional: for rounded corners
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Status
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Status",
-                                style: buildCustomStyle(
-                                  FontWeightManager.regular,
-                                  FontSize.s14,
-                                  0.27,
-                                  Colors.black.withOpacity(0.6),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
                               height: 45,
-                              width: 120,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    // Update state if needed
-                                  });
-                                },
-                                cursorColor: ColorManager.kPrimaryColor,
-                                cursorHeight: 13,
-                                style: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor,
-                                ),
-                                decoration: decoration.copyWith(
-                                  hintText: "Status",
-                                  hintStyle: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.18,
-                                    ColorManager.textColor,
-                                  ),
-                                  prefixIconColor: Colors.black,
+                              width: 150,
+                              child: Center(
+                                child: CalendarPickerTableCell(
+                                  onDateSelected: (DateTime date) {
+                                    selectedDate = date;
+                                  },
                                 ),
                               ),
                             ),
@@ -585,6 +546,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                   0.18,
                                   ColorManager.textColor,
                                 ),
+                                controller: amountController,
                                 decoration: decoration.copyWith(
                                   hintText: "Price",
                                   hintStyle: buildCustomStyle(
@@ -636,6 +598,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                   0.18,
                                   ColorManager.textColor,
                                 ),
+                                controller: emailController,
                                 decoration: decoration.copyWith(
                                   hintText: "Email",
                                   hintStyle: buildCustomStyle(
@@ -687,6 +650,7 @@ class _SalesScreenState extends State<SalesScreen> {
                                   0.18,
                                   ColorManager.textColor,
                                 ),
+                                controller: phoneController,
                                 decoration: decoration.copyWith(
                                   hintText: "Phone",
                                   hintStyle: buildCustomStyle(
@@ -723,30 +687,57 @@ class _SalesScreenState extends State<SalesScreen> {
                             ),
                             SizedBox(
                               height: 45,
-                              width: 120,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    // Update state if needed
-                                  });
-                                },
-                                cursorColor: ColorManager.kPrimaryColor,
-                                cursorHeight: 13,
-                                style: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor,
-                                ),
-                                decoration: decoration.copyWith(
-                                  hintText: "Store",
-                                  hintStyle: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.18,
-                                    ColorManager.textColor,
+                              width: 150,
+                              child: BuildBoxShadowContainer(
+                                circleRadius: 7,
+                                alignment: Alignment.centerLeft,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 0),
+                                padding: const EdgeInsets.only(left: 15),
+                                height: size.height * .07,
+                                width: size.width / 4.5,
+                                child:
+                                    DropdownButtonFormField<GetStoreModelData>(
+                                  decoration: const InputDecoration(
+                                    border: InputBorder
+                                        .none, // Remove the underline
                                   ),
-                                  prefixIconColor: Colors.black,
+                                  value: storeSelected,
+                                  hint: Text(
+                                    'Select Store',
+                                    style: buildCustomStyle(
+                                      FontWeightManager.medium,
+                                      FontSize.s12,
+                                      0.27,
+                                      ColorManager.textColor.withOpacity(.5),
+                                    ),
+                                  ),
+                                  items:
+                                      storeList!.map((GetStoreModelData store) {
+                                    return DropdownMenuItem<GetStoreModelData>(
+                                        value: store,
+                                        child: Text(
+                                          store.name ?? '',
+                                          style: buildCustomStyle(
+                                            FontWeightManager.medium,
+                                            FontSize.s12,
+                                            0.27,
+                                            ColorManager.textColor
+                                                .withOpacity(.5),
+                                          ),
+                                        ));
+                                  }).toList(),
+                                  onChanged:
+                                      (GetStoreModelData? storeModelData) {
+                                    if (storeModelData != null) {
+                                      // Update the selected category in the provider
+                                      setState(() {
+                                        storeSelected = storeModelData;
+                                        storeController.text =
+                                            "${storeModelData.id ?? 1}";
+                                      });
+                                    }
+                                  },
                                 ),
                               ),
                             ),
@@ -754,61 +745,11 @@ class _SalesScreenState extends State<SalesScreen> {
                         ),
                       ),
 
-                      // Created By
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Created By",
-                                style: buildCustomStyle(
-                                  FontWeightManager.regular,
-                                  FontSize.s14,
-                                  0.27,
-                                  Colors.black.withOpacity(0.6),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 45,
-                              width: 120,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    // Update state if needed
-                                  });
-                                },
-                                cursorColor: ColorManager.kPrimaryColor,
-                                cursorHeight: 13,
-                                style: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor,
-                                ),
-                                decoration: decoration.copyWith(
-                                  hintText: "Created By",
-                                  hintStyle: buildCustomStyle(
-                                    FontWeightManager.medium,
-                                    FontSize.s10,
-                                    0.18,
-                                    ColorManager.textColor,
-                                  ),
-                                  prefixIconColor: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, top: 30),
                         child: CustomRoundButton(
                           title: "Search",
-                          fct: searchAccountBook,
+                          fct: searchOrders,
                           height: 45,
                           width: size.width * 0.09,
                           fontSize: FontSize.s12,
@@ -821,7 +762,7 @@ class _SalesScreenState extends State<SalesScreen> {
                           boxColor: Colors.white,
                           textColor: ColorManager.kPrimaryColor,
                           fct: resetSearch,
-                          height: 45,
+                          height: 15,
                           width: size.width * 0.09,
                           fontSize: FontSize.s12,
                         ),
@@ -829,7 +770,7 @@ class _SalesScreenState extends State<SalesScreen> {
                     ],
                   ),
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     // Text(

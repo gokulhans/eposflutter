@@ -68,7 +68,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     }
   }
 
-  void searchAccountBook(page) async {
+  void searchCategory(page) async {
+    debugPrint("category search called");
     try {
       setState(() {
         initLoading = true;
@@ -80,7 +81,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
       await categoryProvider.listAllCategory(
         filterName: categoryNameController.text,
-        filterCreatedBy: createdByController.text,
+        // filterCreatedBy: createdByController.text,
         filterParent: parentCategoryController.text,
         page: page,
       );
@@ -104,7 +105,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<CategoryProvider>(context);
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: true);
     final SideBarController sideBarController = Get.put(SideBarController());
     Size size = MediaQuery.of(context).size;
 
@@ -224,7 +226,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                               style: buildCustomStyle(FontWeightManager.medium,
                                   FontSize.s10, 0.18, ColorManager.textColor),
                               decoration: decoration.copyWith(
-                                  hintText: "Parent Category Name    ",
+                                  hintText: "Parent Category    ",
                                   hintStyle: buildCustomStyle(
                                       FontWeightManager.medium,
                                       FontSize.s10,
@@ -241,60 +243,60 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Created By ",
-                              style: buildCustomStyle(
-                                FontWeightManager.regular,
-                                FontSize.s14,
-                                0.27,
-                                Colors.black.withOpacity(0.6),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 45,
-                            width: 120, //size.width * 0.5,
-                            child: TextFormField(
-                              onChanged: (value) {
-                                setState(() {
-                                  // searchAmount = value;
-                                });
-                              },
-                              cursorColor: ColorManager.kPrimaryColor,
-                              cursorHeight: 13,
-                              controller: createdByController,
-                              style: buildCustomStyle(FontWeightManager.medium,
-                                  FontSize.s10, 0.18, ColorManager.textColor),
-                              decoration: decoration.copyWith(
-                                  hintText: "Created By   ",
-                                  hintStyle: buildCustomStyle(
-                                      FontWeightManager.medium,
-                                      FontSize.s10,
-                                      0.18,
-                                      ColorManager.textColor),
-                                  // prefixIcon: const Icon(
-                                  //   Icons.search,
-                                  //   color: Colors.black,
-                                  //   size: 35,
-                                  // ),
-                                  prefixIconColor: Colors.black),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 10.0),
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: Text(
+                    //           "Created By ",
+                    //           style: buildCustomStyle(
+                    //             FontWeightManager.regular,
+                    //             FontSize.s14,
+                    //             0.27,
+                    //             Colors.black.withOpacity(0.6),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         height: 45,
+                    //         width: 120, //size.width * 0.5,
+                    //         child: TextFormField(
+                    //           onChanged: (value) {
+                    //             setState(() {
+                    //               // searchAmount = value;
+                    //             });
+                    //           },
+                    //           cursorColor: ColorManager.kPrimaryColor,
+                    //           cursorHeight: 13,
+                    //           controller: createdByController,
+                    //           style: buildCustomStyle(FontWeightManager.medium,
+                    //               FontSize.s10, 0.18, ColorManager.textColor),
+                    //           decoration: decoration.copyWith(
+                    //               hintText: "Created By   ",
+                    //               hintStyle: buildCustomStyle(
+                    //                   FontWeightManager.medium,
+                    //                   FontSize.s10,
+                    //                   0.18,
+                    //                   ColorManager.textColor),
+                    //               // prefixIcon: const Icon(
+                    //               //   Icons.search,
+                    //               //   color: Colors.black,
+                    //               //   size: 35,
+                    //               // ),
+                    //               prefixIconColor: Colors.black),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, top: 30),
                       child: CustomRoundButton(
                         title: "Search",
-                        fct: searchAccountBook,
+                        fct: () => {searchCategory(1)},
                         height: 45,
                         width: size.width * 0.09,
                         fontSize: FontSize.s12,
@@ -419,6 +421,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 _buildTableHeader(),
                 if (categoryProvider.categoryList != null)
                   ...categoryProvider.categoryList!
+                      .skip(1)
+                      .toList()
                       .asMap()
                       .entries
                       .map((entry) {
@@ -556,7 +560,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             boxColor: Colors.white,
             textColor: ColorManager.kPrimaryColor,
             fct: () {
-              searchAccountBook(currentPage - 1);
+              searchCategory(currentPage - 1);
             },
             height: 30,
             width: 80,
@@ -571,7 +575,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             boxColor: Colors.white,
             textColor: ColorManager.kPrimaryColor,
             fct: () {
-              searchAccountBook(currentPage + 1);
+              searchCategory(currentPage + 1);
             },
             height: 30,
             width: 80,

@@ -314,6 +314,9 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                             .selectedProductsUpOnCategory;
                                                   });
 
+                                                  // debugPrint(
+                                                  //     "hhhh ${gridSelectionProvider.selectedProductsUpOnCategory}");
+
                                                   await categoryProvider
                                                       .setParentCategory(
                                                           "${selectedCategory.categoryId ?? 0}");
@@ -826,7 +829,7 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                           title: "Expiry Date"),
                                       BuildTextFieldColumn3(
                                           isLeft: true,
-                                          isStarRed: true,
+                                          isStarRed: false,
                                           isTextField: true,
                                           size: size,
                                           isRead: false,
@@ -1108,8 +1111,6 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                   wholeSalePriceController
                                                       .text.isEmpty ||
                                                   wholeSalePriceMinUnitController
-                                                      .text.isEmpty ||
-                                                  unitBatchController
                                                       .text.isEmpty) {
                                                 debugPrint(
                                                     "isEmptycategorySlugController");

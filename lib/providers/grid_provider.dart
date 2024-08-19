@@ -161,23 +161,46 @@ class GridSelectionProvider extends ChangeNotifier {
   }
   //          *********************** LIST ALL PRODUCTS  API ***************************************************
 
-  Future<void> listAllProducts({int? categoryId}) async {
-    debugPrint("LIST ALL PRODUCTS categoryId $categoryId ");
-    final Map<String, dynamic> apiBodyData = {
-      'category_id': categoryId == 0 ? null : categoryId,
+  Future<void> listAllProducts({
+    int? categoryId,
+    String? filterName,
+    String? filterCategory,
+    String? filterPrice,
+    String? filterCreatedBy,
+    String? filterProperties,
+    String? filterStore,
+    String? filterSupplier,
+    int page = 1,
+  }) async {
+    debugPrint("LIST ALL PRODUCTS categoryId $categoryId");
+
+    // Build query parameters
+    final queryParams = <String, String>{
+      if (filterName != null) 'filter_name': filterName,
+      if (filterCategory != null) 'filter_category': filterCategory,
+      if (filterPrice != null) 'filter_price': filterPrice,
+      if (filterCreatedBy != null) 'filter_created_by': filterCreatedBy,
+      if (filterProperties != null) 'filter_properties': filterProperties,
+      if (filterStore != null) 'filter_store': filterStore,
+      if (filterSupplier != null) 'filter_supplier': filterSupplier,
+      'page': page.toString(),
     };
+    debugPrint("LIST ALL PRODUCTS categoryId $categoryId ");
+
+    // Build query parameters
+
     isLoading = true;
     // selectedCategoryId = categoryId;
     notifyListeners();
     productList = [];
-    final url = Uri.parse(APPUrl.getProcductUrl);
+    final url =
+        Uri.parse(APPUrl.getProcductUrl).replace(queryParameters: queryParams);
     try {
-      final response = await http.post(url,
-          body: json.encode(apiBodyData),
-          headers: {'Content-Type': 'application/json'});
+      final response = await http.get(url);
+
       debugPrint('inside ${response.statusCode}');
       if (response.statusCode == 200) {
-        // debugPrint('inside');
+        debugPrint('inside product 200 ${response.body.toString()}');
 
         // debugPrint(json.decode(response.body).toString());
         final jsonData = json.decode(response.body);
@@ -191,7 +214,10 @@ class GridSelectionProvider extends ChangeNotifier {
         //     productList!.isEmpty ? 0 : productList![0].categoryId ?? 0;
         notifyListeners();
         // debugPrint('List Product Name in Category Provider');
-      } else {}
+      } else {
+        debugPrint('outside product 200 ${response.body.toString()}');
+        debugPrint('outside product 200 ${response.statusCode}');
+      }
     } finally {
       isLoading = false;
       notifyListeners();
@@ -670,6 +696,7 @@ class GridSelectionProvider extends ChangeNotifier {
       'unit': unit,
       'batch_number': batchNumber,
       'product_properties': jsonEncode(productProperties),
+      'tax_include': "N"
     };
     debugPrint(apiBodyData.toString());
     final url = Uri.parse(APPUrl.addToStock);

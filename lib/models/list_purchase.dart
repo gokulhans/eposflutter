@@ -30,8 +30,8 @@ class ListPurchaseModel {
         message: json["message"],
         data: json["data"] == null
             ? []
-            : List<ListPurchaseModelData>.from(
-                json["data"]!.map((x) => ListPurchaseModelData.fromJson(x))),
+            : List<ListPurchaseModelData>.from(json["data"]["data"]!
+                .map((x) => ListPurchaseModelData.fromJson(x))),
         //  json["data"] == null
         //     ? null
         //     : ListPurchaseModelData.fromJson(json["data"]),

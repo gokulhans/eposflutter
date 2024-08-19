@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'controllers/sidebar_controller.dart';
 import 'providers/carousel_provider.dart';
 import 'providers/purchase_provider.dart';
+
 import 'screens/login/login.dart';
 
 void main() {

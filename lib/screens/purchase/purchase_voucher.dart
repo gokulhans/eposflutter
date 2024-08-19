@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_pagination_control.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/build_container_box.dart';
@@ -40,7 +41,7 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
     PurchaseProvider purchaseProvider =
         Provider.of<PurchaseProvider>(context, listen: false);
     await purchaseProvider
-        .listPurchase(accessToken ?? '', "1", "1")
+        .listPurchase(accessToken: accessToken ?? "", page: 1)
         .then((value) async {});
     voucherDetailsList = purchaseProvider.getVoucherDetailsList;
     setState(() {
@@ -73,7 +74,7 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
           child: ListView(
             children: [
               Text(
-                "Purchase List",
+                "Voucher List",
                 style: buildCustomStyle(FontWeightManager.semiBold,
                     FontSize.s20, 0.30, ColorManager.textColor),
               ),
@@ -94,7 +95,7 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Name",
+                              "Store",
                               style: buildCustomStyle(
                                 FontWeightManager.regular,
                                 FontSize.s14,
@@ -120,8 +121,109 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                                 0.18,
                                 ColorManager.textColor,
                               ),
+                              // controller: purchaserNameController,
                               decoration: decoration.copyWith(
-                                hintText: "Voucher Name",
+                                hintText: "Store Name",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Date",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              // controller: purchaserNameController,
+                              decoration: decoration.copyWith(
+                                hintText: "Date",
+                                hintStyle: buildCustomStyle(
+                                  FontWeightManager.medium,
+                                  FontSize.s10,
+                                  0.18,
+                                  ColorManager.textColor,
+                                ),
+                                prefixIconColor: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Amount",
+                              style: buildCustomStyle(
+                                FontWeightManager.regular,
+                                FontSize.s14,
+                                0.27,
+                                Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 45,
+                            width: 120,
+                            child: TextFormField(
+                              onChanged: (value) {
+                                setState(() {
+                                  // Update state if needed
+                                });
+                              },
+                              cursorColor: ColorManager.kPrimaryColor,
+                              cursorHeight: 13,
+                              style: buildCustomStyle(
+                                FontWeightManager.medium,
+                                FontSize.s10,
+                                0.18,
+                                ColorManager.textColor,
+                              ),
+                              // controller: purchaserNameController,
+                              decoration: decoration.copyWith(
+                                hintText: "Amount",
                                 hintStyle: buildCustomStyle(
                                   FontWeightManager.medium,
                                   FontSize.s10,
@@ -139,7 +241,9 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                       padding: const EdgeInsets.only(left: 10.0, top: 30),
                       child: CustomRoundButton(
                         title: "Search",
-                        fct: (searchAccountBook) {},
+                        fct: () {
+                          // searchPurchase(1);
+                        },
                         height: 45,
                         width: size.width * 0.09,
                         fontSize: FontSize.s12,
@@ -151,7 +255,9 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                         title: "Reset",
                         boxColor: Colors.white,
                         textColor: ColorManager.kPrimaryColor,
-                        fct: (resetSearch) {},
+                        fct: () {
+                          // resetSearch();
+                        },
                         height: 45,
                         width: size.width * 0.09,
                         fontSize: FontSize.s12,
@@ -159,60 +265,6 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                     ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // Text(
-                  //   "Vouchers List",
-                  //   style: buildCustomStyle(FontWeightManager.semiBold,
-                  //       FontSize.s20, 0.30, ColorManager.textColor),
-                  // ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // SizedBox(
-                      //   height: 45,
-                      //   width: 180, //size.width * 0.5,
-                      //   child: TextFormField(
-                      //     onChanged: ((value) => setState(() {
-                      //           searchTextController.text = value;
-                      //         })),
-                      //     cursorColor: ColorManager.kPrimaryColor,
-                      //     cursorHeight: 13,
-                      //     controller: searchTextController,
-                      //     style: buildCustomStyle(FontWeightManager.medium,
-                      //         FontSize.s10, 0.18, ColorManager.textColor),
-                      //     decoration: decoration.copyWith(
-                      //         hintText: "Search    ",
-                      //         hintStyle: buildCustomStyle(
-                      //             FontWeightManager.medium,
-                      //             FontSize.s10,
-                      //             0.18,
-                      //             ColorManager.textColor),
-                      //         // prefixIcon: const Icon(
-                      //         //   Icons.search,
-                      //         //   color: Colors.black,
-                      //         //   size: 35,
-                      //         // ),
-                      //         prefixIconColor: Colors.black),
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   width: 10,
-                      // ),
-                      // CustomRoundButton(
-                      //   title: "Create New Purchase",
-                      //   fct: () {
-                      //     sideBarController.index.value = 20;
-                      //   },
-                      //   fontSize: 12,
-                      //   height: 45,
-                      //   width: 200,
-                      // ),
-                    ],
-                  ),
-                ],
               ),
               BuildBoxShadowContainer(
                   // height: size.height, //120,
@@ -644,6 +696,13 @@ class _PurchaseVoucherScreenState extends State<PurchaseVoucherScreen> {
                                 .toList(),
                           ],
                         )),
+              PaginationControl(
+                currentPage: 1,
+                totalPages: 1,
+                onPageChanged: (int page) {
+                  // searchCategory(page);
+                },
+              )
             ],
           ),
         ),

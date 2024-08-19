@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_pagination_control.dart';
 import 'package:pos_machine/providers/auth_model.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
@@ -326,6 +327,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                       _buildCategoryTable(categoryProvider, sideBarController),
                 ),
               ),
+              _buildPaginationControls(categoryProvider),
             ],
           ),
         ),
@@ -434,8 +436,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 20),
-        _buildPaginationControls(categoryProvider),
+        // const SizedBox(height: 20),
       ],
     );
   }
@@ -547,42 +548,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   }
 
   Widget _buildPaginationControls(CategoryProvider categoryProvider) {
-    final currentPage = categoryProvider.currentPage;
-    final totalPages = categoryProvider.totalPages;
-    print({currentPage, totalPages}.toString());
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: CustomRoundButton(
-            title: "Previous",
-            boxColor: Colors.white,
-            textColor: ColorManager.kPrimaryColor,
-            fct: () {
-              searchCategory(currentPage - 1);
-            },
-            height: 30,
-            width: 80,
-            fontSize: FontSize.s12,
-          ),
-        ),
-        Text('Page ${currentPage} of ${totalPages}'),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: CustomRoundButton(
-            title: "Next",
-            boxColor: Colors.white,
-            textColor: ColorManager.kPrimaryColor,
-            fct: () {
-              searchCategory(currentPage + 1);
-            },
-            height: 30,
-            width: 80,
-            fontSize: FontSize.s12,
-          ),
-        ),
-      ],
+    return PaginationControl(
+      currentPage: 1,
+      totalPages: 1,
+      onPageChanged: (int page) {
+        searchCategory(page);
+      },
     );
   }
 }

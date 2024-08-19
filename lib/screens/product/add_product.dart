@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_pagination_control.dart';
+import 'package:pos_machine/models/get_store.dart';
 import 'package:pos_machine/providers/auth_model.dart';
 import 'package:pos_machine/providers/category_providers.dart';
+import 'package:pos_machine/providers/purchase_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/build_container_box.dart';
@@ -21,7 +24,18 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
+  // Controllers
   final TextEditingController productNameController = TextEditingController();
+  final TextEditingController createdByController = TextEditingController();
+  final TextEditingController storeController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  GetStoreModelData? storeSelected;
+
+  // Variables for selected filters
+  String? selectedCategoryId;
+  String? selectedProperties;
+  String? selectedSupplierId;
+  int page = 1;
   bool initLoading = false;
 
   @override
@@ -39,7 +53,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       //     Provider.of<AuthModel>(context, listen: false).token;
 
       GridSelectionProvider gridSelectionProvider =
-          Provider.of<GridSelectionProvider>(context);
+          Provider.of<GridSelectionProvider>(context, listen: false);
 
       await gridSelectionProvider.listAllProducts(
           // accessToken: accessToken ?? "",
@@ -55,21 +69,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
-  void searchAccountBook(page) async {
+  void searchProducts(page) async {
+    debugPrint("SEARCH PRODUCTS CALLED");
     try {
       setState(() {
         initLoading = true;
       });
-      String? accessToken =
-          Provider.of<AuthModel>(context, listen: false).token;
 
       GridSelectionProvider gridSelectionProvider =
-          Provider.of<GridSelectionProvider>(context);
+          Provider.of<GridSelectionProvider>(context, listen: false);
 
       await gridSelectionProvider.listAllProducts(
-          // filterName: productNameController.text,
-          // page: page,
-          );
+        filterName: productNameController.text,
+        filterCategory: selectedCategoryId,
+        filterPrice: amountController.text,
+        filterCreatedBy: createdByController.text,
+        filterProperties: selectedProperties,
+        filterStore: storeController.text,
+        filterSupplier: selectedSupplierId,
+        page: page,
+      );
     } catch (error) {
       debugPrint(error.toString());
     } finally {
@@ -82,6 +101,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void resetSearch() {
     setState(() {
       productNameController.clear();
+      storeController.clear();
+      amountController.clear();
+      selectedCategoryId = null;
+      selectedProperties = null;
+      selectedSupplierId = null;
+      page = 1;
     });
     loadInitData();
   }
@@ -90,13 +115,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     //  Size size = MediaQuery.of(context).size;
     SideBarController sideBarController = Get.put(SideBarController());
-    CategoryProvider categoryProvider = Provider.of<CategoryProvider>(
-      context,
-    );
+    CategoryProvider categoryProvider = Provider.of<CategoryProvider>(context);
     GridSelectionProvider gridSelectionProvider =
         Provider.of<GridSelectionProvider>(context);
 
     Size size = MediaQuery.of(context).size;
+
+    PurchaseProvider purchaseProvider =
+        Provider.of<PurchaseProvider>(context, listen: false);
+    List<GetStoreModelData>? storeList = purchaseProvider.getStoreList;
 
     return SafeArea(
       child: Container(
@@ -320,59 +347,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 0.18,
                                 ColorManager.textColor,
                               ),
+                              controller: amountController,
                               decoration: decoration.copyWith(
                                 hintText: "Price",
-                                hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor,
-                                ),
-                                prefixIconColor: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Filter Created By
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Created By",
-                              style: buildCustomStyle(
-                                FontWeightManager.regular,
-                                FontSize.s14,
-                                0.27,
-                                Colors.black.withOpacity(0.6),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 45,
-                            width: 120,
-                            child: TextFormField(
-                              onChanged: (value) {
-                                setState(() {
-                                  // Update state if needed
-                                });
-                              },
-                              cursorColor: ColorManager.kPrimaryColor,
-                              cursorHeight: 13,
-                              style: buildCustomStyle(
-                                FontWeightManager.medium,
-                                FontSize.s10,
-                                0.18,
-                                ColorManager.textColor,
-                              ),
-                              decoration: decoration.copyWith(
-                                hintText: "Created By",
                                 hintStyle: buildCustomStyle(
                                   FontWeightManager.medium,
                                   FontSize.s10,
@@ -438,7 +415,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                     ),
 
-                    // Filter Store
+                    // Store
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Column(
@@ -458,30 +435,55 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           ),
                           SizedBox(
                             height: 45,
-                            width: 120,
-                            child: TextFormField(
-                              onChanged: (value) {
-                                setState(() {
-                                  // Update state if needed
-                                });
-                              },
-                              cursorColor: ColorManager.kPrimaryColor,
-                              cursorHeight: 13,
-                              style: buildCustomStyle(
-                                FontWeightManager.medium,
-                                FontSize.s10,
-                                0.18,
-                                ColorManager.textColor,
-                              ),
-                              decoration: decoration.copyWith(
-                                hintText: "Store",
-                                hintStyle: buildCustomStyle(
-                                  FontWeightManager.medium,
-                                  FontSize.s10,
-                                  0.18,
-                                  ColorManager.textColor,
+                            width: 150,
+                            child: BuildBoxShadowContainer(
+                              circleRadius: 7,
+                              alignment: Alignment.centerLeft,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 0),
+                              padding: const EdgeInsets.only(left: 15),
+                              height: size.height * .07,
+                              width: size.width / 4.5,
+                              child: DropdownButtonFormField<GetStoreModelData>(
+                                decoration: const InputDecoration(
+                                  border:
+                                      InputBorder.none, // Remove the underline
                                 ),
-                                prefixIconColor: Colors.black,
+                                value: storeSelected,
+                                hint: Text(
+                                  'Select Store',
+                                  style: buildCustomStyle(
+                                    FontWeightManager.medium,
+                                    FontSize.s12,
+                                    0.27,
+                                    ColorManager.textColor.withOpacity(.5),
+                                  ),
+                                ),
+                                items:
+                                    storeList!.map((GetStoreModelData store) {
+                                  return DropdownMenuItem<GetStoreModelData>(
+                                      value: store,
+                                      child: Text(
+                                        store.name ?? '',
+                                        style: buildCustomStyle(
+                                          FontWeightManager.medium,
+                                          FontSize.s12,
+                                          0.27,
+                                          ColorManager.textColor
+                                              .withOpacity(.5),
+                                        ),
+                                      ));
+                                }).toList(),
+                                onChanged: (GetStoreModelData? storeModelData) {
+                                  if (storeModelData != null) {
+                                    // Update the selected category in the provider
+                                    setState(() {
+                                      storeSelected = storeModelData;
+                                      storeController.text =
+                                          "${storeModelData.id ?? 1}";
+                                    });
+                                  }
+                                },
                               ),
                             ),
                           ),
@@ -541,12 +543,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, top: 30),
-                      child: CustomRoundButton(
-                        title: "Search",
-                        fct: searchAccountBook,
+                      child: SizedBox(
                         height: 45,
-                        width: size.width * 0.09,
-                        fontSize: FontSize.s12,
+                        child: CustomRoundButton(
+                          title: "Search",
+                          fct: () => {searchProducts(1)},
+                          height: 45,
+                          width: size.width * 0.09,
+                          fontSize: FontSize.s12,
+                        ),
                       ),
                     ),
                     Padding(
@@ -845,6 +850,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       );
                     },
                   )),
+              PaginationControl(
+                currentPage: 1,
+                totalPages: 1,
+                onPageChanged: (int page) {
+                  // searchCategory(page);
+                },
+              )
             ],
           ),
         ),

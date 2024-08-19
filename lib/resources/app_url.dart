@@ -10,8 +10,8 @@ class APPUrl {
   static const String fetchCategoryProps =
       '$baseURL/api/product/fetch-prop-values';
 
-  static const String getProcductUrl = '$baseURL/api/list-products';
-  // static const String getProcductUrl = '$baseURL/api/product-searchbar';
+  // static const String getProcductUrl = '$baseURL/api/list-products';
+  static const String getProcductUrl = '$baseURL/api/product-searchbar';
   static const String addToCartUrl = '$baseURL/api/cart/add-to-cart';
   static const String removeFromCartUrl = '$baseURL/api/cart/remove-from-cart';
   static const String listCartUrl = '$baseURL/api/cart/list-carts';
@@ -55,8 +55,10 @@ class APPUrl {
   static const String getStores = '$baseURL/api/stores/get-stores?store_name';
   static const String getSuppliers =
       '$baseURL/api/suppliers/get-suppliers?supplier_name';
+  // static const String listPurchases =
+  //     '$baseURL/api/purchases/list-purchase-order';
   static const String listPurchases =
-      '$baseURL/api/purchases/list-purchase-order';
+      '$baseURL/api/purchases/purchase-searchbar';
   static const String addToPurchaseItem =
       '$baseURL/api/purchases/add-purchase-item';
   static const String addToPurchase = '$baseURL/api/purchases/add-to-purchase';
@@ -64,8 +66,8 @@ class APPUrl {
       '$baseURL/api/purchases/add-purchase-order';
   static const String addToStock = '$baseURL/api/product/add-stock';
   static const String addPurchaseStock = '$baseURL/api/purchases/add-stock';
-  static const String listStock = '$baseURL/api/product/list-stocks';
-  // static const String listStock = '$baseURL/api/stock-searchbar';
+  // static const String listStock = '$baseURL/api/product/list-stocks';
+  static const String listStock = '$baseURL/api/stock-searchbar';
   static const String detailsOfStock = '$baseURL/api/product/stock-details';
   static const String listPurchaseItems =
       '$baseURL/api/purchases/list-purchase-items';

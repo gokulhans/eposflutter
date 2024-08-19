@@ -168,12 +168,48 @@ class PurchaseProvider extends ChangeNotifier {
 
   //          *********************** LIST PURCHASES  API ***************************************************
 
-  Future<void> listPurchase(
-      String accessToken, String? storeId, String? supplierId) async {
-    debugPrint("LIST ALL Purchase ");
+  Future<void> listPurchase({
+    required String accessToken,
+    String? storeId,
+    String? supplierId,
+    String? filterName,
+    String? filterProduct,
+    String? filterStore,
+    String? filterSupplier,
+    String? filterDate,
+    String? createdBy,
+    int? page,
+  }) async {
+    debugPrint("LIST ALL Purchase");
 
-    final url = Uri.parse(
-        "${APPUrl.listPurchases}?store_id=$storeId&supplier_id=$supplierId");
+    final queryParameters = <String, String>{
+      'page': page.toString(),
+    };
+
+    if (storeId != null) queryParameters['store_id'] = storeId;
+    if (supplierId != null) queryParameters['supplier_id'] = supplierId;
+    if (filterName != null && filterName.isNotEmpty) {
+      queryParameters['filter_name'] = filterName;
+    }
+    if (filterProduct != null && filterProduct.isNotEmpty) {
+      queryParameters['filter_product'] = filterProduct;
+    }
+    if (filterStore != null && filterStore.isNotEmpty) {
+      queryParameters['filter_store'] = filterStore;
+    }
+    if (filterSupplier != null && filterSupplier.isNotEmpty) {
+      queryParameters['filter_supplier'] = filterSupplier;
+    }
+    if (filterDate != null && filterDate.isNotEmpty) {
+      queryParameters['filter_date'] = filterDate;
+    }
+    if (createdBy != null && createdBy.isNotEmpty) {
+      queryParameters['created_by'] = createdBy;
+    }
+
+    final url = Uri.parse(APPUrl.listPurchases)
+        .replace(queryParameters: queryParameters);
+
     try {
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
@@ -183,6 +219,7 @@ class PurchaseProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         debugPrint(response.body.toString());
         final jsonData = json.decode(response.body);
+        debugPrint(jsonData["data"].toString());
 
         ListPurchaseModel listPurchaseModel =
             ListPurchaseModel.fromJson(jsonData);
@@ -198,7 +235,7 @@ class PurchaseProvider extends ChangeNotifier {
 // List<VoucherDetail>? voucherDetails = data!.expand((e) => e.voucherDetails ?? []).toList();
 //         List<VoucherDetail>? voucherDetails = data!.map((e) => e.voucherDetails).toList();
 
-        if (data != null && data.isNotEmpty) {
+        if (data.isNotEmpty) {
           ListPurchaseModelDataDetails =
               data.first; // Set the first purchase detail
         }

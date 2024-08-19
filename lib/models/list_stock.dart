@@ -25,8 +25,8 @@ class ListStockModel {
         message: json["message"],
         data: json["data"] == null
             ? []
-            : List<ListStockModelData>.from(
-                json["data"]!.map((x) => ListStockModelData.fromJson(x))),
+            : List<ListStockModelData>.from(json["data"]["data"]!
+                .map((x) => ListStockModelData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,8 +38,7 @@ class ListStockModel {
       };
 }
 
-class 
-ListStockModelData {
+class ListStockModelData {
   final int? id;
   final int? productId;
   final int? storeId;

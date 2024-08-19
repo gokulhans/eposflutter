@@ -54,6 +54,12 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
   final TextEditingController expirydateUnitController =
       TextEditingController(text: DateTime.now().toString());
   final TextEditingController unitBatchController = TextEditingController();
+  final TextEditingController taxRateController = TextEditingController();
+  final TextEditingController taxAmountController = TextEditingController();
+  final TextEditingController retailPriceWithOutTaxController =
+      TextEditingController();
+  final TextEditingController wholesalePriceWithOutTaxController =
+      TextEditingController();
 
   final TextEditingController productSlugController = TextEditingController();
   final TextEditingController idController = TextEditingController(text: "0");
@@ -96,6 +102,32 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
       debugPrint("Category ID is null");
     }
   }
+
+  void _updateTaxFields(String taxOption) {
+    // Define values based on the selected tax option
+    if (taxOption == 'includingTax') {
+      taxRateController.text = '10'; // Example value for including tax
+      taxAmountController.text = '5'; // Example value for including tax
+      retailPriceWithOutTaxController.text =
+          '100'; // Example value for including tax
+      wholesalePriceWithOutTaxController.text =
+          '80'; // Example value for including tax
+      retailPriceController.text = '20000'; // Example value for excluding tax
+      wholeSalePriceController.text =
+          '10000'; // Example value for excluding tax
+    } else if (taxOption == 'excludingTax') {
+      taxRateController.text = '0'; // Example value for excluding tax
+      taxAmountController.text = '0'; // Example value for excluding tax
+      retailPriceWithOutTaxController.text =
+          '120'; // Example value for excluding tax
+      wholesalePriceWithOutTaxController.text =
+          '90'; // Example value for excluding tax
+      retailPriceController.text = '2000'; // Example value for excluding tax
+      wholeSalePriceController.text = '1000'; // Example value for excluding tax
+    }
+  }
+
+  String? _selectedTaxOption;
 
   @override
   Widget build(BuildContext context) {
@@ -837,6 +869,109 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                           hintText: 'Batch Number',
                                           controller: unitBatchController,
                                           title: "Batch Number"),
+                                    ],
+                                  ),
+                                  BuildTextTile(
+                                    title: "Tax Details",
+                                    textStyle: buildCustomStyle(
+                                      FontWeightManager.regular,
+                                      FontSize.s14,
+                                      0.27,
+                                      Colors.black,
+                                    ),
+                                  ),
+                                  const Divider(
+                                    thickness: 0.5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      SizedBox(
+                                        // height: size.height * .07,
+                                        width: 200,
+                                        child: Column(
+                                          // mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            RadioListTile<String>(
+                                              value: 'includingTax',
+                                              groupValue: _selectedTaxOption,
+                                              contentPadding: EdgeInsets
+                                                  .zero, // Remove default padding
+                                              title:
+                                                  const Text('Including Tax'),
+                                              onChanged: (String? value) {
+                                                _updateTaxFields(value!);
+                                                setState(() {
+                                                  _selectedTaxOption = value;
+                                                });
+                                              },
+                                            ),
+                                            RadioListTile<String>(
+                                              value: 'excludingTax',
+                                              groupValue: _selectedTaxOption,
+                                              contentPadding: EdgeInsets
+                                                  .zero, // Remove default padding
+                                              title:
+                                                  const Text('Excluding Tax'),
+                                              onChanged: (String? value) {
+                                                _updateTaxFields(value!);
+                                                setState(() {
+                                                  _selectedTaxOption = value;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      BuildTextFieldColumn3(
+                                          isLeft: true,
+                                          isStarRed: false,
+                                          isTextField: true,
+                                          size: size,
+                                          isRead: true,
+                                          textInputType: TextInputType.number,
+                                          hintText: 'Tax Rate',
+                                          controller: taxRateController,
+                                          title: "Tax Rate"),
+                                      BuildTextFieldColumn3(
+                                          isLeft: false,
+                                          isStarRed: false,
+                                          isTextField: true,
+                                          size: size,
+                                          isRead: true,
+                                          textInputType: TextInputType.number,
+                                          hintText: 'Tax Amount',
+                                          controller: taxAmountController,
+                                          title: "Tax Amount"),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      BuildTextFieldColumn(
+                                        isLeft: false,
+                                        size: size,
+                                        isStarRed: false,
+                                        isTextField: true,
+                                        controller:
+                                            retailPriceWithOutTaxController,
+                                        title: "Retail Price without Tax",
+                                        hintText: "Retail Price without Tax",
+                                      ),
+                                      BuildTextFieldColumn(
+                                        isLeft: false,
+                                        size: size,
+                                        isStarRed: false,
+                                        isTextField: true,
+                                        controller:
+                                            wholesalePriceWithOutTaxController,
+                                        title: "Wholesale Price without Tax",
+                                        hintText: "Wholesale Price without Tax",
+                                      ),
                                     ],
                                   ),
                                   BuildTextTile(

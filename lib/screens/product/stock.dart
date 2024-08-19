@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pos_machine/components/build_pagination_control.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/build_container_box.dart';
@@ -55,7 +56,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
     }
   }
 
-  void searchAccountBook() async {
+  void searchStocks(page) async {
     try {
       setState(() {
         initLoading = true;
@@ -203,7 +204,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                       padding: const EdgeInsets.only(left: 10.0, top: 30),
                       child: CustomRoundButton(
                         title: "Search",
-                        fct: searchAccountBook,
+                        fct: () => {searchStocks(1)},
                         height: 45,
                         width: size.width * 0.09,
                         fontSize: FontSize.s12,
@@ -638,6 +639,13 @@ class _AddStockScreenState extends State<AddStockScreen> {
                         );
                       },
                     ),
+              PaginationControl(
+                currentPage: 1,
+                totalPages: 1,
+                onPageChanged: (int page) {
+                  // searchCategory(page);
+                },
+              )
             ],
           ),
         ),

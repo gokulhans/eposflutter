@@ -8,7 +8,7 @@ import '../../components/build_dialog_box.dart';
 import '../../components/build_round_button.dart';
 
 import '../../controllers/sidebar_controller.dart';
- 
+
 import '../../models/list_transaction.dart';
 import '../../providers/auth_model.dart';
 

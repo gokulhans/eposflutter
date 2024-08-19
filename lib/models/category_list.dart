@@ -17,7 +17,7 @@ class CategoryListModel {
 
   factory CategoryListModel.fromJson(Map<String, dynamic> json) =>
       CategoryListModel(
-        category: json["data"]["data"] == null
+        category: json["data"] == null
             ? []
             : List<Category>.from(
                 json["data"]["data"]!.map((x) => Category.fromJson(x))),

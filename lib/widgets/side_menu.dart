@@ -4,7 +4,6 @@ import 'package:pos_machine/components/build_dialog_box.dart';
 
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/responsive.dart';
-import 'package:pos_machine/screens/invoice/invoice_pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -20,6 +19,62 @@ import '../resources/style_manager.dart';
 import '../screens/login/login.dart';
 import 'drawer_list_tile_expandable.dart';
 
+class CollapsibleSidebar extends StatefulWidget {
+  final Widget child;
+  final Widget sidebarContent;
+
+  const CollapsibleSidebar({
+    Key? key,
+    required this.child,
+    required this.sidebarContent,
+  }) : super(key: key);
+
+  @override
+  _CollapsibleSidebarState createState() => _CollapsibleSidebarState();
+}
+
+class _CollapsibleSidebarState extends State<CollapsibleSidebar> {
+  bool _isExpanded = true;
+  final double _expandedWidth = 200;
+  final double _collapsedWidth = 40;
+
+  void _toggleSidebar() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Row(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: _isExpanded ? _expandedWidth : _collapsedWidth,
+              child: _isExpanded
+                  ? widget.sidebarContent
+                  : Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.menu),
+                            onPressed: _toggleSidebar,
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+            Expanded(child: widget.child),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class SideMenu extends StatelessWidget {
   const SideMenu({Key? key}) : super(key: key);
 
@@ -34,6 +89,14 @@ class SideMenu extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              final _CollapsibleSidebarState? sidebarState =
+                  context.findAncestorStateOfType<_CollapsibleSidebarState>();
+              sidebarState?._toggleSidebar();
+            },
+          ),
           const SizedBox(
             height: 15,
           ),

@@ -140,13 +140,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                   hintText: '*****@domain.com',
                                   hintStyle: buildTextFieldStyle,
-                                  errorBorder: OutlineInputBorder(
+                                  errorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.red,
                                       width: 2.0,
                                     ),
                                   ),
-                                  focusedErrorBorder: OutlineInputBorder(
+                                  focusedErrorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.red,
                                       width: 2.0,
@@ -194,13 +194,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                           .withOpacity(0.5),
                                     ),
                                   ),
-                                  errorBorder: OutlineInputBorder(
+                                  errorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.red,
                                       width: 2.0,
                                     ),
                                   ),
-                                  focusedErrorBorder: OutlineInputBorder(
+                                  focusedErrorBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.red,
                                       width: 2.0,

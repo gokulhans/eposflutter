@@ -112,6 +112,17 @@ class SideMenu extends StatelessWidget {
           ),
           Obx(
             () => DrawerListTile(
+              iconPath: ImageAssets.homeIcon,
+              title: 'Home New',
+              onTap: () {
+                debugPrint(" 'Home New',${sideBarController.index.value}");
+                sideBarController.index.value = 45;
+              },
+              selected: sideBarController.index.value == 45,
+            ),
+          ),
+          Obx(
+            () => DrawerListTile(
               iconPath: ImageAssets.dashBoardIcon,
               title: 'Dashboard',
               onTap: () {

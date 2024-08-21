@@ -30,16 +30,41 @@ class CustomerProvider extends ChangeNotifier {
 
   //                 *********************** LIST CUSTOMER API ***************************************************
 
-  Future<dynamic> listCustomer(String accessToken, BuildContext context) async {
+  Future<dynamic> listCustomer({
+    required String accessToken,
+    String? filterName,
+    String? filterEmail,
+    String? filterPhone,
+    String? filterAgeRange,
+    int page = 1,
+  }) async {
     debugPrint("listCustomer");
 
-    final url = Uri.parse(APPUrl.customerListUrl);
+    final queryParameters = <String, String>{
+      'page': page.toString(),
+    };
+
+    if (filterName != null && filterName.isNotEmpty) {
+      queryParameters['filter_name'] = filterName;
+    }
+    if (filterEmail != null && filterEmail.isNotEmpty) {
+      queryParameters['filter_email'] = filterEmail;
+    }
+    if (filterPhone != null && filterPhone.isNotEmpty) {
+      queryParameters['filter_phone'] = filterPhone;
+    }
+    if (filterAgeRange != null && filterAgeRange.isNotEmpty) {
+      queryParameters['filter_age_range'] = filterAgeRange;
+    }
+
+    final url = Uri.parse(APPUrl.customerListUrl)
+        .replace(queryParameters: queryParameters);
     try {
-      final response = await http.post(url, headers: {
+      final response = await http.get(url, headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json'
       });
-      debugPrint('inside ${response.statusCode}');
+      debugPrint('inside ${response.body.toString()}');
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         CustomerListModel customerListModel =

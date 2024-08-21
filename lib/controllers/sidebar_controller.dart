@@ -9,6 +9,7 @@ import 'package:pos_machine/screens/customers/add_customers.dart';
 import 'package:pos_machine/screens/cart/cart_list.dart';
 import 'package:pos_machine/screens/customers/customers.dart';
 import 'package:pos_machine/screens/dashboard/dashboard.dart';
+import 'package:pos_machine/screens/homenew/home_new.dart';
 
 import 'package:pos_machine/screens/loyality_card/loyality.dart';
 import 'package:pos_machine/screens/notifications/notifications.dart';
@@ -98,5 +99,7 @@ class SideBarController extends GetxController {
     SalesReportScreen(), //41
     SupplierSalesReportScreen(), //42
     LocationManagementScreen(), //43
+    LocationManagementScreen(), //44
+    HomeNew(), //45
   ];
 }

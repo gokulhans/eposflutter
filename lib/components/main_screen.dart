@@ -75,8 +75,8 @@ class MainScreen extends StatelessWidget {
                 Expanded(
                   flex:
                       MediaQuery.of(context).orientation == Orientation.portrait
-                          ? 1600
-                          : 1500,
+                          ? 1200
+                          : 1200,
                   child: const SideMenu(),
                 ),
                 Expanded(

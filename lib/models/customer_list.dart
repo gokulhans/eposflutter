@@ -27,8 +27,8 @@ class CustomerListModel {
         message: json["message"],
         data: json["data"] == null
             ? []
-            : List<CustomerListModelData>.from(
-                json["data"]!.map((x) => CustomerListModelData.fromJson(x))),
+            : List<CustomerListModelData>.from(json["data"]["data"]!
+                .map((x) => CustomerListModelData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

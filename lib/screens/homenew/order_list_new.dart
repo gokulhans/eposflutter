@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:get/get_core/src/get_main.dart';
 import 'package:pos_machine/components/build_container_box.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_order_list_design.dart';
+import 'package:pos_machine/components/build_payment_row.dart';
 import 'package:pos_machine/helpers/amount_helper.dart';
 import 'package:pos_machine/helpers/date_helper.dart';
+import 'package:pos_machine/models/add_to_order.dart';
+import 'package:pos_machine/models/customer_list.dart';
+import 'package:pos_machine/models/list_cart.dart';
+import 'package:pos_machine/providers/auth_model.dart';
+import 'package:pos_machine/providers/cart_provider.dart';
+import 'package:pos_machine/providers/customer_provider.dart';
 // import 'package:pos_machine/components/build_round_button.dart';
 // import 'package:pos_machine/components/build_title.dart';
 import 'package:pos_machine/resources/asset_manager.dart';
+import 'package:pos_machine/resources/color_manager.dart';
 import 'package:pos_machine/resources/font_manager.dart';
 import 'package:pos_machine/resources/style_manager.dart';
 import 'package:pos_machine/screens/customers/add_customer_modal.dart';
@@ -16,23 +23,14 @@ import 'package:pos_machine/screens/print/print.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
-import '../components/build_payment_row.dart';
-import '../models/add_to_order.dart';
-import '../models/customer_list.dart';
-import '../models/list_cart.dart';
-import '../providers/auth_model.dart';
-import '../providers/cart_provider.dart';
-import '../providers/customer_provider.dart';
-import '../resources/color_manager.dart';
-
-class OrderList extends StatefulWidget {
-  const OrderList({super.key});
+class OrderListNew extends StatefulWidget {
+  const OrderListNew({super.key});
 
   @override
-  State<OrderList> createState() => _OrderListState();
+  State<OrderListNew> createState() => _OrderListNewState();
 }
 
-class _OrderListState extends State<OrderList> {
+class _OrderListNewState extends State<OrderListNew> {
   final TextEditingController mobileNumberTextController =
       TextEditingController();
   final TextEditingController _transactionNumberController =
@@ -216,6 +214,8 @@ class _OrderListState extends State<OrderList> {
                 ),
                 const SizedBox(height: 5),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Column(

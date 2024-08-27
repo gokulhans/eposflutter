@@ -4,6 +4,7 @@ import 'package:pos_machine/components/build_dialog_box.dart';
 
 import 'package:pos_machine/resources/asset_manager.dart';
 import 'package:pos_machine/responsive.dart';
+import 'package:pos_machine/screens/kiosk/kiosk.dart';
 import 'package:provider/provider.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -180,6 +181,16 @@ class SideMenu extends StatelessWidget {
               onTap: () {
                 debugPrint(" 'Home New',${sideBarController.index.value}");
                 sideBarController.index.value = 45;
+              },
+              selected: sideBarController.index.value == 45,
+            ),
+          ),
+          Obx(
+            () => DrawerListTile(
+              iconPath: ImageAssets.homeIcon,
+              title: 'Kiosk',
+              onTap: () {
+                Get.to(() => const KioskScreen());
               },
               selected: sideBarController.index.value == 45,
             ),

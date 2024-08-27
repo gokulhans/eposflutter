@@ -30,7 +30,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
   @override
   void initState() {
-    loadInitData();
+    // loadInitData();
     super.initState();
   }
 

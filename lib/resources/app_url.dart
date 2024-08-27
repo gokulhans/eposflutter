@@ -30,7 +30,8 @@ class APPUrl {
   static const String dashBoardGraphUrl = '$baseURL/api/dashboard/orders';
   static const String addCustomerUrl = '$baseURL/api/sales/add-customer';
   // static const String customerListUrl = '$baseURL/api/sales/list-customer';
-  static const String customerListUrl = '$baseURL/api/customer/customer-searchbar';
+  static const String customerListUrl =
+      '$baseURL/api/customer/customer-searchbar';
   static const String userDetailsUrl = '$baseURL/api/user/get-user-details';
   static const String findCustomerByPhone = '$baseURL/api/search-user-by-key';
 
@@ -66,6 +67,7 @@ class APPUrl {
   static const String finishPurchaseOrder =
       '$baseURL/api/purchases/add-purchase-order';
   static const String addToStock = '$baseURL/api/product/add-stock';
+  static const String getTaxtDetails = '$baseURL/api/tax/get-category-tax';
   static const String addPurchaseStock = '$baseURL/api/purchases/add-stock';
   // static const String listStock = '$baseURL/api/product/list-stocks';
   static const String listStock = '$baseURL/api/stock-searchbar';

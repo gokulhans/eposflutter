@@ -238,12 +238,18 @@ class PurchaseProvider extends ChangeNotifier {
         if (data.isNotEmpty) {
           ListPurchaseModelDataDetails =
               data.first; // Set the first purchase detail
+          voucherDetailsList = voucherDetails;
+          List<PurchaseItem>? listPurchaseitem = purchaseItems;
+          purchaseItemListAllPurchase = listPurchaseitem;
+          notifyListeners();
         }
-
-        voucherDetailsList = voucherDetails;
-        List<PurchaseItem>? listPurchaseitem = purchaseItems;
-        purchaseItemListAllPurchase = listPurchaseitem;
-        notifyListeners();
+        if (data.isEmpty) {
+          debugPrint("data.toString() ${data.toString()}");
+          voucherDetailsList = [];
+          List<PurchaseItem>? listPurchaseitem = [];
+          purchaseItemListAllPurchase = listPurchaseitem;
+          notifyListeners();
+        }
       } else {}
     } finally {}
   }

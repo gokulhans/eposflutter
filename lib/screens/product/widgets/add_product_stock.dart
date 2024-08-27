@@ -8,6 +8,8 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:pos_machine/components/build_back_button.dart';
 import 'package:pos_machine/components/build_dialog_box.dart';
 import 'package:pos_machine/components/build_text_fields.dart';
+import 'package:pos_machine/helpers/amount_helper.dart';
+import 'package:pos_machine/models/tax.dart';
 
 import 'package:provider/provider.dart';
 
@@ -66,6 +68,8 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
   final TextEditingController categoryIDController =
       TextEditingController(text: "0");
 
+  String? parentCategory;
+
   GetStoreModelData? storeSelected;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   SideBarController sideBarController = Get.put(SideBarController());
@@ -103,27 +107,62 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
     }
   }
 
-  void _updateTaxFields(String taxOption) {
+  Future<void> _updateTaxFields({
+    required String taxOption,
+  }) async {
+    String? accessToken = Provider.of<AuthModel>(context, listen: false).token;
+
     // Define values based on the selected tax option
     if (taxOption == 'includingTax') {
-      taxRateController.text = '10'; // Example value for including tax
-      taxAmountController.text = '5'; // Example value for including tax
+      final result = await getCategoryTax(
+        accessToken: accessToken ?? "",
+        taxInclude: 'Y',
+        categoryId: parentCategory ?? "",
+        retailPrice: retailPriceController.text,
+      );
+
+      debugPrint(result.toString());
+      taxRateController.text =
+          result.taxRate.toString(); // Example value for including tax
+      taxAmountController.text = AmountHelper.formatAmount(result.taxAmount)
+          .toString(); // Example value for including tax
       retailPriceWithOutTaxController.text =
-          '100'; // Example value for including tax
+          AmountHelper.formatAmount(result.retailPrice)
+              .toString(); // Example value for including tax
+      retailPriceController.text =
+          AmountHelper.formatAmount(result.retailPrice).toString();
+      double wholesalePrice = double.parse(wholeSalePriceController.text);
       wholesalePriceWithOutTaxController.text =
-          '80'; // Example value for including tax
-      retailPriceController.text = '20000'; // Example value for excluding tax
+          AmountHelper.formatAmount((wholesalePrice - result.taxAmount))
+              .toString();
       wholeSalePriceController.text =
-          '10000'; // Example value for excluding tax
+          AmountHelper.formatAmount((wholesalePrice - result.taxAmount))
+              .toString();
     } else if (taxOption == 'excludingTax') {
-      taxRateController.text = '0'; // Example value for excluding tax
-      taxAmountController.text = '0'; // Example value for excluding tax
+      final result = await getCategoryTax(
+        accessToken: accessToken ?? "",
+        taxInclude: 'N',
+        categoryId: parentCategory ?? "",
+        retailPrice: retailPriceController.text,
+      );
+
+      debugPrint(result.toString());
+      taxRateController.text =
+          result.taxRate.toString(); // Example value for including tax
+      taxAmountController.text = AmountHelper.formatAmount(result.taxAmount)
+          .toString(); // Example value for including tax
       retailPriceWithOutTaxController.text =
-          '120'; // Example value for excluding tax
+          AmountHelper.formatAmount(result.retailPrice)
+              .toString(); // Example value for including tax
+      retailPriceController.text =
+          AmountHelper.formatAmount(result.retailPrice).toString();
+      double wholesalePrice = double.parse(wholeSalePriceController.text);
       wholesalePriceWithOutTaxController.text =
-          '90'; // Example value for excluding tax
-      retailPriceController.text = '2000'; // Example value for excluding tax
-      wholeSalePriceController.text = '1000'; // Example value for excluding tax
+          AmountHelper.formatAmount((wholesalePrice + result.taxAmount))
+              .toString();
+      wholeSalePriceController.text =
+          AmountHelper.formatAmount((wholesalePrice + result.taxAmount))
+              .toString();
     }
   }
 
@@ -151,7 +190,6 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
     List<GetProduct>? productList =
         gridSelectionProvider.getCategoryProductList;
 
-    String? parentCategory;
     // Access the category list
     List<Category>? categoryList = categoryProvider.category;
 
@@ -330,9 +368,6 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                             .productsCount ??
                                                         0,
                                                   );
-                                                  parentCategory =
-                                                      "${selectedCategory.categoryId ?? 0}";
-                                                  debugPrint(parentCategory);
 
                                                   gridSelectionProvider
                                                       .updateCategory(
@@ -341,6 +376,9 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                                               0);
 
                                                   setState(() {
+                                                    parentCategory =
+                                                        "${selectedCategory.categoryId ?? 0}";
+                                                    debugPrint(parentCategory);
                                                     productList =
                                                         gridSelectionProvider
                                                             .selectedProductsUpOnCategory;
@@ -903,10 +941,12 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                               title:
                                                   const Text('Including Tax'),
                                               onChanged: (String? value) {
-                                                _updateTaxFields(value!);
                                                 setState(() {
                                                   _selectedTaxOption = value;
                                                 });
+                                                _updateTaxFields(
+                                                  taxOption: value!,
+                                                );
                                               },
                                             ),
                                             RadioListTile<String>(
@@ -917,10 +957,12 @@ class _AddProductStockScreenState extends State<AddProductStockScreen> {
                                               title:
                                                   const Text('Excluding Tax'),
                                               onChanged: (String? value) {
-                                                _updateTaxFields(value!);
                                                 setState(() {
                                                   _selectedTaxOption = value;
                                                 });
+                                                _updateTaxFields(
+                                                  taxOption: value!,
+                                                );
                                               },
                                             ),
                                           ],
